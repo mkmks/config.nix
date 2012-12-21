@@ -1,0 +1,5 @@
+[ui]
+username = Nikita Frolov <nf@mkmks.org>
+
+[extensions]
+hgext.mq =
