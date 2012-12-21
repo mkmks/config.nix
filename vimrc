@@ -11,7 +11,7 @@ set smartcase
 set wildmode=longest:full
 set wildmenu
 set history=1000
-set relativenumber
+"set relativenumber
 
 set laststatus=2                             " always show statusbar  
 set statusline=  

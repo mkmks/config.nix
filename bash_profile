@@ -2,8 +2,10 @@ if [ -n "$INSIDE_EMACS" ] ; then
     export TERM=ansi
 fi
 
-if [ -f `brew --prefix`/etc/bash_completion ]; then
-    . `brew --prefix`/etc/bash_completion
+BREWPREFIX=`brew --prefix 2>/dev/null`
+
+if [ -f $BREWPREFIX/etc/bash_completion ]; then
+    . $BREWPREFIX/etc/bash_completion
 fi
 
 export HISTCONTROL=ignoreboth
