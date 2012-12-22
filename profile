@@ -13,6 +13,10 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+if [ -d "$HOME/local/bin" ] ; then
+    PATH="$HOME/local/bin:$PATH"
+fi
+
 # add cabal to PATH
 if [ -d "$HOME/.cabal/bin" ] ; then
     PATH="$HOME/.cabal/bin:$PATH"
@@ -21,6 +25,10 @@ fi
 # add ruby gems to PATH
 if [ -d "/var/lib/gems/1.8/bin" ] ; then
     PATH="/var/lib/gems/1.8/bin:$PATH"
+fi
+
+if [ -d "$HOME/local/lib" ] ; then
+    LD_LIBRARY_PATH="$HOME/local/lib:$LD_LIBRARY_PATH"
 fi
 
 export STARDICT_DATA_DIR="$HOME/dicts"
