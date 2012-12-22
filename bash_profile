@@ -1,3 +1,7 @@
+if [ -f $HOME/.profile ]; then
+    . $HOME/.profile
+fi
+    
 if [ -n "$INSIDE_EMACS" ] ; then
     export TERM=ansi
 fi
@@ -32,7 +36,5 @@ fi
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 alias scpresume="rsync --partial --progress --rsh=ssh"
+alias tmux="tmux attach || tmux new"
 
-if [ -f $HOME/.profile ]; then
-    . $HOME/.profile
-fi
