@@ -24,9 +24,15 @@
 
   (require 'pretty-mode))
 
-(unless (not (file-directory-p "~src/llvm"))
+(require 'tramp)
+
+(unless (not (file-directory-p "~/src/llvm"))
   (add-to-list 'load-path "~/src/llvm/utils/emacs")
   (require 'llvm-mode))
+
+(unless (not (file-directory-p "~/.cabal/share/Agda-2.3.2/emacs-mode/"))
+  (add-to-list 'load-path "~/.cabal/share/Agda-2.3.2/emacs-mode/")
+  (require 'agda2))
 
 (unless (not (file-directory-p "~/src/gf/"))
 	     (load-file "~/src/gf/src/tools/gf.el")
@@ -36,23 +42,29 @@
 	     (add-to-list 'auto-mode-alist '("\\.cf\\'" . gf-mode))
 	     (add-to-list 'auto-mode-alist '("\\.ebnf\\'" . gf-mode)))
 
-;; "app" keybindings
+;; keybindings
+
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (define-key esc-map "z" 'just-one-space)
 
-;; save backups of tramp edits in the same place as other backups
+;; minor
+
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
+
+;; save backups of tramp edits in the same place as other backups
 (setq tramp-backup-directory-alist backup-directory-alist)
 
 ;; just before we are ready
 
 (if (eq system-type 'darwin)
     (let (osx-paths)
-      (dolist (path '("/usr/local/bin" "/Users/viv/.cabal/bin")
+      (dolist (path '("/usr/local/bin" "/Users/viv/.cabal/bin" "/usr/texbin")
 		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
 	(push path exec-path)
 	(setq osx-paths (concat (concat path ":") osx-paths)))))
@@ -66,10 +78,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(LaTeX-command "latex -shell-escape")
  '(Man-width 80)
  '(TeX-PDF-mode t)
  '(TeX-parse-self t)
- '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "Evince") (output-html "xdg-open"))))
+ '(TeX-view-program-list (quote (("open" "open %o"))))
+ '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "open") (output-html "xdg-open"))))
  '(auto-save-default nil)
  '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
@@ -96,6 +110,7 @@
  '(haskell-doc-show-global-types t)
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
+ '(haskell-literate-default (quote bird))
  '(haskell-mode-hook (quote (turn-on-haskell-indentation turn-on-haskell-doc-mode turn-on-haskell-decl-scan)))
  '(ibuffer-mode-hook (quote ((lambda nil "Always bring up a pretty buffer list." (ibuffer-switch-to-saved-filter-groups "default")))))
  '(ibuffer-never-show-predicates (quote ("*GNU Emacs*" "*scratch*" "*Messages*" "*Completions*" "*Quail Completions*" "*fsm-debug*" "*Notmuch errors*" "*Help*" "*Apropos*" "*-jabber-roster-*" "*Mingus")) nil (ibuf-ext))
@@ -114,6 +129,7 @@
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
+ '(make-backup-files nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
  '(message-send-mail-function (quote smtpmail-send-it))

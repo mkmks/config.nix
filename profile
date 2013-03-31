@@ -22,13 +22,9 @@ if [ -d "$HOME/.cabal/bin" ] ; then
     PATH="$HOME/.cabal/bin:$PATH"
 fi
 
-# add ruby gems to PATH
-if [ -d "/var/lib/gems/1.8/bin" ] ; then
-    PATH="/var/lib/gems/1.8/bin:$PATH"
-fi
+export JAVA_HOME="$(/usr/libexec/java_home)"
+export EC2_PRIVATE_KEY="$(/bin/ls "$HOME"/.ec2/pk-*.pem | /usr/bin/head -1)"
+export EC2_CERT="$(/bin/ls "$HOME"/.ec2/cert-*.pem | /usr/bin/head -1)"
+export EC2_AMITOOL_HOME="/usr/local/Library/LinkedKegs/ec2-ami-tools/jars"
+export EC2_HOME="/usr/local/Library/LinkedKegs/ec2-api-tools/jars"
 
-if [ -d "$HOME/local/lib" ] ; then
-    LD_LIBRARY_PATH="$HOME/local/lib:$LD_LIBRARY_PATH"
-fi
-
-export STARDICT_DATA_DIR="$HOME/dicts"
