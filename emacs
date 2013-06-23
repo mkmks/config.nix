@@ -20,8 +20,6 @@
 
   (install-my-packages)
 
-  (load-theme 'zenburn t)
-
   (require 'pretty-mode))
 
 (require 'tramp)
@@ -29,10 +27,6 @@
 (unless (not (file-directory-p "~/src/llvm"))
   (add-to-list 'load-path "~/src/llvm/utils/emacs")
   (require 'llvm-mode))
-
-(unless (not (file-directory-p "~/.cabal/share/Agda-2.3.2/emacs-mode/"))
-  (add-to-list 'load-path "~/.cabal/share/Agda-2.3.2/emacs-mode/")
-  (require 'agda2))
 
 (unless (not (file-directory-p "~/src/gf/"))
 	     (load-file "~/src/gf/src/tools/gf.el")
@@ -42,10 +36,18 @@
 	     (add-to-list 'auto-mode-alist '("\\.cf\\'" . gf-mode))
 	     (add-to-list 'auto-mode-alist '("\\.ebnf\\'" . gf-mode)))
 
+(unless (not (file-directory-p "~/.cabal/share/Agda-2.3.2.1/emacs-mode/"))
+  (add-to-list 'load-path "~/.cabal/share/Agda-2.3.2.1/emacs-mode/")
+  (require 'agda2))
+
+(unless (not (file-directory-p "/usr/local/Cellar/coq/8.4pl1/lib/emacs/site-lisp/"))
+  (add-to-list 'load-path "/usr/local/Cellar/coq/8.4pl1/lib/emacs/site-lisp/")
+  (setq auto-mode-alist (cons '("\.v$" . coq-mode) auto-mode-alist))
+  (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t))
+
 ;; keybindings
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(define-key esc-map "z" 'just-one-space)
 
 ;; minor
 
@@ -69,6 +71,8 @@
 	(push path exec-path)
 	(setq osx-paths (concat (concat path ":") osx-paths)))))
 
+(unicode-fonts-setup)
+
 (server-start)
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
@@ -84,6 +88,8 @@
  '(TeX-parse-self t)
  '(TeX-view-program-list (quote (("open" "open %o"))))
  '(TeX-view-program-selection (quote (((output-dvi style-pstricks) "dvips and gv") (output-dvi "xdvi") (output-pdf "open") (output-html "xdg-open"))))
+ '(agda2-fontset-name nil)
+ '(agda2-include-dirs (quote ("/Users/viv/src/agda-lib-0.7/src" ".")))
  '(auto-save-default nil)
  '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
@@ -92,6 +98,7 @@
  '(column-number-mode t)
  '(completion-ignored-extensions (quote (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".hi")))
  '(custom-file nil)
+ '(custom-safe-themes (quote ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
@@ -143,7 +150,6 @@
  '(rcirc-log-flag t)
  '(rcirc-server-alist (quote (("localhost"))))
  '(rcirc-time-format "%H:%M:%S")
- '(rcirc-track-minor-mode t)
  '(semantic-mode t)
  '(show-paren-mode t)
  '(size-indication-mode t)
@@ -169,4 +175,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(show-paren-match ((t (:background "#3f3f3f" :foreground "PaleVioletRed3" :weight bold)))))
+ )
