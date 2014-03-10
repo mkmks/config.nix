@@ -1,32 +1,21 @@
 ;;;; This is my .emacs. There are many like it, but this one is mine.
 
+(if (eq system-type 'darwin)
+    (let (osx-paths)
+      (dolist (path '("/usr/local/bin" "/Users/viv/.cabal/bin" "/usr/texbin")
+		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
+	(push path exec-path)
+	(setq osx-paths (concat (concat path ":") osx-paths)))))
+
 ;;; loading packages
 
-(unless (< emacs-major-version 24)
-  (require 'cl)
-  (require 'package)
- ;; (add-to-list 'package-archives
- ;; 	       '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  (package-initialize)
+(require 'cl)
+(require 'package)
+(package-initialize)
 
- ;; (defvar my-packages '(melpa zenburn-theme pretty-mode
- ;; auctex haskell-mode scala-mode writegood-mode linum-relative)
- ;; "A list of packages to ensure are installed at launch.")
-
-  (defvar my-packages '(zenburn-theme pretty-mode
-  auctex haskell-mode scala-mode writegood-mode linum-relative)
-  "A list of packages to ensure are installed at launch.")
-
-  (defun install-my-packages ()
-    (unless (every 'package-installed-p my-packages)
-      (package-refresh-contents)
-      (mapcar 'package-install (remove-if 'package-installed-p my-packages))))
-
-  (install-my-packages)
-
-  (require 'pretty-mode))
-
+(require 'pretty-mode)
 (require 'tramp)
+(require 'twittering-mode)
 
 (unless (not (file-directory-p "~/src/llvm"))
   (add-to-list 'load-path "~/src/llvm/utils/emacs")
@@ -40,17 +29,12 @@
 	     (add-to-list 'auto-mode-alist '("\\.cf\\'" . gf-mode))
 	     (add-to-list 'auto-mode-alist '("\\.ebnf\\'" . gf-mode)))
 
-(unless (not (file-directory-p "~/.cabal/share/Agda-2.3.2.2/emacs-mode/"))
-  (add-to-list 'load-path "~/.cabal/share/Agda-2.3.2.2/emacs-mode/")
+(unless (not (file-directory-p "~/.cabal/share/x86_64-osx-ghc-7.6.3/Agda-2.3.3/emacs-mode/"))
+  (add-to-list 'load-path "~/.cabal/share/x86_64-osx-ghc-7.6.3/Agda-2.3.3/emacs-mode/")
   (require 'agda2))
 
 (unless (not (file-directory-p "~/.emacs.d/ProofGeneral/"))
 (load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el"))
-
-;; (unless (not (file-directory-p "/usr/local/Cellar/coq/8.4pl1/lib/emacs/site-lisp/"))
-;;   (add-to-list 'load-path "/usr/local/Cellar/coq/8.4pl1/lib/emacs/site-lisp/")
-;;   (setq auto-mode-alist (cons '("\.v$" . coq-mode) auto-mode-alist))
-;;   (autoload 'coq-mode "coq" "Major mode for editing Coq vernacular." t))
 
 ;; keybindings
 
@@ -70,13 +54,6 @@
 (setq tramp-backup-directory-alist backup-directory-alist)
 
 ;; just before we are ready
-
-(if (eq system-type 'darwin)
-    (let (osx-paths)
-      (dolist (path '("/usr/local/bin" "/Users/viv/.cabal/bin" "/usr/texbin")
-		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
-	(push path exec-path)
-	(setq osx-paths (concat (concat path ":") osx-paths)))))
 
 (unicode-fonts-setup)
 
@@ -102,7 +79,9 @@
      (output-pdf "open")
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
- '(agda2-include-dirs (quote ("/Users/viv/src/agda-lib-0.7/src" ".")))
+ '(agda2-include-dirs
+   (quote
+    ("/Users/viv/src/agda-stdlib/src" "/Users/viv/src/gpif" "/Users/viv/src/ornaments" ".")))
  '(auto-save-default nil)
  '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
@@ -207,7 +186,10 @@
  '(notmuch-show-logo nil)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
- '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/"))))
+ '(package-archives
+   (quote
+    (("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(projectile-global-mode t)
  '(rcirc-default-nick "mkmks")
  '(rcirc-log-flag t)
@@ -243,3 +225,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "gray84" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "apple" :family "Menlo")))))
+
