@@ -7,6 +7,8 @@
 	(push path exec-path)
 	(setq osx-paths (concat (concat path ":") osx-paths)))))
 
+(cd (expand-file-name "~/"))
+
 ;;; loading packages
 
 (require 'cl)
@@ -15,30 +17,42 @@
 
 (require 'pretty-mode)
 (require 'tramp)
-(require 'twittering-mode)
 
-(unless (not (file-directory-p "~/src/llvm"))
-  (add-to-list 'load-path "~/src/llvm/utils/emacs")
+(unless (not (file-directory-p "~/llvm"))
+  (add-to-list 'load-path "~/llvm/utils/emacs")
   (require 'llvm-mode))
 
-(unless (not (file-directory-p "~/src/gf/"))
-	     (load-file "~/src/gf/src/tools/gf.el")
+(unless (not (file-directory-p "~/gf/"))
+	     (load-file "~/gf/src/tools/gf.el")
 	     (autoload 'run-gf "gf" nil t)
 	     (autoload 'gf-mode "gf" nil t)
 	     (add-to-list 'auto-mode-alist '("\\.gf\\(\\|e\\|r\\|cm?\\)\\'" . gf-mode))
 	     (add-to-list 'auto-mode-alist '("\\.cf\\'" . gf-mode))
 	     (add-to-list 'auto-mode-alist '("\\.ebnf\\'" . gf-mode)))
 
-(unless (not (file-directory-p "~/.cabal/share/x86_64-osx-ghc-7.6.3/Agda-2.3.3/emacs-mode/"))
-  (add-to-list 'load-path "~/.cabal/share/x86_64-osx-ghc-7.6.3/Agda-2.3.3/emacs-mode/")
+(unless (not (file-directory-p "~/.cabal/share/x86_64-osx-ghc-7.8.3/Agda-2.4.2/emacs-mode/"))
+  (add-to-list 'load-path "~/.cabal/share/x86_64-osx-ghc-7.8.3/Agda-2.4.2/emacs-mode/")
   (require 'agda2))
 
 (unless (not (file-directory-p "~/.emacs.d/ProofGeneral/"))
-(load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el"))
+  (load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el"))
+
+(autoload 'ghc-init "ghc" nil t)
+(autoload 'ghc-debug "ghc" nil t)
+
+(require 'helm-ghc)
 
 ;; keybindings
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-unset-key (kbd "s-q"))
+
+; workaround for Terminal.app
+(define-key key-translation-map [(control c) (.)] [(control c) (control .)])
+(define-key key-translation-map [(control c) (\,)] [(control c) (control \,)])
+(define-key key-translation-map [(control c) (=)] [(control c) (control =)])
+(define-key key-translation-map [(control c) (\?)] [(control c) (control \?)])
 
 ;; minor
 
@@ -57,7 +71,11 @@
 
 (unicode-fonts-setup)
 
-(server-start)
+(require 'server)
+(unless (server-running-p)
+    (server-start))
+
+(erc :server "localhost" :password nil)
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -81,7 +99,7 @@
  '(agda2-fontset-name nil)
  '(agda2-include-dirs
    (quote
-    ("/Users/viv/src/agda-stdlib/src" "/Users/viv/src/gpif" "/Users/viv/src/ornaments" ".")))
+    ("/Users/viv/agda-stdlib/src" "/Users/viv/ornaments" ".")))
  '(auto-save-default nil)
  '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
@@ -108,6 +126,12 @@
  '(display-time-load-average-threshold 1.0)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
+ '(erc-hide-list (quote ("JOIN" "QUIT" "MODE")))
+ '(erc-modules
+   (quote
+    (autojoin button completion fill irccontrols list match menu move-to-prompt netsplit networks noncommands notifications readonly ring stamp track)))
+ '(erc-track-exclude (quote ("&bitlbee" "&twitter")))
+ '(erc-track-exclude-server-buffer t)
  '(fill-column 80)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
  '(global-semantic-idle-summary-mode t)
@@ -120,7 +144,15 @@
  '(haskell-literate-default (quote bird))
  '(haskell-mode-hook
    (quote
-    (turn-on-haskell-indentation turn-on-haskell-doc-mode turn-on-haskell-decl-scan)))
+    (turn-on-haskell-doc turn-on-haskell-indent
+			 (lambda nil
+			   (ghc-init))
+			 turn-on-haskell-decl-scan turn-on-haskell-doc interactive-haskell-mode
+			 (lambda nil
+			   (define-key haskell-mode-map
+			     (kbd "C-c ?")
+			     (quote helm-ghc-errors))))))
+ '(helm-mode t)
  '(ibuffer-mode-hook
    (quote
     ((lambda nil "Always bring up a pretty buffer list."
@@ -162,18 +194,6 @@
       ("Project-Kontrakcja"
        (filename . "src/kontrakcja/"))))))
  '(ibuffer-show-empty-filter-groups nil)
- '(icicle-incremental-completion-delay 0)
- '(icicle-show-Completions-initially-flag t)
- '(icomplete-mode t)
- '(ido-default-buffer-method (quote selected-window))
- '(ido-default-file-method (quote selected-window))
- '(ido-enable-flex-matching t)
- '(ido-everywhere t)
- '(ido-ignore-buffers
-   (quote
-    ("\\` " "*GNU Emacs*" "*Completions*" "*Quail Completions*" "*fsm-debug*" "*Ibuffer*")))
- '(ido-mode (quote both) nil (ido))
- '(ido-save-directory-list-file "~/.emacs.d/.ido.last")
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
@@ -197,6 +217,7 @@
  '(rcirc-time-format "%H:%M:%S")
  '(semantic-mode t)
  '(show-paren-mode t)
+ '(show-paren-style (quote expression))
  '(size-indication-mode t)
  '(term-bind-key-alist
    (quote
@@ -224,5 +245,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "gray84" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "apple" :family "Menlo")))))
+ '(default ((t (:inherit nil :stipple nil :background "gray84" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "apple" :family "Menlo"))))
+ '(show-paren-match ((t (:background "moccasin")))))
 

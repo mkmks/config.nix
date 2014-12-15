@@ -37,4 +37,5 @@ fi
 
 alias scpresume="rsync --partial --progress --rsh=ssh"
 alias tmux="tmux attach || tmux new"
-
+alias e="emacsclient -t "
+alias ec="emacsclient -c -n "
