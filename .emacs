@@ -17,6 +17,8 @@
 
 (require 'pretty-mode)
 (require 'tramp)
+(require 'jabber)
+(require 'twittering-mode)
 
 (unless (not (file-directory-p "~/llvm"))
   (add-to-list 'load-path "~/llvm/utils/emacs")
@@ -75,8 +77,6 @@
 (unless (server-running-p)
     (server-start))
 
-(erc :server "localhost" :password nil)
-
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
 (custom-set-variables
@@ -126,12 +126,6 @@
  '(display-time-load-average-threshold 1.0)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
- '(erc-hide-list (quote ("JOIN" "QUIT" "MODE")))
- '(erc-modules
-   (quote
-    (autojoin button completion fill irccontrols list match menu move-to-prompt netsplit networks noncommands notifications readonly ring stamp track)))
- '(erc-track-exclude (quote ("&bitlbee" "&twitter")))
- '(erc-track-exclude-server-buffer t)
  '(fill-column 80)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
  '(global-semantic-idle-summary-mode t)
@@ -197,11 +191,33 @@
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
+ '(jabber-account-list
+   (quote
+    (("nkt.frlv@gmail.com"
+      (:network-server . "talk.google.com")
+      (:connection-type . ssl)))))
+ '(jabber-auto-reconnect t)
+ '(jabber-avatar-verbose t)
+ '(jabber-show-resources nil)
+ '(jabber-vcard-avatars-retrieve t)
  '(make-backup-files nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
  '(message-send-mail-function (quote smtpmail-send-it))
- '(mm-text-html-renderer (quote w3m))
+ '(mm-text-html-renderer nil)
+ '(notmuch-saved-searches
+   (quote
+    ((:name "inbox" :query "tag:inbox" :key "i")
+     (:name "unread" :query "tag:unread AND tag:inbox" :key "u")
+     (:name "flagged" :query "tag:flagged" :key "f")
+     (:name "sent" :query "tag:sent" :key "t")
+     (:name "drafts" :query "tag:draft" :key "d")
+     (:name "lists" :query "folder:gmail/lists AND tag:unread")
+     (:name "updates" :query "folder:gmail/categories/.updates AND tag:unread")
+     (:name "forums" :query "folder:gmail/categories/.forums AND NOT folder:gmail/lists AND tag:unread")
+     (:name "promotions" :query "folder:gmail/categories/.promotions AND tag:unread")
+     (:name "social" :query "folder:gmail/categories/.social AND tag:unread")
+     (:name "travel" :query "folder:gmail/categories/.travel AND tag:unread"))))
  '(notmuch-search-oldest-first nil)
  '(notmuch-show-logo nil)
  '(ns-tool-bar-display-mode nil t)
@@ -212,8 +228,13 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(projectile-global-mode t)
  '(rcirc-default-nick "mkmks")
- '(rcirc-log-flag t)
- '(rcirc-server-alist (quote (("localhost"))))
+ '(rcirc-log-flag nil)
+ '(rcirc-server-alist
+   (quote
+    (("localhost" :channels
+      ("#twitter_mkmks"))
+     ("irc.freenode.net" :channels
+      ("#agda" "#haskell" "##hott")))))
  '(rcirc-time-format "%H:%M:%S")
  '(semantic-mode t)
  '(show-paren-mode t)
