@@ -17,10 +17,7 @@
 
 (require 'pretty-mode)
 (require 'tramp)
-
-(unless (not (file-directory-p "~/llvm"))
-  (add-to-list 'load-path "~/llvm/utils/emacs")
-  (require 'llvm-mode))
+(require 'llvm-mode)
 
 (unless (not (file-directory-p "~/gf/"))
 	     (load-file "~/gf/src/tools/gf.el")
