@@ -8,7 +8,7 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-# set PATH so it includes user's private bin if it exists
+# add user's private bin to PATH if it exists
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
 [ -d "$HOME/local/sbin" ] && PATH="$HOME/local/sbin:$PATH"
@@ -22,6 +22,10 @@
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig:$PKG_CONFIG_PATH
 
 export TERM=xterm
+
+[ `uname` != "Darwin" ] && eval `keychain --eval id_rsa 3FAD8754`
+
+
 #export JAVA_HOME="$(/usr/libexec/java_home)"
 #export EC2_PRIVATE_KEY="$(/bin/ls "$HOME"/.ec2/pk-*.pem | /usr/bin/head -1)"
 #export EC2_CERT="$(/bin/ls "$HOME"/.ec2/cert-*.pem | /usr/bin/head -1)"
