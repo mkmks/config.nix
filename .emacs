@@ -49,6 +49,7 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x C-g") 'helm-ag)
 (global-unset-key (kbd "s-q"))
 
 ; workaround for Terminal.app
