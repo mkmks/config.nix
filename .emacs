@@ -17,8 +17,6 @@
 
 (require 'pretty-mode)
 (require 'tramp)
-(require 'jabber)
-(require 'twittering-mode)
 
 (unless (not (file-directory-p "~/llvm"))
   (add-to-list 'load-path "~/llvm/utils/emacs")
@@ -32,9 +30,12 @@
 	     (add-to-list 'auto-mode-alist '("\\.cf\\'" . gf-mode))
 	     (add-to-list 'auto-mode-alist '("\\.ebnf\\'" . gf-mode)))
 
-(unless (not (file-directory-p "~/.cabal/share/x86_64-osx-ghc-7.8.3/Agda-2.4.2/emacs-mode/"))
-  (add-to-list 'load-path "~/.cabal/share/x86_64-osx-ghc-7.8.3/Agda-2.4.2/emacs-mode/")
-  (require 'agda2))
+(load-file (let ((coding-system-for-read 'utf-8))
+	     (shell-command-to-string "agda-mode locate")))
+
+(setq agda2-include-dirs
+      (cons "." (mapcar 'expand-file-name
+			'("~/agda-stdlib/src" "~/ornaments"))))
 
 (unless (not (file-directory-p "~/.emacs.d/ProofGeneral/"))
   (load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el"))
@@ -97,11 +98,8 @@
      (output-pdf "open")
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
- '(agda2-include-dirs
-   (quote
-    ("/Users/viv/agda-stdlib/src" "/Users/viv/ornaments" ".")))
+ '(agda2-program-args (quote ("--no-termination-check")))
  '(auto-save-default nil)
- '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
  '(browse-url-generic-program "chromium-browser")
  '(c-default-style
@@ -201,6 +199,7 @@
  '(jabber-show-resources nil)
  '(jabber-vcard-avatars-retrieve t)
  '(make-backup-files nil)
+ '(menu-bar-mode nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
  '(message-send-mail-function (quote smtpmail-send-it))
@@ -247,7 +246,6 @@
      ("C-c C-j" . term-line-mode))))
  '(term-unbind-key-list (quote ("C-z" "C-x" "C-c")))
  '(terminal-scrolling nil)
- '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote url))
  '(user-mail-address "nf@mkmks.org")
@@ -268,4 +266,3 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "gray84" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "apple" :family "Menlo"))))
  '(show-paren-match ((t (:background "moccasin")))))
-

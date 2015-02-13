@@ -9,25 +9,19 @@
 #umask 022
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
+[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
-if [ -d "$HOME/local/sbin" ] ; then
-    PATH="$HOME/local/sbin:$PATH"
-fi
+[ -d "$HOME/local/sbin" ] && PATH="$HOME/local/sbin:$PATH"
 
-if [ -d "$HOME/local/bin" ] ; then
-    PATH="$HOME/local/bin:$PATH"
-fi
+[ -d "$HOME/local/bin" ] && PATH="$HOME/local/bin:$PATH"
 
 # add cabal to PATH
-if [ -d "$HOME/.cabal/bin" ] ; then
-    PATH="$HOME/.cabal/bin:$PATH"
-fi
+[ -d "$HOME/.cabal/bin" ] && export PATH="$HOME/.cabal/bin:$PATH"
+
 
 export PKG_CONFIG_PATH=/opt/X11/lib/pkgconfig:$PKG_CONFIG_PATH
 
+export TERM=xterm
 #export JAVA_HOME="$(/usr/libexec/java_home)"
 #export EC2_PRIVATE_KEY="$(/bin/ls "$HOME"/.ec2/pk-*.pem | /usr/bin/head -1)"
 #export EC2_CERT="$(/bin/ls "$HOME"/.ec2/cert-*.pem | /usr/bin/head -1)"

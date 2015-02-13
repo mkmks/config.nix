@@ -17,7 +17,7 @@ export HISTFILESIZE=100000
 shopt -s histappend
 shopt -s checkwinsize
 
-export PS1="\h:\W \$ "
+export PS1="\W \$ "
 export EDITOR="vi"
 
 # enable color support of ls and also add handy aliases
