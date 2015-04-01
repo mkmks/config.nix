@@ -96,8 +96,9 @@
      (output-pdf "open")
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
- '(agda2-program-args (quote ("--no-termination-check")))
+ '(agda2-program-args nil)
  '(auto-save-default nil)
+ '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
  '(browse-url-generic-program "chromium-browser")
  '(c-default-style
@@ -197,7 +198,6 @@
  '(jabber-show-resources nil)
  '(jabber-vcard-avatars-retrieve t)
  '(make-backup-files nil)
- '(menu-bar-mode nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
  '(message-send-mail-function (quote smtpmail-send-it))
@@ -244,6 +244,7 @@
      ("C-c C-j" . term-line-mode))))
  '(term-unbind-key-list (quote ("C-z" "C-x" "C-c")))
  '(terminal-scrolling nil)
+ '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote url))
  '(user-mail-address "nf@mkmks.org")
@@ -256,7 +257,8 @@
  '(visual-line-mode nil t)
  '(which-function-mode nil)
  '(woman-fill-frame t)
- '(woman-use-own-frame nil))
+ '(woman-use-own-frame nil)
+ '(word-wrap t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
