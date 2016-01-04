@@ -2,12 +2,14 @@
 
 (if (eq system-type 'darwin)
     (let (osx-paths)
-      (dolist (path '("/usr/local/bin" "/Users/viv/.cabal/bin" "/usr/texbin")
+      (dolist (path '("/Users/viv/.nix-profile/bin" "/Users/viv/.cabal/bin")
 		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
 	(push path exec-path)
 	(setq osx-paths (concat (concat path ":") osx-paths)))))
 
 (cd (expand-file-name "~/"))
+
+(add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
 
 ;;; loading packages
 
@@ -17,7 +19,7 @@
 
 (require 'pretty-mode)
 (require 'tramp)
-(require 'llvm-mode)
+;(require 'llvm-mode)
 
 (unless (not (file-directory-p "~/gf/"))
 	     (load-file "~/gf/src/tools/gf.el")
@@ -34,13 +36,28 @@
       (cons "." (mapcar 'expand-file-name
 			'("~/agda-stdlib/src" "~/ornaments"))))
 
-(unless (not (file-directory-p "~/.emacs.d/ProofGeneral/"))
-  (load-file "~/.emacs.d/ProofGeneral/generic/proof-site.el"))
+
+(load "ProofGeneral/generic/proof-site")
 
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
-(require 'helm-ghc)
+(add-hook 'haskell-mode-hook 'haskell-simple-indent-mode)
+(add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
+(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+(eval-after-load "haskell-mode"
+       '(progn
+         (define-key haskell-mode-map (kbd "C-x C-d") nil)
+         (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+         (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
+         (define-key haskell-mode-map (kbd "C-c C-b") 'haskell-interactive-switch)
+         (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+         (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+         (define-key haskell-mode-map (kbd "C-c M-.") nil)
+         (define-key haskell-mode-map (kbd "C-c C-d") nil)))
+
+;(require 'helm-ghc)
 
 ;; keybindings
 
@@ -96,7 +113,6 @@
      (output-pdf "open")
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
- '(agda2-program-args nil)
  '(auto-save-default nil)
  '(blink-cursor-mode nil)
  '(browse-url-browser-function (quote browse-url-default-macosx-browser))
@@ -133,16 +149,6 @@
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
  '(haskell-literate-default (quote bird))
- '(haskell-mode-hook
-   (quote
-    (turn-on-haskell-doc turn-on-haskell-indent
-			 (lambda nil
-			   (ghc-init))
-			 turn-on-haskell-decl-scan turn-on-haskell-doc interactive-haskell-mode
-			 (lambda nil
-			   (define-key haskell-mode-map
-			     (kbd "C-c ?")
-			     (quote helm-ghc-errors))))))
  '(helm-mode t)
  '(ibuffer-mode-hook
    (quote
@@ -179,11 +185,7 @@
       ("Project-Bau"
        (filename . "src/flexsoc/flexTools/flexCompLLVM/"))
       ("Project-llvm-hs"
-       (filename . "src/llvm-hs/"))
-      ("Project-GF"
-       (filename . "src/gf/"))
-      ("Project-Kontrakcja"
-       (filename . "src/kontrakcja/"))))))
+       (filename . "src/llvm-hs/"))))))
  '(ibuffer-show-empty-filter-groups nil)
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")

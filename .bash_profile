@@ -6,10 +6,10 @@ if [ -n "$INSIDE_EMACS" ] ; then
     export TERM=ansi
 fi
 
-BREWPREFIX=`brew --prefix 2>/dev/null`
+NIXPROFILE="$HOME/.nix-profile"
 
-if [ -f $BREWPREFIX/etc/bash_completion ]; then
-    . $BREWPREFIX/etc/bash_completion
+if [ -f $NIXPROFILE/etc/bash_completion ]; then
+    . $NIXPROFILE/etc/bash_completion
 fi
 
 export HISTCONTROL=ignoreboth
@@ -39,3 +39,5 @@ alias scpresume="rsync --partial --progress --rsh=ssh"
 alias tmux="tmux attach || tmux new"
 alias e="emacsclient -t "
 alias ec="emacsclient -c -n "
+
+if [ -e /Users/viv/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/viv/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

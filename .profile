@@ -11,10 +11,6 @@
 # add user's private bin to PATH if it exists
 [ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
 
-[ -d "$HOME/local/sbin" ] && PATH="$HOME/local/sbin:$PATH"
-
-[ -d "$HOME/local/bin" ] && PATH="$HOME/local/bin:$PATH"
-
 # add cabal to PATH
 [ -d "$HOME/.cabal/bin" ] && export PATH="$HOME/.cabal/bin:$PATH"
 
