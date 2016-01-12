@@ -1,10 +1,13 @@
 ;;;; This is my .emacs. There are many like it, but this one is mine.
 
+(setq exec-path '("/Users/viv/.cabal/bin" "/Users/viv/.nix-profile/bin" "/nix/store/4znm54fqrrk6nvxxnll8m2a37y4vp0pp-emacs-24.5/libexec/emacs/24.5/x86_64-apple-darwin15.2.0"))
+
 (if (eq system-type 'darwin)
     (let (osx-paths)
       (dolist (path '("/Users/viv/.nix-profile/bin" "/Users/viv/.cabal/bin")
-		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
-	(push path exec-path)
+;		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
+		    (setenv "PATH" (concat osx-paths ())))
+	;(push path exec-path)
 	(setq osx-paths (concat (concat path ":") osx-paths)))))
 
 (cd (expand-file-name "~/"))
@@ -20,14 +23,6 @@
 (require 'pretty-mode)
 (require 'tramp)
 ;(require 'llvm-mode)
-
-(unless (not (file-directory-p "~/gf/"))
-	     (load-file "~/gf/src/tools/gf.el")
-	     (autoload 'run-gf "gf" nil t)
-	     (autoload 'gf-mode "gf" nil t)
-	     (add-to-list 'auto-mode-alist '("\\.gf\\(\\|e\\|r\\|cm?\\)\\'" . gf-mode))
-	     (add-to-list 'auto-mode-alist '("\\.cf\\'" . gf-mode))
-	     (add-to-list 'auto-mode-alist '("\\.ebnf\\'" . gf-mode)))
 
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
@@ -57,7 +52,7 @@
          (define-key haskell-mode-map (kbd "C-c M-.") nil)
          (define-key haskell-mode-map (kbd "C-c C-d") nil)))
 
-;(require 'helm-ghc)
+(require 'helm-ghc)
 
 ;; keybindings
 
@@ -89,6 +84,7 @@
 
 (unicode-fonts-setup)
 
+(elscreen-start)
 (require 'server)
 (unless (server-running-p)
     (server-start))
@@ -141,10 +137,6 @@
  '(electric-pair-mode t)
  '(fill-column 80)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
- '(global-semantic-idle-summary-mode t)
- '(global-semantic-idle-tag-highlight-mode t nil (semantic/idle))
- '(global-semantic-show-unmatched-syntax-mode t nil (semantic/util-modes))
- '(global-semantic-stickyfunc-mode t nil (semantic/util-modes))
  '(haskell-doc-show-global-types t)
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
@@ -190,35 +182,11 @@
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
- '(jabber-account-list
-   (quote
-    (("nkt.frlv@gmail.com"
-      (:network-server . "talk.google.com")
-      (:connection-type . ssl)))))
- '(jabber-auto-reconnect t)
- '(jabber-avatar-verbose t)
- '(jabber-show-resources nil)
- '(jabber-vcard-avatars-retrieve t)
  '(make-backup-files nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
  '(message-send-mail-function (quote smtpmail-send-it))
  '(mm-text-html-renderer nil)
- '(notmuch-saved-searches
-   (quote
-    ((:name "inbox" :query "tag:inbox" :key "i")
-     (:name "unread" :query "tag:unread AND tag:inbox" :key "u")
-     (:name "flagged" :query "tag:flagged" :key "f")
-     (:name "sent" :query "tag:sent" :key "t")
-     (:name "drafts" :query "tag:draft" :key "d")
-     (:name "lists" :query "folder:gmail/lists AND tag:unread")
-     (:name "updates" :query "folder:gmail/categories/.updates AND tag:unread")
-     (:name "forums" :query "folder:gmail/categories/.forums AND NOT folder:gmail/lists AND tag:unread")
-     (:name "promotions" :query "folder:gmail/categories/.promotions AND tag:unread")
-     (:name "social" :query "folder:gmail/categories/.social AND tag:unread")
-     (:name "travel" :query "folder:gmail/categories/.travel AND tag:unread"))))
- '(notmuch-search-oldest-first nil)
- '(notmuch-show-logo nil)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
  '(package-archives
@@ -235,7 +203,6 @@
      ("irc.freenode.net" :channels
       ("#agda" "#haskell" "##hott")))))
  '(rcirc-time-format "%H:%M:%S")
- '(semantic-mode t)
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
  '(size-indication-mode t)

@@ -1,15 +1,9 @@
 if [ -f $HOME/.profile ]; then
     . $HOME/.profile
 fi
-    
-if [ -n "$INSIDE_EMACS" ] ; then
-    export TERM=ansi
-fi
 
-NIXPROFILE="$HOME/.nix-profile"
-
-if [ -f $NIXPROFILE/etc/bash_completion ]; then
-    . $NIXPROFILE/etc/bash_completion
+if [ -f $NIX_LINK/etc/bash_completion ]; then
+    . $NIX_LINK/etc/bash_completion
 fi
 
 export HISTCONTROL=ignoreboth
@@ -21,7 +15,7 @@ export PS1="\W \$ "
 export EDITOR="vi"
 
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
+if [ -x $NIX_LINK/bin/dircolors ]; then
     eval "`dircolors -b`"
     alias ls='ls --color=auto'
     #alias dir='dir --color=auto'
@@ -39,5 +33,3 @@ alias scpresume="rsync --partial --progress --rsh=ssh"
 alias tmux="tmux attach || tmux new"
 alias e="emacsclient -t "
 alias ec="emacsclient -c -n "
-
-if [ -e /Users/viv/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/viv/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
