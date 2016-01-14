@@ -1,17 +1,12 @@
 ;;;; This is my .emacs. There are many like it, but this one is mine.
 
-(setq exec-path '("/Users/viv/.cabal/bin" "/Users/viv/.nix-profile/bin" "/nix/store/4znm54fqrrk6nvxxnll8m2a37y4vp0pp-emacs-24.5/libexec/emacs/24.5/x86_64-apple-darwin15.2.0"))
+(add-to-list 'exec-path (concat (expand-file-name "~/") ".nix-profile/bin"))
+(setenv "PATH" (concat "/var/setuid-wrappers:"
+		       (expand-file-name "~/") ".nix-profile/bin:"
+		       (getenv "PATH")))
 
-(if (eq system-type 'darwin)
-    (let (osx-paths)
-      (dolist (path '("/Users/viv/.nix-profile/bin" "/Users/viv/.cabal/bin")
-;		    (setenv "PATH" (concat osx-paths (getenv "PATH"))))
-		    (setenv "PATH" (concat osx-paths ())))
-	;(push path exec-path)
-	(setq osx-paths (concat (concat path ":") osx-paths)))))
 
-(cd (expand-file-name "~/"))
-
+(add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp")
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
 
 ;;; loading packages
@@ -22,7 +17,8 @@
 
 (require 'pretty-mode)
 (require 'tramp)
-;(require 'llvm-mode)
+(require 'nix-mode)
+(require 'llvm-mode)
 
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
@@ -30,7 +26,6 @@
 (setq agda2-include-dirs
       (cons "." (mapcar 'expand-file-name
 			'("~/agda-stdlib/src" "~/ornaments"))))
-
 
 (load "ProofGeneral/generic/proof-site")
 
@@ -58,6 +53,7 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x C-g") 'helm-ag)
 (global-unset-key (kbd "s-q"))
 
@@ -82,12 +78,11 @@
 
 ;; just before we are ready
 
-(unicode-fonts-setup)
-
+;(unicode-fonts-setup)
 (elscreen-start)
 (require 'server)
 (unless (server-running-p)
-    (server-start))
+  (server-start))
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -123,10 +118,11 @@
  '(completion-ignored-extensions
    (quote
     (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".hi")))
+ '(custom-enabled-themes (quote (anti-zenburn)))
  '(custom-file nil)
  '(custom-safe-themes
    (quote
-    ("8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
+    ("5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
@@ -136,6 +132,7 @@
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
  '(fill-column 80)
+ '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
  '(haskell-doc-show-global-types t)
  '(haskell-font-lock-symbols nil)
@@ -183,6 +180,7 @@
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
  '(make-backup-files nil)
+ '(menu-bar-mode nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
  '(message-send-mail-function (quote smtpmail-send-it))
@@ -203,6 +201,7 @@
      ("irc.freenode.net" :channels
       ("#agda" "#haskell" "##hott")))))
  '(rcirc-time-format "%H:%M:%S")
+ '(recentf-mode t)
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
  '(size-indication-mode t)
@@ -216,6 +215,7 @@
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote url))
+ '(transient-mark-mode (quote (only . t)))
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
  '(vhdl-upper-case-attributes t)
@@ -233,5 +233,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "gray84" :foreground "Black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "apple" :family "Menlo"))))
  '(show-paren-match ((t (:background "moccasin")))))
