@@ -8,6 +8,7 @@
 
 (add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp")
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
+(add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
 
 ;;; loading packages
 
@@ -20,14 +21,30 @@
 (require 'nix-mode)
 (require 'llvm-mode)
 
+(require 'mu4e)
+(require 'mu4e-maildirs-extension)
+
+(add-hook 'mu4e-compose-pre-hook
+  (defun my-set-from-address ()
+    "Set the From address based on the To address of the original."
+    (let ((msg mu4e-compose-parent-message))
+      (when msg
+	(setq user-mail-address
+	  (cond
+	    ((mu4e-message-contact-field-matches msg :to "frolov@chalmers.se")
+	      "frolov@chalmers.se")
+	    (t "nf@mkmks.org")))))))
+
+(mu4e-maildirs-extension)
+
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
 
 (setq agda2-include-dirs
       (cons "." (mapcar 'expand-file-name
-			'("~/agda-stdlib/src" "~/ornaments"))))
+			'("~/.nix-profile/share/agda" "~/ornaments"))))
 
-(load "ProofGeneral/generic/proof-site")
+;(load "ProofGeneral/generic/proof-site")
 
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
@@ -95,19 +112,9 @@
  '(Man-width 80)
  '(TeX-PDF-mode t)
  '(TeX-parse-self t)
- '(TeX-view-program-list (quote (("open" "open %o"))))
- '(TeX-view-program-selection
-   (quote
-    (((output-dvi style-pstricks)
-      "dvips and gv")
-     (output-dvi "xdvi")
-     (output-pdf "open")
-     (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
  '(auto-save-default nil)
- '(blink-cursor-mode nil)
- '(browse-url-browser-function (quote browse-url-default-macosx-browser))
- '(browse-url-generic-program "chromium-browser")
+ '(browse-url-browser-function (quote browse-url-chromium))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -122,7 +129,7 @@
  '(custom-file nil)
  '(custom-safe-themes
    (quote
-    ("5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
+    ("6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
@@ -131,6 +138,8 @@
  '(display-time-load-average-threshold 1.0)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
+ '(elscreen-persist-mode t)
+ '(epg-gpg-program "gpg2")
  '(fill-column 80)
  '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
@@ -162,9 +171,10 @@
       ("Mail"
        (or
 	(mode . message-mode)
-	(mode . notmuch-show-mode)
-	(mode . notmuch-search-mode)
-	(mode . notmuch-hello-mode)))
+	(mode . mu4e-compose-mode)
+	(mode . mu4e-main-mode)
+	(mode . mu4e-headers-mode)
+	(mode . mu4e-view-mode)))
       ("Org"
        (mode . org-mode))
       ("Texts"
@@ -179,12 +189,49 @@
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
+ '(mail-user-agent (quote mu4e-user-agent))
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory "~/.emacs.d/message/drafts/")
  '(message-directory "~/.emacs.d/message/")
+ '(message-kill-buffer-on-exit t)
  '(message-send-mail-function (quote smtpmail-send-it))
  '(mm-text-html-renderer nil)
+ '(mu4e-attachment-dir "/home/viv/Downloads")
+ '(mu4e-bookmarks
+   (quote
+    (("flag:unread AND NOT flag:trashed AND NOT flag:list AND NOT maildir:\"/[Gmail]/.All Mail\"" "Unread messages" 117)
+     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:\"/[Gmail]/.All Mail\" " "Unread mailing lists" 108)
+     ("date:today..now AND maildir:\"/[Gmail]/.All Mail\"" "Today's messages" 116)
+     ("date:7d..now AND maildir:\"/[Gmail]/.All Mail\"" "Last 7 days" 119)
+     ("mime:image/*" "Messages with images" 112))))
+ '(mu4e-change-filenames-when-moving t)
+ '(mu4e-compose-complete-only-personal t)
+ '(mu4e-compose-dont-reply-to-self t)
+ '(mu4e-compose-signature nil)
+ '(mu4e-drafts-folder "/[Gmail]/.Drafts")
+ '(mu4e-headers-date-format "%F %R")
+ '(mu4e-headers-fields
+   (quote
+    ((:human-date . 16)
+     (:flags . 6)
+     (:mailing-list . 10)
+     (:from . 22)
+     (:subject))))
+ '(mu4e-maildir "/home/viv/Mail")
+ '(mu4e-maildir-shortcuts
+   (quote
+    (("\"/Inbox\"" . 105)
+     ("/[Gmail]/.Sent Mail" . 115)
+     ("/[Gmail]/.Trash" . 116)
+     ("/[Gmail]/.All Mail" . 97))))
+ '(mu4e-maildirs-extension-use-bookmarks t)
+ '(mu4e-sent-folder "/[Gmail]/.Sent Mail")
+ '(mu4e-sent-messages-behavior (quote delete))
+ '(mu4e-trash-folder "/[Gmail]/.Trash")
+ '(mu4e-user-mail-address-list (quote ("nf@mkmks.org" "frolov@chalmers.se")))
+ '(mu4e-view-prefer-html t)
+ '(mu4e-view-show-images t)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
  '(package-archives
@@ -205,6 +252,10 @@
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
  '(size-indication-mode t)
+ '(smtpmail-default-smtp-server "smtp.gmail.com")
+ '(smtpmail-smtp-server "smtp.gmail.com")
+ '(smtpmail-smtp-service 587)
+ '(smtpmail-stream-type (quote starttls))
  '(term-bind-key-alist
    (quote
     (("C-c C-c" . term-interrupt-subjob)
@@ -215,7 +266,6 @@
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote url))
- '(transient-mark-mode (quote (only . t)))
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
  '(vhdl-upper-case-attributes t)
@@ -233,4 +283,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "Inconsolata"))))
+ '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
  '(show-paren-match ((t (:background "moccasin")))))

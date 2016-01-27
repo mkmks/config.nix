@@ -18,7 +18,7 @@ with pkgs.lib;
 
   boot.initrd.luks.devices = [
     { name = "nixos";
-      device = "/dev/sda5";
+      device = "/dev/sda2";
       preLVM = true; }
   ];
 
@@ -29,6 +29,7 @@ with pkgs.lib;
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   # networking.networkmanager.enable = true;
   networking.proxy.default = "http://127.0.0.1:8118";
+  networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org";
 
   # Select internationalisation properties.
   # i18n = {
@@ -53,10 +54,12 @@ with pkgs.lib;
 	    withX = true;
             withGTK3 = true;
 	    withGTK2 = false;
-            # Make sure imagemgick is a dependency because I regularly
-            # look at pictures from Emasc
-            imagemagick = pkgs.imagemagickBig;
-          }) (attrs: {});
+          }) (attrs: {
+	    # Emacs daemon is part of user session, use emacsclient
+	    postInstall = attrs.postInstall + ''
+	      sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
+	    '';
+	  });
     };
   };
 
@@ -78,18 +81,22 @@ with pkgs.lib;
     graphviz
     htop
     imagemagick
+    isync
+    mpc_cli
+    mpv
     nix-repl
     nmap
     nox
     powertop
     psmisc
     pwgen
+    p7zip
     silver-searcher
     sloccount
     steam
     tmux
     tor
-    xz
+    transmission
 
     #haskellPackages.Agda
     #haskellPackages.ghc-mod
@@ -105,24 +112,31 @@ with pkgs.lib;
     gnome-calculator
     gnome-calendar
     gnome-characters
+    gnome-clocks
     gnome-contacts
     gnome-documents
     gnome-logs
     gnome-maps
+    gnome-music
     gnome-nettool
     gnome-photos
     gnome-system-log
     gnome-system-monitor
     gnome-weather
     gucharmap
+    totem
   ];
   
   fonts = {
     fonts = with pkgs; [
       inconsolata
+      kochi-substitute
+      wqy_zenhei
     ];
   };
 
+  programs.bash.enableCompletion = true;
+  
   # List services that you want to enable:
 
   services = {
@@ -142,9 +156,14 @@ with pkgs.lib;
       gnome-documents.enable = false;
       gnome-online-accounts.enable = false;
       gnome-online-miners.enable = false;
+      tracker.enable = false;
     };
 
-    telepathy.enable = false;
+    mpd = {
+      enable = true;
+      group = "btsync";
+      musicDirectory = "/home/btsync/BitTorrent Sync/Music";
+    };
           
     # Enable the OpenSSH daemon.
     #openssh.enable = true;
@@ -153,7 +172,10 @@ with pkgs.lib;
     printing.enable = true;
 
     privoxy.enable = true;
+    privoxy.enableEditActions = true;
 
+    telepathy.enable = false;
+    
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
@@ -182,37 +204,63 @@ with pkgs.lib;
     };
   };
 
-  systemd.user.services.emacs = {
-    description                 = "Emacs: the extensible, self-documenting text editor";
+  systemd.user =  {
+  
+    services = {
+    
+      emacs = {
+        description = "Emacs: the extensible, self-documenting text editor";
 
+        serviceConfig = {
+          Type      = "forking";
+          ExecStart = "${pkgs.emacs}/bin/emacs --daemon";
+          ExecStop  = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
+          Restart   = "always";
+        };
 
-    serviceConfig               = {
-      Type      = "forking";
-      ExecStart = "${pkgs.emacs}/bin/emacs --daemon";
-      ExecStop  = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
-      Restart   = "always";
+	path = [ pkgs.chromium pkgs.xdg_utils ];
+
+        # I want the emacs service to be started with the rest of the user services
+        wantedBy = [ "default.target" ];
+
+        environment = {
+          # Give Emacs a chance to use gnome keyring for the ssh-agent
+          SSH_AUTH_SOCK   = "%t/keyring/ssh";
+
+          # Some variables for GTK applications I will launch from Emacs
+          # (typically evince and the gnome-terminal)
+          GTK_DATA_PREFIX = config.system.path;
+          GTK_PATH        = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
+        };
+      };
+
+      mbsync = {
+        description = "Mailbox syncronization";
+
+	serviceConfig = {
+	  Type      = "oneshot";
+	  ExecStart = "${pkgs.isync}/bin/mbsync -a";
+	};
+
+	path = [ pkgs.gawk ];
+	
+	after       = [ "network-online.target" ];
+        wantedBy    = [ "default.target" ];
+      };
+      
     };
 
-    # I want the emacs service to be started with the rest of the user services
-    wantedBy = [ "default.target" ];
-
-    # Annoyingly, systemd doesn't pass any environment variable to its
-    # services. Below, I set some variables that I missed.
-    # environment = {
-      # Give Emacs a chance to use gnome keyring for the ssh-agent
-      # SSH_AUTH_SOCK   = "%t/keyring/ssh";
-
-      # Some variables for GTK applications I will launch from Emacs
-      # (typically evince and the gnome-terminal)
-      # GTK_DATA_PREFIX = config.system.path;
-      # GTK_PATH        = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
-
-      # Make sure aspell will find its dictionaries
-      # ASPELL_CONF     = "dict-dir /run/current-system/sw/lib/aspell";
-
-      # Make sure locate will find its database
-      # LOCATE_PATH     = "/var/cache/locatedb";
-    # };
+    timers = {
+      mbsync = {
+        description = "Mailbox syncronization";
+      
+        timerConfig = {
+          OnCalendar = "*:0/5";
+          Persistent = "true";
+        };
+        wantedBy = [ "timers.target" ];
+      };
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
