@@ -1,0 +1,24 @@
+IMAPAccount gmail
+Host imap.gmail.com
+User nkt.frlv@gmail.com
+PassCmd "gpg2 --no-tty -qd ~/.authinfo.gpg | awk '/machine smtp.gmail.com login nkt.frlv@gmail.com/ {print $NF}'"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+# The trailing "/" is important
+Path ~/Mail/
+Inbox ~/Mail/Inbox
+
+Channel gmail
+Master :gmail-remote:
+Slave :gmail-local:
+# Exclude everything under the internal [Gmail] folder, except the interesting folders
+Patterns * ![Gmail]* "[Gmail]/Sent Mail" "[Gmail]/Drafts" [Gmail]/Trash "[Gmail]/Starred" "[Gmail]/All Mail"
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Save the synchronization state files in the relevant directory
+SyncState *

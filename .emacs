@@ -223,6 +223,7 @@
    (quote
     (("\"/Inbox\"" . 105)
      ("/[Gmail]/.Sent Mail" . 115)
+     ("/[Gmail]/.Starred" . 43)
      ("/[Gmail]/.Trash" . 116)
      ("/[Gmail]/.All Mail" . 97))))
  '(mu4e-maildirs-extension-use-bookmarks t)
@@ -230,7 +231,6 @@
  '(mu4e-sent-messages-behavior (quote delete))
  '(mu4e-trash-folder "/[Gmail]/.Trash")
  '(mu4e-user-mail-address-list (quote ("nf@mkmks.org" "frolov@chalmers.se")))
- '(mu4e-view-prefer-html t)
  '(mu4e-view-show-images t)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)

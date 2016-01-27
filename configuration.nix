@@ -218,19 +218,16 @@ with pkgs.lib;
           Restart   = "always";
         };
 
-	path = [ pkgs.chromium pkgs.xdg_utils ];
+	path = [ pkgs.chromium pkgs.gnupg pkgs.xdg_utils ];
 
         # I want the emacs service to be started with the rest of the user services
         wantedBy = [ "default.target" ];
 
         environment = {
-          # Give Emacs a chance to use gnome keyring for the ssh-agent
-          SSH_AUTH_SOCK   = "%t/keyring/ssh";
-
-          # Some variables for GTK applications I will launch from Emacs
-          # (typically evince and the gnome-terminal)
+          SSH_AUTH_SOCK  = "%t/keyring/ssh";
+	  GPG_AGENT_INFO = "%t/keyring/gpg:0:1";
           GTK_DATA_PREFIX = config.system.path;
-          GTK_PATH        = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
+          GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
         };
       };
 
@@ -242,7 +239,11 @@ with pkgs.lib;
 	  ExecStart = "${pkgs.isync}/bin/mbsync -a";
 	};
 
-	path = [ pkgs.gawk ];
+	path = [ pkgs.gawk pkgs.gnupg ];
+
+	environment = {
+	  GPG_AGENT_INFO = "%t/keyring/gpg:0:1";
+	};
 	
 	after       = [ "network-online.target" ];
         wantedBy    = [ "default.target" ];
