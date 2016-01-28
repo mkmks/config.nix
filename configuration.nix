@@ -222,7 +222,7 @@ with pkgs.lib;
           Restart   = "always";
         };
 
-	path = [ pkgs.chromium pkgs.git pkgs.gnupg pkgs.xdg_utils ];
+	path = [ pkgs.chromium pkgs.git pkgs.gnupg pkgs.silver-searcher pkgs.xdg_utils ];
 
         # I want the emacs service to be started with the rest of the user services
         wantedBy = [ "default.target" ];

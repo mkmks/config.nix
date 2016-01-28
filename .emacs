@@ -44,6 +44,10 @@
 
 (mu4e-maildirs-extension)
 
+(add-hook 'rcirc-mode-hook
+          (lambda ()
+            (load-file "~/.rcirc-authinfo.el.gpg")))
+
 (require 'projectile)
 (require 'helm-projectile)
 (projectile-global-mode)
@@ -99,9 +103,6 @@
 (require 'server)
 (unless (server-running-p)
   (server-start))
-
-(load-file "~/.rcirc-authinfo.el.gpg")
-(rcirc nil)
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -197,9 +198,9 @@
  '(mu4e-bookmarks
    (quote
     (("flag:unread AND NOT flag:trashed AND NOT flag:list AND NOT maildir:\"/[Gmail]/.All Mail\"" "Unread messages" 117)
-     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:\"/[Gmail]/.All Mail\" " "Unread mailing lists" 108)
-     ("date:today..now AND maildir:\"/[Gmail]/.All Mail\"" "Today's messages" 116)
-     ("date:7d..now AND maildir:\"/[Gmail]/.All Mail\"" "Last 7 days" 119)
+     ("flag:unread AND flag:list AND NOT flag:trashed" "Unread mailing lists" 108)
+     ("date:today..now" "Today's messages" 116)
+     ("date:7d..now" "Last 7 days" 119)
      ("mime:image/*" "Messages with images" 112))))
  '(mu4e-change-filenames-when-moving t)
  '(mu4e-compose-complete-only-personal t)
@@ -214,6 +215,7 @@
      (:mailing-list . 10)
      (:from . 22)
      (:subject))))
+ '(mu4e-headers-skip-duplicates t)
  '(mu4e-maildir "/home/viv/Mail")
  '(mu4e-maildir-shortcuts
    (quote
@@ -239,7 +241,9 @@
  '(projectile-globally-ignored-modes
    (quote
     ("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "rcirc-mode" "mu4e-.*-mode")))
+ '(rcirc-default-nick "mkmks")
  '(rcirc-log-flag nil)
+ '(rcirc-server-alist (quote (("localhost"))))
  '(rcirc-time-format "%H:%M:%S")
  '(rcirc-track-minor-mode t)
  '(recentf-mode t)
@@ -260,6 +264,7 @@
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote url))
+ '(url-queue-timeout 30)
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
  '(vhdl-upper-case-attributes t)
