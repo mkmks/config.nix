@@ -21,8 +21,15 @@
 (require 'nix-mode)
 (require 'llvm-mode)
 
+(require 'sane-term)
+(global-set-key (kbd "C-x t") 'sane-term)
+(global-set-key (kbd "C-x T") 'sane-term-create)
+
 (require 'mu4e)
 (require 'mu4e-maildirs-extension)
+
+(global-set-key (kbd "C-x m") 'mu4e)
+(global-set-key (kbd "C-x w") 'elfeed)
 
 (add-hook 'mu4e-compose-pre-hook
   (defun my-set-from-address ()
@@ -36,6 +43,10 @@
 	    (t "nf@mkmks.org")))))))
 
 (mu4e-maildirs-extension)
+
+(require 'projectile)
+(require 'helm-projectile)
+(projectile-global-mode)
 
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
@@ -66,21 +77,12 @@
 
 (require 'helm-ghc)
 
-;; keybindings
+;; just before we are ready
 
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x C-g") 'helm-ag)
-(global-unset-key (kbd "s-q"))
-
-; workaround for Terminal.app
-(define-key key-translation-map [(control c) (.)] [(control c) (control .)])
-(define-key key-translation-map [(control c) (\,)] [(control c) (control \,)])
-(define-key key-translation-map [(control c) (=)] [(control c) (control =)])
-(define-key key-translation-map [(control c) (\?)] [(control c) (control \?)])
-
-;; minor
 
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
@@ -93,13 +95,13 @@
 ;; save backups of tramp edits in the same place as other backups
 (setq tramp-backup-directory-alist backup-directory-alist)
 
-;; just before we are ready
-
-;(unicode-fonts-setup)
 (elscreen-start)
 (require 'server)
 (unless (server-running-p)
   (server-start))
+
+(load-file "~/.rcirc-authinfo.el.gpg")
+(rcirc nil)
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -138,6 +140,10 @@
  '(display-time-load-average-threshold 1.0)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
+ '(elfeed-enclosure-default-dir "/home/viv/Downloads")
+ '(elfeed-feeds
+   (quote
+    ("https://pigworker.wordpress.com/feed/" "http://officialandroid.blogspot.com/feeds/posts/default" "http://bartoszmilewski.com/feed/" "http://code.facebook.com/posts/rss" "http://gmailblog.blogspot.com/atom.xml" "http://newsroom.fb.com/feed/" "https://existentialtype.wordpress.com/feed/" "http://googleresearch.blogspot.com/atom.xml" "http://semantic-domain.blogspot.com/feeds/posts/default" "http://googleblog.blogspot.com/atom.xml" "http://math.andrej.com/feed/" "http://research.facebook.com/blog/rss" "http://researchblogs.cs.bham.ac.uk/thelablunch/feed/" "http://feeds.feedburner.com/ezyang" "http://www.jonmsterling.com/rss.xml" "http://sorhed.livejournal.com/data/rss" "http://users.livejournal.com/_devol_/data/rss" "http://bohemicus.livejournal.com/data/rss" "http://salery.livejournal.com/data/rss" "http://akuklev.livejournal.com/data/rss" "http://resfed.com/feed" "http://krylov.livejournal.com/data/rss" "http://asterrot.livejournal.com/data/rss" "http://galkovsky.livejournal.com/data/rss" "http://arbat.livejournal.com/data/rss" "http://tttkkk.livejournal.com/data/rss")))
  '(elscreen-persist-mode t)
  '(epg-gpg-program "gpg2")
  '(fill-column 80)
@@ -147,11 +153,10 @@
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
  '(haskell-literate-default (quote bird))
- '(helm-mode t)
- '(ibuffer-mode-hook
+ '(helm-boring-buffer-regexp-list
    (quote
-    ((lambda nil "Always bring up a pretty buffer list."
-       (ibuffer-switch-to-saved-filter-groups "default")))))
+    ("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*GNU Emacs" "\\*Messages" "\\*Completions" "\\*Quail Completions" "\\*fsm-debug" "\\*Help" "\\*Apropos")))
+ '(helm-mode t)
  '(ibuffer-never-show-predicates
    (quote
     ("*GNU Emacs*" "*scratch*" "*Messages*" "*Completions*" "*Quail Completions*" "*fsm-debug*" "*Notmuch errors*" "*Help*" "*Apropos*" "*-jabber-roster-*" "*Mingus")) nil (ibuf-ext))
@@ -162,12 +167,6 @@
        (or
 	(mode . term-mode)
 	(mode . shell-mode)))
-      ("IM"
-       (or
-	(mode . jabber-roster-mode)
-	(mode . jabber-chat-mode)
-	(mode . erc-mode)
-	(mode . rcirc-mode)))
       ("Mail"
        (or
 	(mode . message-mode)
@@ -175,24 +174,21 @@
 	(mode . mu4e-main-mode)
 	(mode . mu4e-headers-mode)
 	(mode . mu4e-view-mode)))
+      ("Chats"
+       (mode . rcirc-mode))
       ("Org"
        (mode . org-mode))
       ("Texts"
        (or
 	(filename . ".*.tex$")
-	(filename . ".*.md$")))
-      ("Project-Bau"
-       (filename . "src/flexsoc/flexTools/flexCompLLVM/"))
-      ("Project-llvm-hs"
-       (filename . "src/llvm-hs/"))))))
- '(ibuffer-show-empty-filter-groups nil)
+	(filename . ".*.md$")))))))
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
  '(mail-user-agent (quote mu4e-user-agent))
  '(make-backup-files nil)
  '(menu-bar-mode nil)
- '(message-auto-save-directory "~/.emacs.d/message/drafts/")
+ '(message-auto-save-directory nil)
  '(message-directory "~/.emacs.d/message/")
  '(message-kill-buffer-on-exit t)
  '(message-send-mail-function (quote smtpmail-send-it))
@@ -238,16 +234,14 @@
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
+ '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
- '(rcirc-default-nick "mkmks")
- '(rcirc-log-flag nil)
- '(rcirc-server-alist
+ '(projectile-globally-ignored-modes
    (quote
-    (("localhost" :channels
-      ("#twitter_mkmks"))
-     ("irc.freenode.net" :channels
-      ("#agda" "#haskell" "##hott")))))
+    ("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "rcirc-mode" "mu4e-.*-mode")))
+ '(rcirc-log-flag nil)
  '(rcirc-time-format "%H:%M:%S")
+ '(rcirc-track-minor-mode t)
  '(recentf-mode t)
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
@@ -284,5 +278,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "Inconsolata"))))
+ '(elfeed-search-feed-face ((t (:foreground "#6c1f1c" :family "DejaVu Sans Mono"))))
+ '(elfeed-search-title-face ((t (:foreground "#000" :family "DejaVu Sans Mono"))))
  '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
  '(show-paren-match ((t (:background "moccasin")))))

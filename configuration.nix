@@ -136,11 +136,15 @@ with pkgs.lib;
   };
 
   programs.bash.enableCompletion = true;
+
+  programs.ssh.startAgent = false;
   
   # List services that you want to enable:
 
   services = {
 
+    bitlbee.enable = true;
+  
     btsync = {
       enable = true;
       enableWebUI = true;
@@ -218,7 +222,7 @@ with pkgs.lib;
           Restart   = "always";
         };
 
-	path = [ pkgs.chromium pkgs.gnupg pkgs.xdg_utils ];
+	path = [ pkgs.chromium pkgs.git pkgs.gnupg pkgs.xdg_utils ];
 
         # I want the emacs service to be started with the rest of the user services
         wantedBy = [ "default.target" ];
