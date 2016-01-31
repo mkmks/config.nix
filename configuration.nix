@@ -79,7 +79,6 @@ with pkgs.lib;
     gnupg
     gnuplot
     graphviz
-    htop
     imagemagick
     isync
     mpc_cli
@@ -129,7 +128,6 @@ with pkgs.lib;
   
   fonts = {
     fonts = with pkgs; [
-      inconsolata
       kochi-substitute
       wqy_zenhei
     ];

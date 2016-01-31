@@ -29,7 +29,6 @@
 (require 'mu4e-maildirs-extension)
 
 (global-set-key (kbd "C-x m") 'mu4e)
-(global-set-key (kbd "C-x w") 'elfeed)
 
 (add-hook 'mu4e-compose-pre-hook
   (defun my-set-from-address ()
@@ -141,15 +140,12 @@
  '(display-time-load-average-threshold 1.0)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
- '(elfeed-enclosure-default-dir "/home/viv/Downloads")
- '(elfeed-feeds
-   (quote
-    ("https://pigworker.wordpress.com/feed/" "http://officialandroid.blogspot.com/feeds/posts/default" "http://bartoszmilewski.com/feed/" "http://code.facebook.com/posts/rss" "http://gmailblog.blogspot.com/atom.xml" "http://newsroom.fb.com/feed/" "https://existentialtype.wordpress.com/feed/" "http://googleresearch.blogspot.com/atom.xml" "http://semantic-domain.blogspot.com/feeds/posts/default" "http://googleblog.blogspot.com/atom.xml" "http://math.andrej.com/feed/" "http://research.facebook.com/blog/rss" "http://researchblogs.cs.bham.ac.uk/thelablunch/feed/" "http://feeds.feedburner.com/ezyang" "http://www.jonmsterling.com/rss.xml" "http://sorhed.livejournal.com/data/rss" "http://users.livejournal.com/_devol_/data/rss" "http://bohemicus.livejournal.com/data/rss" "http://salery.livejournal.com/data/rss" "http://akuklev.livejournal.com/data/rss" "http://resfed.com/feed" "http://krylov.livejournal.com/data/rss" "http://asterrot.livejournal.com/data/rss" "http://galkovsky.livejournal.com/data/rss" "http://arbat.livejournal.com/data/rss" "http://tttkkk.livejournal.com/data/rss")))
  '(elscreen-persist-mode t)
  '(epg-gpg-program "gpg2")
  '(fill-column 80)
  '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
+ '(gnus-select-method (quote (nntp "news.gwene.org")))
  '(haskell-doc-show-global-types t)
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
@@ -193,7 +189,7 @@
  '(message-directory "~/.emacs.d/message/")
  '(message-kill-buffer-on-exit t)
  '(message-send-mail-function (quote smtpmail-send-it))
- '(mm-text-html-renderer nil)
+ '(mm-text-html-renderer (quote shr))
  '(mu4e-attachment-dir "/home/viv/Downloads")
  '(mu4e-bookmarks
    (quote
@@ -232,6 +228,15 @@
  '(mu4e-view-show-images t)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
+ '(org-agenda-files (quote ("~/Documents/notes")))
+ '(org-capture-templates
+   (quote
+    (("n" "Something I thought or heard" entry
+      (file "")
+      "" :prepend t))))
+ '(org-default-notes-file "~/Documents/notes/journal.org")
+ '(org-directory "~/Documents/notes")
+ '(org-reverse-note-order t)
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
@@ -282,8 +287,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :foundry "unknown" :family "Inconsolata"))))
- '(elfeed-search-feed-face ((t (:foreground "#6c1f1c" :family "DejaVu Sans Mono"))))
- '(elfeed-search-title-face ((t (:foreground "#000" :family "DejaVu Sans Mono"))))
+ '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
  '(show-paren-match ((t (:background "moccasin")))))
