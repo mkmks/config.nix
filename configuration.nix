@@ -54,6 +54,8 @@ with pkgs.lib;
 	    withX = true;
             withGTK3 = true;
 	    withGTK2 = false;
+	    # let Emacs view images
+	    imagemagick = pkgs.imagemagickBig;
           }) (attrs: {
 	    # Emacs daemon is part of user session, use emacsclient
 	    postInstall = attrs.postInstall + ''
@@ -83,6 +85,7 @@ with pkgs.lib;
     isync
     mpc_cli
     mpv
+    mu
     nix-repl
     nmap
     nox
@@ -96,6 +99,7 @@ with pkgs.lib;
     tmux
     tor
     transmission
+    xfig
 
     #haskellPackages.Agda
     #haskellPackages.ghc-mod
@@ -220,7 +224,7 @@ with pkgs.lib;
           Restart   = "always";
         };
 
-	path = [ pkgs.chromium pkgs.git pkgs.gnupg pkgs.silver-searcher pkgs.xdg_utils ];
+        path = [ config.system.path ];
 
         # I want the emacs service to be started with the rest of the user services
         wantedBy = [ "default.target" ];

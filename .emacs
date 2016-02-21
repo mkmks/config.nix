@@ -5,30 +5,24 @@
 		       (expand-file-name "~/") ".nix-profile/bin:"
 		       (getenv "PATH")))
 
+;;; loading packages
 
 (add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp")
+(add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp/mu4e")
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
-(add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
-
-;;; loading packages
 
 (require 'cl)
 (require 'package)
 (package-initialize)
 
-(require 'pretty-mode)
-(require 'tramp)
-(require 'nix-mode)
-(require 'llvm-mode)
-
 (require 'sane-term)
 (global-set-key (kbd "C-x t") 'sane-term)
 (global-set-key (kbd "C-x T") 'sane-term-create)
+(global-set-key (kbd "C-x w") 'eww)
 
+;; mail
 (require 'mu4e)
 (require 'mu4e-maildirs-extension)
-
-(global-set-key (kbd "C-x m") 'mu4e)
 
 (add-hook 'mu4e-compose-pre-hook
   (defun my-set-from-address ()
@@ -42,14 +36,17 @@
 	    (t "nf@mkmks.org")))))))
 
 (mu4e-maildirs-extension)
+(global-set-key (kbd "C-x m") 'mu4e)
 
-(add-hook 'rcirc-mode-hook
-          (lambda ()
-            (load-file "~/.rcirc-authinfo.el.gpg")))
+;; instant messaging
+(load-file "~/.irc-authinfo.el.gpg")
+(require 'erc-services)
+(erc :server "localhost" :port "6667" :nick "mkmks")
 
-(require 'projectile)
-(require 'helm-projectile)
-(projectile-global-mode)
+;; development
+(require 'pretty-mode)
+(require 'nix-mode)
+(require 'llvm-mode)
 
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
@@ -63,30 +60,35 @@
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
 
-(add-hook 'haskell-mode-hook 'haskell-simple-indent-mode)
+(add-hook 'haskell-mode-hook 'haskell-indent-mode)
 (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 (eval-after-load "haskell-mode"
        '(progn
-         (define-key haskell-mode-map (kbd "C-x C-d") nil)
-         (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-         (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
-         (define-key haskell-mode-map (kbd "C-c C-b") 'haskell-interactive-switch)
-         (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
-         (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-         (define-key haskell-mode-map (kbd "C-c M-.") nil)
-         (define-key haskell-mode-map (kbd "C-c C-d") nil)))
+	  (define-key haskell-mode-map (kbd "C-x C-d") nil)
+	  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)	  
+	  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+	  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
+	  (define-key haskell-mode-map (kbd "C-c C-b") 'haskell-interactive-switch)
+	  (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+	  (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+	  (define-key haskell-mode-map (kbd "C-c M-.") nil)
+	  (define-key haskell-mode-map (kbd "C-c C-d") nil)))
+
+;; helm
+(require 'projectile)
+(require 'helm-projectile)
+(projectile-global-mode)
 
 (require 'helm-ghc)
-
-;; just before we are ready
 
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
 (global-set-key (kbd "C-x C-g") 'helm-ag)
 
+;;;; just before we are ready
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
 ;; store all backup and autosave files in the tmp dir
@@ -96,9 +98,9 @@
       `((".*" ,temporary-file-directory t)))
 
 ;; save backups of tramp edits in the same place as other backups
+(require 'tramp)
 (setq tramp-backup-directory-alist backup-directory-alist)
 
-(elscreen-start)
 (require 'server)
 (unless (server-running-p)
   (server-start))
@@ -131,7 +133,7 @@
  '(custom-file nil)
  '(custom-safe-themes
    (quote
-    ("6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
+    ("37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
@@ -140,12 +142,24 @@
  '(display-time-load-average-threshold 1.0)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
- '(elscreen-persist-mode t)
+ '(elscreen-display-screen-number nil)
+ '(elscreen-tab-display-control nil)
+ '(elscreen-tab-display-kill-screen nil)
  '(epg-gpg-program "gpg2")
+ '(erc-enable-logging nil)
+ '(erc-nick "mkmks")
+ '(erc-nickserv-identify-mode (quote nick-change))
+ '(erc-prompt-for-nickserv-password nil)
+ '(erc-server "")
+ '(erc-services-mode t)
+ '(erc-timestamp-format "[%H:%M:%S]")
+ '(erc-timestamp-format-right " [%H:%M:%S]")
+ '(erc-track-enable-keybindings nil)
  '(fill-column 80)
  '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
- '(gnus-select-method (quote (nntp "news.gwene.org")))
+ '(gnus-select-method (quote (nntp "news.gmane.org")))
+ '(gnus-use-full-window nil)
  '(haskell-doc-show-global-types t)
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
@@ -197,18 +211,21 @@
      ("flag:unread AND flag:list AND NOT flag:trashed" "Unread mailing lists" 108)
      ("date:today..now" "Today's messages" 116)
      ("date:7d..now" "Last 7 days" 119)
-     ("mime:image/*" "Messages with images" 112))))
+     ("mime:image/*" "Messages with images" 112)
+     ("flag:attach" "Messages with attachments" 97))))
  '(mu4e-change-filenames-when-moving t)
  '(mu4e-compose-complete-only-personal t)
  '(mu4e-compose-dont-reply-to-self t)
  '(mu4e-compose-signature nil)
  '(mu4e-drafts-folder "/[Gmail]/.Drafts")
+ '(mu4e-get-mail-command "mbsync -a")
  '(mu4e-headers-date-format "%F %R")
  '(mu4e-headers-fields
    (quote
     ((:human-date . 16)
      (:flags . 6)
-     (:mailing-list . 10)
+     (:maildir . 20)
+     (:mailing-list . 20)
      (:from . 22)
      (:subject))))
  '(mu4e-headers-skip-duplicates t)
@@ -250,7 +267,6 @@
  '(rcirc-log-flag nil)
  '(rcirc-server-alist (quote (("localhost"))))
  '(rcirc-time-format "%H:%M:%S")
- '(rcirc-track-minor-mode t)
  '(recentf-mode t)
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
