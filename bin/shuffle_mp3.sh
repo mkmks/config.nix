@@ -1,9 +1,12 @@
 #!/bin/sh
 
-SALT=`ls ./*.mp3 | sha256sum`
+FILES=`ls ./*.mp3
+DATE=`date``
+SEED="$FILES$DATE"
 
 for i in ./*.mp3
 do
-    mv "$i" `echo "$SALT${i%.mp3}" | sha256sum | cut -f 1 -d ' '`.mp3
+    SEED=`echo $SEED | sha256sum | cut -f 1 -d ' '`
+    mv "$i" $SEED.mp3
 done
     
