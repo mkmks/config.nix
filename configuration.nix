@@ -67,8 +67,6 @@ with pkgs.lib;
 
   environment.systemPackages = with pkgs; [
     androidenv.platformTools
-    cabal-install
-    cabal2nix
     coreutils
     coq
     chromium
@@ -76,12 +74,12 @@ with pkgs.lib;
     emacs
     file
     findutils
-    ghc
     git
     gnupg
     gnuplot
     graphviz
     imagemagick
+    inetutils
     isync
     mpc_cli
     mpv
@@ -100,9 +98,6 @@ with pkgs.lib;
     tor
     transmission
     xfig
-
-    #haskellPackages.Agda
-    #haskellPackages.ghc-mod
   ];
 
   environment.gnome3.excludePackages = with pkgs.gnome3; [
