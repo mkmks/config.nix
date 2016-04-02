@@ -155,6 +155,7 @@ with pkgs.lib;
     gnome3 = {
       evolution-data-server.enable = mkForce false;
       gnome-documents.enable = false;
+      gnome-keyring.enable = mkForce false;
       gnome-online-accounts.enable = false;
       gnome-online-miners.enable = false;
       tracker.enable = false;
@@ -166,9 +167,6 @@ with pkgs.lib;
       musicDirectory = "/home/btsync/BitTorrent Sync/Music";
     };
           
-    # Enable the OpenSSH daemon.
-    #openssh.enable = true;
-    
     # Enable CUPS to print documents.
     printing.enable = true;
 
@@ -201,7 +199,10 @@ with pkgs.lib;
       };
 
       displayManager.gdm.enable = true;
-      desktopManager.gnome3.enable = true;
+      desktopManager = {
+        gnome3.enable = true;
+	xterm.enable  = false;
+      };
     };
   };
 
@@ -214,19 +215,35 @@ with pkgs.lib;
 
         serviceConfig = {
           Type      = "forking";
-          ExecStart = "${pkgs.emacs}/bin/emacs --daemon";
+          ExecStart = "${pkgs.bash}/bin/bash -c 'source $HOME/.gpg-agent-info ; export GPG_AGENT_INFO SSH_AUTH_SOCK ; exec ${pkgs.emacs}/bin/emacs --daemon'";
           ExecStop  = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
           Restart   = "always";
         };
 
         path = [ config.system.path ];
 
-        # I want the emacs service to be started with the rest of the user services
+	after    = [ "gpg-agent.service" ];
         wantedBy = [ "default.target" ];
 
         environment = {
-          SSH_AUTH_SOCK  = "%t/keyring/ssh";
-	  GPG_AGENT_INFO = "%t/keyring/gpg:0:1";
+          GTK_DATA_PREFIX = config.system.path;
+          GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
+        };
+      };
+
+
+      gpg-agent = {
+        description = "GnuPG agent";
+
+	serviceConfig = {
+	  Type      = "forking";
+	  ExecStart = "${pkgs.gnupg}/bin/gpg-agent --daemon --enable-ssh-support --write-env-file";
+	  Restart   = "on-abort";
+	};
+
+	wantedBy = [ "default.target" ];
+
+        environment = {
           GTK_DATA_PREFIX = config.system.path;
           GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
         };
@@ -237,16 +254,12 @@ with pkgs.lib;
 
 	serviceConfig = {
 	  Type      = "oneshot";
-	  ExecStart = "${pkgs.isync}/bin/mbsync -a";
+	  ExecStart = "${pkgs.bash}/bin/bash -c 'source $HOME/.gpg-agent-info ; export GPG_AGENT_INFO ; exec ${pkgs.isync}/bin/mbsync -a'";
 	};
 
 	path = [ pkgs.gawk pkgs.gnupg ];
 
-	environment = {
-	  GPG_AGENT_INFO = "%t/keyring/gpg:0:1";
-	};
-	
-	after       = [ "network-online.target" ];
+	after       = [ "network-online.target" "gpg-agent.service" ];
         wantedBy    = [ "default.target" ];
       };
       
@@ -272,6 +285,6 @@ with pkgs.lib;
   # };
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "15.09";
+  system.stateVersion = "16.03";
 
 }
