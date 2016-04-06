@@ -27,7 +27,7 @@ with pkgs.lib;
 
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  # networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true;
   networking.proxy.default = "http://127.0.0.1:8118";
   networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org";
 
@@ -93,7 +93,9 @@ with pkgs.lib;
     p7zip
     silver-searcher
     sloccount
+    slock
     steam
+    texlive.combined.scheme-full
     tmux
     tor
     transmission
@@ -133,14 +135,18 @@ with pkgs.lib;
   };
 
   programs.bash.enableCompletion = true;
-
   programs.ssh.startAgent = false;
-  
+
+  security.setuidPrograms = [ "slock" ];
+    
   # List services that you want to enable:
 
   services = {
 
-    bitlbee.enable = true;
+    bitlbee = {
+      enable = true;
+      plugins = [ pkgs.bitlbee-facebook ];
+    };
   
     btsync = {
       enable = true;
@@ -178,9 +184,9 @@ with pkgs.lib;
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
-      layout = "us";
+      layout = "us,ru";
 
-      # xkbOptions = "eurosign:e";
+      xkbOptions = "ctrl:nocaps,grp:shifts_toggle,compose:rwin";
 
       synaptics = {
         enable = true;
@@ -198,11 +204,18 @@ with pkgs.lib;
         tapButtons = false;
       };
 
-      displayManager.gdm.enable = true;
+      displayManager.gdm.enable = false;
+      displayManager.slim.enable = true;
+      
       desktopManager = {
-        gnome3.enable = true;
+        default = "none";
+        gnome3.enable = false;
 	xterm.enable  = false;
       };
+
+      windowManager.xmonad.enable = true;
+      windowManager.xmonad.enableContribAndExtras = true;
+      windowManager.default = "xmonad";
     };
   };
 

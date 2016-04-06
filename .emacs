@@ -18,7 +18,6 @@
 (require 'sane-term)
 (global-set-key (kbd "C-x t") 'sane-term)
 (global-set-key (kbd "C-x T") 'sane-term-create)
-(global-set-key (kbd "C-x w") 'eww)
 
 ;; mail
 (require 'mu4e)
@@ -39,9 +38,8 @@
 (global-set-key (kbd "C-x m") 'mu4e)
 
 ;; instant messaging
-(load-file "~/.irc-authinfo.el.gpg")
 (require 'erc-services)
-(erc :server "localhost" :port "6667" :nick "mkmks")
+;(erc :server "localhost" :port "6667" :nick "mkmks")
 
 ;; development
 (require 'pretty-mode)
@@ -86,7 +84,6 @@
 (global-set-key (kbd "C-x C-b") 'helm-buffers-list)
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
 (global-set-key (kbd "C-x C-r") 'helm-recentf)
-(global-set-key (kbd "C-x C-g") 'helm-ag)
 
 ;;;; just before we are ready
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
@@ -117,8 +114,13 @@
  '(TeX-PDF-mode t)
  '(TeX-parse-self t)
  '(agda2-fontset-name nil)
+ '(agda2-highlight-level (quote interactive))
+ '(agda2-include-dirs
+   (quote
+    ("." "/home/viv/agda-stdlib/src" "/home/viv/ornaments")) t)
  '(auto-save-default nil)
- '(browse-url-browser-function (quote browse-url-chromium))
+ '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-generic-program "surf")
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -133,7 +135,7 @@
  '(custom-file nil)
  '(custom-safe-themes
    (quote
-    ("37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
+    ("c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "90b7aaddf859ba6b431c252444d29bab98dd687d2f571707ff70efcb1a2e19f6" "404a8e7f198ef3a5babdf122c7905abc61a8cd04eb2a1ce7d6faec5550b02a90" "37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
@@ -150,7 +152,8 @@
  '(erc-nick "mkmks")
  '(erc-nickserv-identify-mode (quote nick-change))
  '(erc-prompt-for-nickserv-password nil)
- '(erc-server "")
+ '(erc-prompt-for-password nil)
+ '(erc-server "localhost")
  '(erc-services-mode t)
  '(erc-timestamp-format "[%H:%M:%S]")
  '(erc-timestamp-format-right " [%H:%M:%S]")
@@ -242,6 +245,7 @@
  '(mu4e-sent-messages-behavior (quote delete))
  '(mu4e-trash-folder "/[Gmail]/.Trash")
  '(mu4e-user-mail-address-list (quote ("nf@mkmks.org" "frolov@chalmers.se")))
+ '(mu4e-view-html-plaintext-ratio-heuristic 30)
  '(mu4e-view-show-images t)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
@@ -285,6 +289,10 @@
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote url))
+ '(url-proxy-services
+   (quote
+    (("http" . "127.0.0.1:8118")
+     ("no_proxy" . "\\(localhost\\|127\\.0\\.0\\.0/8\\|::1\\|rutracker\\.org\\)"))))
  '(url-queue-timeout 30)
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
@@ -303,6 +311,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
+ '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
  '(show-paren-match ((t (:background "moccasin")))))
