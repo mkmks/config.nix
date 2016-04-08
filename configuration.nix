@@ -48,9 +48,7 @@ with pkgs.lib;
     allowUnfree = true;
 
     packageOverrides = pkgs: {
-        # Define my own Emacs
         emacs = pkgs.lib.overrideDerivation (pkgs.emacs.override {
-            # Use gtk3 instead of the default gtk2
 	    withX = true;
             withGTK3 = true;
 	    withGTK2 = false;
@@ -63,6 +61,8 @@ with pkgs.lib;
 	    '';
 	  });
     };
+
+    zathura.useMupdf = false;
   };
 
   environment.systemPackages = with pkgs; [
@@ -74,6 +74,7 @@ with pkgs.lib;
     emacs
     file
     findutils
+    ghostscript
     git
     gnupg
     gnuplot
@@ -99,7 +100,9 @@ with pkgs.lib;
     tmux
     tor
     transmission
+    xorg.xbacklight
     xfig
+    zathura
   ];
 
   environment.gnome3.excludePackages = with pkgs.gnome3; [
@@ -180,7 +183,9 @@ with pkgs.lib;
     privoxy.enableEditActions = true;
 
     telepathy.enable = false;
-    
+
+    udisks2.enable = true;
+        
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
@@ -213,9 +218,11 @@ with pkgs.lib;
 	xterm.enable  = false;
       };
 
-      windowManager.xmonad.enable = true;
-      windowManager.xmonad.enableContribAndExtras = true;
-      windowManager.default = "xmonad";
+      windowManager = {
+        xmonad.enable = true;
+        xmonad.enableContribAndExtras = true;
+        default = "xmonad";
+      };
     };
   };
 
