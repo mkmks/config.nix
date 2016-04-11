@@ -113,13 +113,22 @@
  '(Man-width 80)
  '(TeX-PDF-mode t)
  '(TeX-parse-self t)
+ '(TeX-view-program-selection
+   (quote
+    (((output-dvi has-no-display-manager)
+      "dvi2tty")
+     ((output-dvi style-pstricks)
+      "dvips and gv")
+     (output-dvi "xdvi")
+     (output-pdf "Zathura")
+     (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
  '(agda2-highlight-level (quote interactive))
  '(agda2-include-dirs
    (quote
     ("." "/home/viv/agda-stdlib/src" "/home/viv/ornaments")) t)
  '(auto-save-default nil)
- '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-browser-function (quote browse-url-chromium))
  '(browse-url-generic-program "surf")
  '(c-default-style
    (quote
@@ -137,11 +146,12 @@
    (quote
     ("c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "90b7aaddf859ba6b431c252444d29bab98dd687d2f571707ff70efcb1a2e19f6" "404a8e7f198ef3a5babdf122c7905abc61a8cd04eb2a1ce7d6faec5550b02a90" "37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
+ '(display-battery-mode t)
  '(display-time-24hr-format t)
- '(display-time-day-and-date t)
+ '(display-time-day-and-date nil)
  '(display-time-default-load-average 1)
- '(display-time-format "")
  '(display-time-load-average-threshold 1.0)
+ '(display-time-mode t)
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
  '(elscreen-display-screen-number nil)
@@ -262,6 +272,9 @@
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
+ '(package-selected-packages
+   (quote
+    (sane-term pretty-mode plan9-theme mu4e-maildirs-extension mingus matlab-mode magit log4e llvm-mode linum-relative ibuffer-tramp ibuffer-projectile ht helm-projectile helm-ghc helm-ag elscreen-persist elfeed auctex anti-zenburn-theme ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
@@ -313,4 +326,5 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
- '(show-paren-match ((t (:background "moccasin")))))
+ '(show-paren-match ((t (:background "moccasin"))))
+ '(variable-pitch ((t (:family "Serif")))))

@@ -48,13 +48,16 @@ with pkgs.lib;
     allowUnfree = true;
 
     packageOverrides = pkgs: {
-        emacs = pkgs.lib.overrideDerivation (pkgs.emacs.override {
+        emacs = pkgs.lib.overrideDerivation (pkgs.emacs25pre.override {
 	    withX = true;
             withGTK3 = true;
 	    withGTK2 = false;
 	    # let Emacs view images
 	    imagemagick = pkgs.imagemagickBig;
+	    
           }) (attrs: {
+	    nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.webkitgtk24x ];	  
+	    configureFlags = attrs.configureFlags ++ [ "--with-xwidgets=yes" ];
 	    # Emacs daemon is part of user session, use emacsclient
 	    postInstall = attrs.postInstall + ''
 	      sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
@@ -64,7 +67,13 @@ with pkgs.lib;
 
     zathura.useMupdf = false;
   };
-
+  
+  environment.sessionVariables = {
+    GTK_THEME = "Adwaita";
+    GTK_DATA_PREFIX = "${config.system.path}";
+    GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
+  };
+  
   environment.systemPackages = with pkgs; [
     androidenv.platformTools
     coreutils
@@ -244,11 +253,6 @@ with pkgs.lib;
 
 	after    = [ "gpg-agent.service" ];
         wantedBy = [ "default.target" ];
-
-        environment = {
-          GTK_DATA_PREFIX = config.system.path;
-          GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
-        };
       };
 
 
@@ -257,16 +261,11 @@ with pkgs.lib;
 
 	serviceConfig = {
 	  Type      = "forking";
-	  ExecStart = "${pkgs.gnupg}/bin/gpg-agent --daemon --enable-ssh-support --write-env-file";
+	  ExecStart = "${pkgs.gnupg}/bin/gpg-agent --daemon --enable-ssh-support --write-env-file -q";
 	  Restart   = "on-abort";
 	};
 
 	wantedBy = [ "default.target" ];
-
-        environment = {
-          GTK_DATA_PREFIX = config.system.path;
-          GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
-        };
       };
 
       mbsync = {
@@ -274,10 +273,14 @@ with pkgs.lib;
 
 	serviceConfig = {
 	  Type      = "oneshot";
-	  ExecStart = "${pkgs.bash}/bin/bash -c 'source $HOME/.gpg-agent-info ; export GPG_AGENT_INFO ; exec ${pkgs.isync}/bin/mbsync -a'";
+	  ExecStart = "${pkgs.bash}/bin/bash -c 'source $HOME/.gpg-agent-info ; export GPG_AGENT_INFO ; exec ${pkgs.isync}/bin/mbsync -aq'";
 	};
 
 	path = [ pkgs.gawk pkgs.gnupg ];
+
+	environment = {
+	  DISPLAY = ":0.0";
+	};
 
 	after       = [ "network-online.target" "gpg-agent.service" ];
         wantedBy    = [ "default.target" ];

@@ -17,3 +17,5 @@ if [ -f "${HOME}/.gpg-agent-info" ]; then
 fi
 
 export AWS_CALLING_FORMAT=SUBDOMAIN
+
+if [ $TERM == "st-256color" ]; then export TERM=xterm; fi
