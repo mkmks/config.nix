@@ -18,7 +18,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     [ ((modm,               xK_q     ), spawn $ XMonad.terminal conf)
     --, ((modm,               xK_w     ), spawn "dmenu </dev/null | xargs -0 surf")
-    , ((modm,               xK_w     ), spawn "chromium")
+    , ((modm,               xK_w     ), spawn "firefox")
     , ((modm,               xK_e     ), spawn "emacsclient -c")
     , ((modm,               xK_z     ), spawn "slock")
     , ((modm,               xK_x     ), spawn "dmenu_run")

@@ -22,14 +22,20 @@ with pkgs.lib;
       preLVM = true; }
   ];
 
+  hardware.bluetooth.enable = true;
   hardware.opengl.driSupport32Bit = true;
-  hardware.pulseaudio.support32Bit = true;
+  
+  hardware.pulseaudio = {
+    enable = true;
+    package = pkgs.pulseaudioFull;
+    support32Bit = true;
+  };
 
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
-  networking.proxy.default = "http://127.0.0.1:8118";
-  networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org";
+  #networking.proxy.default = "http://127.0.0.1:8118";
+  #networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
 
   # Select internationalisation properties.
   # i18n = {
@@ -47,6 +53,9 @@ with pkgs.lib;
   
     allowUnfree = true;
 
+#    firefox.enableGTK3 = true;
+#    firefox.enableOffdicialBranding = true;
+    
     packageOverrides = pkgs: {
         emacs = pkgs.lib.overrideDerivation (pkgs.emacs25pre.override {
 	    withX = true;
@@ -63,6 +72,19 @@ with pkgs.lib;
 	      sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
 	    '';
 	  });
+  
+	yi = pkgs.yi.override {
+      	  haskellPackages = pkgs.haskell.packages.ghc7101;
+          extraPackages = p: with p; [  ];
+        };
+
+	# bittorrentSync20 = pkgs.lib.overrideDerivation pkgs.bittorrentSync20 (attrs: {
+	#   version = "2.3.6";
+	#   src = pkgs.fetchurl {
+	#     url = "https://download-cdn.getsync.com/stable/linux-x64/BitTorrent-Sync_x64.tar.gz";
+	#     sha256 = "01yrligi61gxcixh7z6gi427ga0sx97wnmkv08p9ykd4b90hvj7s";
+	#   };
+	# });
     };
 
     zathura.useMupdf = false;
@@ -78,11 +100,12 @@ with pkgs.lib;
     androidenv.platformTools
     coreutils
     coq
-    chromium
     djvulibre
+    dvtm
     emacs
     file
     findutils
+    firefox-bin
     ghostscript
     git
     gnupg
@@ -104,6 +127,7 @@ with pkgs.lib;
     silver-searcher
     sloccount
     slock
+    st
     steam
     texlive.combined.scheme-full
     tmux
@@ -184,12 +208,15 @@ with pkgs.lib;
       group = "btsync";
       musicDirectory = "/home/btsync/BitTorrent Sync/Music";
     };
-          
-    # Enable CUPS to print documents.
+
+    openssh.enable = false;
     printing.enable = true;
 
-    privoxy.enable = true;
-    privoxy.enableEditActions = true;
+    privoxy = {
+      enable = true;
+      enableEditActions = true;
+      actionsFiles = [ "match-all.action" "default.action" "/etc/privoxy/user.action" ];
+    };
 
     telepathy.enable = false;
 
@@ -244,7 +271,7 @@ with pkgs.lib;
 
         serviceConfig = {
           Type      = "forking";
-          ExecStart = "${pkgs.bash}/bin/bash -c 'source $HOME/.gpg-agent-info ; export GPG_AGENT_INFO SSH_AUTH_SOCK ; exec ${pkgs.emacs}/bin/emacs --daemon'";
+          ExecStart = "${pkgs.emacs}/bin/emacs --daemon";
           ExecStop  = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
           Restart   = "always";
         };
@@ -261,7 +288,7 @@ with pkgs.lib;
 
 	serviceConfig = {
 	  Type      = "forking";
-	  ExecStart = "${pkgs.gnupg}/bin/gpg-agent --daemon --enable-ssh-support --write-env-file -q";
+	  ExecStart = "${pkgs.bash}/bin/bash -c 'eval `${pkgs.gnupg}/bin/gpg-agent -q  --daemon --enable-ssh-support --write-env-file` ; systemctl --user import-environment GPG_AGENT_INFO SSH_AUTH_SOCK'";
 	  Restart   = "on-abort";
 	};
 
@@ -273,14 +300,14 @@ with pkgs.lib;
 
 	serviceConfig = {
 	  Type      = "oneshot";
-	  ExecStart = "${pkgs.bash}/bin/bash -c 'source $HOME/.gpg-agent-info ; export GPG_AGENT_INFO ; exec ${pkgs.isync}/bin/mbsync -aq'";
+	  ExecStart = "${pkgs.isync}/bin/mbsync -aq";
 	};
 
 	path = [ pkgs.gawk pkgs.gnupg ];
 
-	environment = {
-	  DISPLAY = ":0.0";
-	};
+	# environment = {
+	#   DISPLAY = ":0.0";
+	# };
 
 	after       = [ "network-online.target" "gpg-agent.service" ];
         wantedBy    = [ "default.target" ];
