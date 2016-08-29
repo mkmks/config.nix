@@ -14,8 +14,9 @@ if [ -f "${HOME}/.gpg-agent-info" ]; then
     . "${HOME}/.gpg-agent-info"
     export GPG_AGENT_INFO
     export SSH_AUTH_SOCK
+    gpg-connect-agent -q updatestartuptty /bye
 fi
 
 export AWS_CALLING_FORMAT=SUBDOMAIN
 
-if [ $TERM == "st-256color" ]; then export TERM=xterm; fi
+if [[ $TERM == "st-256color" || $TERM == "dvtm-256color" ]]; then export TERM=ansi; fi
