@@ -124,7 +124,7 @@
  '(agda2-highlight-level (quote interactive))
  '(agda2-program-name "~/.cabal/bin/agda")
  '(auto-save-default nil)
- '(browse-url-browser-function (quote browse-url-chromium))
+ '(browse-url-browser-function (quote browse-url-firefox))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -217,12 +217,12 @@
  '(mu4e-attachment-dir "/home/viv/Downloads")
  '(mu4e-bookmarks
    (quote
-    (("flag:unread AND NOT flag:trashed AND NOT flag:list AND NOT maildir:\"/[Gmail]/.All Mail\"" "Unread messages" 117)
-     ("flag:unread AND flag:list AND NOT flag:trashed" "Unread mailing lists" 108)
-     ("date:today..now" "Today's messages" 116)
-     ("date:7d..now" "Last 7 days" 119)
-     ("mime:image/*" "Messages with images" 112)
-     ("flag:attach" "Messages with attachments" 97))))
+    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:/Spam" "Unread messages" 117)
+     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:/Spam" "Unread mailing lists" 108)
+     ("date:today..now AND NOT maildir:/Spam" "Today's messages" 116)
+     ("date:7d..now AND NOT maildir:/Spam" "Last 7 days" 119)
+     ("mime:image/* AND NOT maildir:/Spam" "Messages with images" 112)
+     ("flag:attach AND NOT maildir:/Spam" "Messages with attachments" 97))))
  '(mu4e-change-filenames-when-moving t)
  '(mu4e-compose-complete-only-personal t)
  '(mu4e-compose-dont-reply-to-self t)
@@ -248,7 +248,7 @@
  '(mu4e-maildirs-extension-use-bookmarks t)
  '(mu4e-refile-folder "/Archive")
  '(mu4e-sent-folder "/Sent")
- '(mu4e-sent-messages-behavior (quote delete))
+ '(mu4e-sent-messages-behavior (quote sent))
  '(mu4e-trash-folder "/Trash")
  '(mu4e-user-mail-address-list (quote ("nf@mkmks.org" "frolov@chalmers.se")))
  '(mu4e-view-html-plaintext-ratio-heuristic 30)
@@ -284,10 +284,11 @@
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
  '(size-indication-mode t)
- '(smtpmail-default-smtp-server "smtp.gmail.com")
- '(smtpmail-smtp-server "smtp.gmail.com")
- '(smtpmail-smtp-service 587)
- '(smtpmail-stream-type (quote starttls))
+ '(smtpmail-default-smtp-server "smtp.fastmail.com")
+ '(smtpmail-smtp-server "smtp.fastmail.com")
+ '(smtpmail-smtp-service 465)
+ '(smtpmail-smtp-user "nf@mkmks.org")
+ '(smtpmail-stream-type (quote ssl))
  '(term-bind-key-alist
    (quote
     (("C-c C-c" . term-interrupt-subjob)
