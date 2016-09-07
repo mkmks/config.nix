@@ -33,7 +33,11 @@ with pkgs.lib;
 
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;
+  networking = {
+    firewall.allowedTCPPorts = [ 22000 ];
+    firewall.allowedUDPPorts = [ 21027 ];
+    networkmanager.enable = true;
+  };
   #networking.proxy.default = "http://127.0.0.1:8118";
   #networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
 
@@ -53,10 +57,8 @@ with pkgs.lib;
   
     allowUnfree = true;
 
-#    firefox.enableGTK3 = true;
-#    firefox.enableOffdicialBranding = true;
-    
     packageOverrides = pkgs: {
+    
         emacs = pkgs.lib.overrideDerivation (pkgs.emacs25pre.override {
 	    withX = true;
             withGTK3 = true;
@@ -72,7 +74,12 @@ with pkgs.lib;
 	      sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
 	    '';
 	  });
-  
+
+	firefox = (pkgs.wrapFirefox (pkgs.firefox-unwrapped.override {
+	    enableGTK3 = true;
+	    enableOfficialBranding = true;
+	  }) {});
+	    
 	yi = pkgs.yi.override {
       	  haskellPackages = pkgs.haskell.packages.ghc7101;
           extraPackages = p: with p; [  ];
@@ -105,7 +112,7 @@ with pkgs.lib;
     emacs
     file
     findutils
-    firefox-bin
+    firefox
     ghostscript
     git
     gnupg
@@ -180,12 +187,12 @@ with pkgs.lib;
   services = {
 
     bitlbee = {
-      enable = true;
+      enable = false;
       plugins = [ pkgs.bitlbee-facebook ];
     };
   
     btsync = {
-      enable = true;
+      enable = false;
       enableWebUI = true;
       httpListenAddr = "127.0.0.1";
       storagePath = "/home/btsync";
@@ -205,19 +212,25 @@ with pkgs.lib;
 
     mpd = {
       enable = true;
-      group = "btsync";
-      musicDirectory = "/home/btsync/BitTorrent Sync/Music";
+      group = "users";
+      musicDirectory = "/home/viv/Music";
     };
 
     openssh.enable = false;
     printing.enable = true;
 
     privoxy = {
-      enable = true;
+      enable = false;
       enableEditActions = true;
       actionsFiles = [ "match-all.action" "default.action" "/etc/privoxy/user.action" ];
     };
 
+    syncthing = {
+      enable = true;
+      dataDir = "/home/viv/.syncthing";
+      user = "viv";
+    };
+    
     telepathy.enable = false;
 
     udisks2.enable = true;
