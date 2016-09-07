@@ -217,8 +217,8 @@
  '(mu4e-attachment-dir "/home/viv/Downloads")
  '(mu4e-bookmarks
    (quote
-    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:/Spam" "Unread messages" 117)
-     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:/Spam" "Unread mailing lists" 108)
+    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:/Archive AND NOT maildir:/Spam" "Unread new messages" 117)
+     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:/Archive AND NOT maildir:/Spam" "Unread mailing lists" 108)
      ("date:today..now AND NOT maildir:/Spam" "Today's messages" 116)
      ("date:7d..now AND NOT maildir:/Spam" "Last 7 days" 119)
      ("mime:image/* AND NOT maildir:/Spam" "Messages with images" 112)
