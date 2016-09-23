@@ -9,6 +9,7 @@ alias scpresume="rsync --partial --progress --rsh=ssh"
 alias tmux="tmux attach || tmux new"
 alias e="emacsclient -t "
 alias ec="emacsclient -c -n "
+alias feh="feh -.d"
 
 if [ -f "${HOME}/.gpg-agent-info" ]; then
     . "${HOME}/.gpg-agent-info"

@@ -121,6 +121,7 @@ with pkgs.lib;
     imagemagick
     inetutils
     isync
+    mc
     mpc_cli
     mpv
     mu
