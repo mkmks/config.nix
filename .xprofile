@@ -1,9 +1,8 @@
 xsetroot -bg black
 xsetroot -cursor_name left_ptr
 
-if [ -f "${HOME}/.gpg-agent-info" ]; then
-  . "${HOME}/.gpg-agent-info"
-  export GPG_AGENT_INFO
-  export SSH_AUTH_SOCK
-  gpg-connect-agent -q updatestartuptty /bye
+if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]; then
+#    export GPG_AGENT_INFO="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent"
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"
+    gpg-connect-agent -q updatestartuptty /bye
 fi

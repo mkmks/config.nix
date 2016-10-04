@@ -6,6 +6,10 @@
 		       (expand-file-name "~/") ".cabal/bin:"
 		       (expand-file-name "~/") ".nix-profile/bin:"
 		       (getenv "PATH")))
+;; (setenv "GPG_AGENT_INFO" (concat (getenv "XDG_RUNTIME_DIR")
+;; 				 "/gnupg/S.gpg-agent"))
+(setenv "SSH_AUTH_SOCK"  (concat (getenv "XDG_RUNTIME_DIR")
+				 "/gnupg/S.gpg-agent.ssh"))
 
 ;;; loading packages
 
@@ -122,7 +126,6 @@
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
  '(agda2-highlight-level (quote interactive))
- '(agda2-program-name "~/.cabal/bin/agda")
  '(auto-save-default nil)
  '(browse-url-browser-function (quote browse-url-firefox))
  '(c-default-style

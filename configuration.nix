@@ -12,8 +12,7 @@ with pkgs.lib;
       ./hardware-configuration.nix
     ];
 
-  # Use the gummiboot efi boot loader.
-  boot.loader.gummiboot.enable = true;
+  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.luks.devices = [
@@ -59,118 +58,127 @@ with pkgs.lib;
 
     packageOverrides = pkgs: {
     
-        emacs = pkgs.lib.overrideDerivation (pkgs.emacs25pre.override {
-	    withX = true;
-            withGTK3 = true;
-	    withGTK2 = false;
-	    # let Emacs view images
-	    imagemagick = pkgs.imagemagickBig;
+        # emacs = pkgs.lib.overrideDerivation (pkgs.emacs25.override {
+	#     withX = true;
+        #     withGTK3 = true;
+	#     withGTK2 = false;
+	#     # let Emacs view images
+	#     imagemagick = pkgs.imagemagickBig;
 	    
-          }) (attrs: {
-	    nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.webkitgtk24x ];	  
-	    configureFlags = attrs.configureFlags ++ [ "--with-xwidgets=yes" ];
-	    # Emacs daemon is part of user session, use emacsclient
-	    postInstall = attrs.postInstall + ''
-	      sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
-	    '';
-	  });
+        #   }) (attrs: {
+	#     nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.webkitgtk24x ];	  
+	#     configureFlags = attrs.configureFlags ++ [ "--with-xwidgets=yes" ];
+	#     # Emacs daemon is part of user session, use emacsclient
+	#     postInstall = attrs.postInstall + ''
+	#       sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
+	#     '';
+	#   });
 
-	firefox = (pkgs.wrapFirefox (pkgs.firefox-unwrapped.override {
-	    enableGTK3 = true;
-	    enableOfficialBranding = true;
-	  }) {});
-	    
 	yi = pkgs.yi.override {
       	  haskellPackages = pkgs.haskell.packages.ghc7101;
           extraPackages = p: with p; [  ];
         };
-
-	# bittorrentSync20 = pkgs.lib.overrideDerivation pkgs.bittorrentSync20 (attrs: {
-	#   version = "2.3.6";
-	#   src = pkgs.fetchurl {
-	#     url = "https://download-cdn.getsync.com/stable/linux-x64/BitTorrent-Sync_x64.tar.gz";
-	#     sha256 = "01yrligi61gxcixh7z6gi427ga0sx97wnmkv08p9ykd4b90hvj7s";
-	#   };
-	# });
     };
 
     zathura.useMupdf = false;
   };
   
-  environment.sessionVariables = {
-    GTK_THEME = "Adwaita";
-    GTK_DATA_PREFIX = "${config.system.path}";
-    GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
-  };
+  environment = {
+    sessionVariables = {
+      GTK_THEME = "Adwaita";
+      GTK_DATA_PREFIX = "${config.system.path}";
+      GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
+    };
   
-  environment.systemPackages = with pkgs; [
-    androidenv.platformTools
-    coreutils
-    coq
-    djvulibre
-    dvtm
-    emacs
-    file
-    findutils
-    firefox
-    ghostscript
-    git
-    gnupg
-    gnuplot
-    graphviz
-    imagemagick
-    inetutils
-    isync
-    mc
-    mpc_cli
-    mpv
-    mu
-    nix-repl
-    nmap
-    nox
-    powertop
-    psmisc
-    pwgen
-    p7zip
-    silver-searcher
-    sloccount
-    slock
-    st
-    steam
-    texlive.combined.scheme-full
-    tmux
-    tor
-    transmission
-    xorg.xbacklight
-    xfig
-    zathura
-  ];
+    systemPackages = with pkgs; with haskellPackages; [
+      # desktop
+      chromium
+      dmenu
+      mpv
+      slock
+      steam
+      tdesktop
+      zathura
+	    
+      # development
+      androidenv.platformTools
+      clang
+      coq
+      gdb
+      gitAndTools.git
+      gnumake
+      linuxPackages.perf
+      sloccount
+      valgrind
 
-  environment.gnome3.excludePackages = with pkgs.gnome3; [
-    accerciser
-    bijiben
-    empathy
-    epiphany
-    evolution
-    gedit
-    gnome-calculator
-    gnome-calendar
-    gnome-characters
-    gnome-clocks
-    gnome-contacts
-    gnome-documents
-    gnome-logs
-    gnome-maps
-    gnome-music
-    gnome-nettool
-    gnome-photos
-    gnome-system-log
-    gnome-system-monitor
-    gnome-weather
-    gucharmap
-    totem
-  ];
-  
+      # haskell
+      ((ghcWithPackages (self: with self;
+      	 [
+	   #syntactic imperative-edsl
+	 ]
+      )).override { withLLVM = true; })
+      (Agda // { doHaddock = false; })
+      AgdaStdlib
+      cabal-install
+      ghc-mod
+      hlint
+      threadscope
+
+      # music
+      cuetools
+      flac
+      lame
+      monkeysAudio
+      mpc_cli
+      ncmpcpp
+      shntool
+      wavpack
+      
+      # networking
+      cadaver
+      gnupg
+      inetutils
+      isync
+      mu
+      nmap
+      pass
+      tor
+      
+      # publishing
+      briss
+      djvulibre
+      pkgs.exif
+      ghostscript
+      gnuplot
+      graphviz
+      imagemagick
+      texlive.combined.scheme-full
+      xfig
+      	    	    
+      # system
+      bashmount
+      coreutils
+      dos2unix
+      dvtm
+      fdupes
+      file
+      findutils
+      mc
+      nix-repl
+      nox
+      powertop
+      psmisc
+      p7zip
+      silver-searcher
+      st
+      tmux
+      usbutils
+      which
+      xorg.xbacklight
+      xorg.xkill
+    ];
+  };
+    
   fonts = {
     fonts = with pkgs; [
       kochi-substitute
@@ -187,30 +195,12 @@ with pkgs.lib;
 
   services = {
 
-    bitlbee = {
-      enable = false;
-      plugins = [ pkgs.bitlbee-facebook ];
+    emacs = {
+      enable = true;
+      defaultEditor = true;
+      package = pkgs.emacs25;
     };
   
-    btsync = {
-      enable = false;
-      enableWebUI = true;
-      httpListenAddr = "127.0.0.1";
-      storagePath = "/home/btsync";
-      deviceName = "affair";
-      package = pkgs.bittorrentSync20;
-      checkForUpdates = false;
-    };
-  
-    gnome3 = {
-      evolution-data-server.enable = mkForce false;
-      gnome-documents.enable = false;
-      gnome-keyring.enable = mkForce false;
-      gnome-online-accounts.enable = false;
-      gnome-online-miners.enable = false;
-      tracker.enable = false;
-    };
-
     mpd = {
       enable = true;
       group = "users";
@@ -220,11 +210,11 @@ with pkgs.lib;
     openssh.enable = false;
     printing.enable = true;
 
-    privoxy = {
-      enable = false;
-      enableEditActions = true;
-      actionsFiles = [ "match-all.action" "default.action" "/etc/privoxy/user.action" ];
-    };
+#    privoxy = {
+#      enable = false;
+#      enableEditActions = true;
+#      actionsFiles = [ "match-all.action" "default.action" "/etc/privoxy/user.action" ];
+#    };
 
     syncthing = {
       enable = true;
@@ -234,6 +224,13 @@ with pkgs.lib;
     
     telepathy.enable = false;
 
+    tor = {
+      enable = true;
+      client.enable = true;
+    };
+
+    transmission.enable = true;
+        
     udisks2.enable = true;
         
     # Enable the X11 windowing system.
@@ -280,29 +277,12 @@ with pkgs.lib;
   
     services = {
     
-      emacs = {
-        description = "Emacs: the extensible, self-documenting text editor";
-
-        serviceConfig = {
-          Type      = "forking";
-          ExecStart = "${pkgs.emacs}/bin/emacs --daemon";
-          ExecStop  = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
-          Restart   = "always";
-        };
-
-        path = [ config.system.path ];
-
-	after    = [ "gpg-agent.service" ];
-        wantedBy = [ "default.target" ];
-      };
-
-
       gpg-agent = {
         description = "GnuPG agent";
 
 	serviceConfig = {
 	  Type      = "forking";
-	  ExecStart = "${pkgs.bash}/bin/bash -c 'eval `${pkgs.gnupg}/bin/gpg-agent -q  --daemon --enable-ssh-support --write-env-file` ; systemctl --user import-environment GPG_AGENT_INFO SSH_AUTH_SOCK'";
+	  ExecStart = "${pkgs.gnupg}/bin/gpg-agent -q  --daemon --enable-ssh-support";
 	  Restart   = "on-abort";
 	};
 
@@ -349,6 +329,6 @@ with pkgs.lib;
   # };
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "16.03";
+  system.stateVersion = "16.09";
 
 }
