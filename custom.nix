@@ -25,19 +25,19 @@ with import <nixpkgs> {};
 	  sha256 = "134xw42ayl9pc7qdrismi3hjw0zgxp2pzhfy4ayf20lk63lzwn8g";
 	};
 	scrollback = pkgs.fetchurl {
-	  url = "http://st.suckless.org/patches/st-git-20151217-scrollback.diff";
-	  sha256 = "1hwkb9lqyvmnzvq9pvjgy71w6bspl22hj5nfvvxrhhhxjlj2r4sp";
+	  url = "http://st.suckless.org/patches/scrollback/st-scrollback-0.7.diff";
+	  sha256 = "1dng2hfda3hlrfiw0sq00k57yppmqlqk2wa4dd5pmmx8b9db28gp";
 	};
 	scrollback-mouse = pkgs.fetchurl {
-	  url = "http://st.suckless.org/patches/st-git-20151106-scrollback-mouse.diff";
-	  sha256 = "1py5cfchqmhymjyjwj1sar81kg7zl7cy9mvw3idvbgr0x6ffx6b9";
+	  url = "http://st.suckless.org/patches/scrollback/st-scrollback-mouse-20170427-5a10aca.diff";
+	  sha256 = "08bnain9vl2xi5vhiv4v99cn3yqfr2jjgmgalsml7m8xhmz9b7kv";
 	};
-	in [ scrollback scrollback-mouse ];
+	in [ scrollback ];
 
 	src = pkgs.fetchgit {
 	  url = "http://git.suckless.org/st";
-	  rev = "39964614b742c4ec98a326762d98470cb987a45b";
-	  sha256 = "119xv863qmwp288rs0nyv3mqhjrs1f4iddgy915jgzc97qhcw81m";
+	  rev = "6e79e8357ed1987a7f7a52cc06249aadef478041";
+	  sha256 = "1k1pwkkrkd617zsvlpli8vwlbadkaspc2sg4fn1m88rdagali6zk";
 	};
     });
     

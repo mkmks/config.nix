@@ -5,6 +5,7 @@
 { config, pkgs, ... }:
 
 with pkgs.lib;
+with pkgs.haskell.lib;
 
 {
   imports =
@@ -41,11 +42,11 @@ with pkgs.lib;
   #networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
 
   # Select internationalisation properties.
-  # i18n = {
+  i18n = {
   #   consoleFont = "Lat2-Terminus16";
   #   consoleKeyMap = "us";
-  #   defaultLocale = "en_US.UTF-8";
-  # };
+     defaultLocale = "en_GB.UTF-8";
+  };
 
   # Set your time zone.
   time.timeZone = "Europe/Stockholm";
@@ -57,45 +58,26 @@ with pkgs.lib;
     allowUnfree = true;
 
     packageOverrides = pkgs: {
-    
-        # emacs = pkgs.lib.overrideDerivation (pkgs.emacs25.override {
-	#     withX = true;
-        #     withGTK3 = true;
-	#     withGTK2 = false;
-	#     # let Emacs view images
-	#     imagemagick = pkgs.imagemagickBig;
-	    
-        #   }) (attrs: {
-	#     nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.webkitgtk24x ];	  
-	#     configureFlags = attrs.configureFlags ++ [ "--with-xwidgets=yes" ];
-	#     # Emacs daemon is part of user session, use emacsclient
-	#     postInstall = attrs.postInstall + ''
-	#       sed -i 's/Exec=emacs/Exec=emacsclient -c -n/' $out/share/applications/emacs.desktop
-	#     '';
-	#   });
 
-	yi = pkgs.yi.override {
-      	  haskellPackages = pkgs.haskell.packages.ghc7101;
-          extraPackages = p: with p; [  ];
-        };
     };
 
     zathura.useMupdf = false;
   };
   
   environment = {
+  
     sessionVariables = {
       GTK_THEME = "Adwaita";
-      GTK_DATA_PREFIX = "${config.system.path}";
+#      GTK_DATA_PREFIX = "${config.system.path}";
       GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
+      LIBGL_DISABLE_DRI3 = "1";
     };
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
       chromium
-      dmenu
+      pkgs.dmenu
       mpv
-      slock
       steam
       tdesktop
       zathura
@@ -107,27 +89,38 @@ with pkgs.lib;
       gdb
       gitAndTools.git
       gnumake
-      linuxPackages.perf
+#      linuxPackages.perf
+      manpages
       sloccount
       valgrind
 
       # haskell
       ((ghcWithPackages (self: with self;
       	 [
-	   #syntactic imperative-edsl
+	   (dontCheck operational-alacarte)
+#	   (dontCheck syntactic)
+#	   (dontCheck imperative-edsl)
+	   ghc-mod
+	   hakyll
 	 ]
       )).override { withLLVM = true; })
-      (Agda // { doHaddock = false; })
-      AgdaStdlib
+#      (Agda // { doHaddock = false; })
+#      AgdaStdlib
+      alex
       cabal-install
-      ghc-mod
+      happy
       hlint
+      stylish-haskell
       threadscope
+
+      # python
+      (python36.withPackages (ps: with ps; [pip pygments setuptools]))
 
       # music
       cuetools
-      flac
-      lame
+      pkgs.flac
+      id3v2
+      pkgs.lame
       monkeysAudio
       mpc_cli
       ncmpcpp
@@ -136,30 +129,36 @@ with pkgs.lib;
       
       # networking
       cadaver
+      dnsutils
       gnupg
       inetutils
       isync
+      lftp
       mu
-      nmap
-      pass
+      nmap      
       tor
       
       # publishing
-      briss
+      briss      
+      djvu2pdf
       djvulibre
+      dot2tex
       pkgs.exif
       ghostscript
-      gnuplot
+      pkgs.gnuplot
       graphviz
-      imagemagick
+      pkgs.imagemagick
+      pdftk
       texlive.combined.scheme-full
       xfig
       	    	    
       # system
       bashmount
+      bc
       coreutils
       dos2unix
       dvtm
+      exiftool
       fdupes
       file
       findutils
@@ -187,10 +186,11 @@ with pkgs.lib;
   };
 
   programs.bash.enableCompletion = true;
+  programs.gnupg.agent.enable = true;
+  programs.gnupg.agent.enableSSHSupport = true;
   programs.ssh.startAgent = false;
-
-  security.setuidPrograms = [ "slock" ];
-    
+  programs.slock.enable = true;
+  
   # List services that you want to enable:
 
   services = {
@@ -198,7 +198,7 @@ with pkgs.lib;
     emacs = {
       enable = true;
       defaultEditor = true;
-      package = pkgs.emacs25;
+      package = pkgs.emacs25.override { withGTK2 = false; withGTK3 = true; };
     };
   
     mpd = {
@@ -208,7 +208,11 @@ with pkgs.lib;
     };
 
     openssh.enable = false;
-    printing.enable = true;
+
+    printing = {
+      enable = true;
+      drivers = [ pkgs.cups-bjnp pkgs.gutenprint ];
+    };
 
 #    privoxy = {
 #      enable = false;
@@ -277,18 +281,6 @@ with pkgs.lib;
   
     services = {
     
-      gpg-agent = {
-        description = "GnuPG agent";
-
-	serviceConfig = {
-	  Type      = "forking";
-	  ExecStart = "${pkgs.gnupg}/bin/gpg-agent -q  --daemon --enable-ssh-support";
-	  Restart   = "on-abort";
-	};
-
-	wantedBy = [ "default.target" ];
-      };
-
       mbsync = {
         description = "Mailbox syncronization";
 

@@ -1,15 +1,15 @@
 -- This is my xmonad. There are many like it, but this one is mine.
 
-import XMonad
-import XMonad.Actions.Volume
-import XMonad.Hooks.EwmhDesktops
-    
-import Data.Monoid
-import System.Exit
-import Graphics.X11.ExtraTypes.XF86
-    
-import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
+import           XMonad
+import           XMonad.Actions.Volume
+import           XMonad.Hooks.EwmhDesktops
+
+import           Data.Monoid
+import           Graphics.X11.ExtraTypes.XF86
+import           System.Exit
+
+import qualified Data.Map                     as M
+import qualified XMonad.StackSet              as W
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -19,6 +19,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm,               xK_q     ), spawn $ XMonad.terminal conf)
     --, ((modm,               xK_w     ), spawn "dmenu </dev/null | xargs -0 surf")
     , ((modm,               xK_w     ), spawn "chromium")
+--    , ((modm,               xK_w     ), spawn "firefox")
     , ((modm,               xK_e     ), spawn "emacsclient -c")
     , ((modm,               xK_z     ), spawn "slock")
     , ((modm,               xK_x     ), spawn "dmenu_run")
@@ -29,18 +30,18 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_k     ), windows W.focusUp  )
     , ((modm .|. shiftMask, xK_j     ), windows W.swapDown )
     , ((modm .|. shiftMask, xK_k     ), windows W.swapUp   )
-      
+
     , ((modm,               xK_Return), windows W.focusMaster)
     , ((modm .|. shiftMask, xK_Return), windows W.swapMaster)
 
     , ((modm,               xK_space ), sendMessage NextLayout)
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
-      
+
     , ((modm,               xK_h     ), sendMessage Shrink)
     , ((modm,               xK_l     ), sendMessage Expand)
     , ((modm .|. shiftMask, xK_h     ), sendMessage (IncMasterN 1))
     , ((modm .|. shiftMask, xK_l     ), sendMessage (IncMasterN (-1)))
-      
+
     , ((modm,               xK_t     ), withFocused $ windows . W.sink)
     , ((modm,               xK_n     ), refresh)
 
@@ -52,7 +53,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     , ((modm              , xK_p     ), spawn "xmonad --recompile; xmonad --restart")
     , ((modm .|. shiftMask, xK_p     ), io (exitWith ExitSuccess))
-      
+
     ]
 
     ++
@@ -66,7 +67,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((0 , xF86XK_AudioLowerVolume ) , lowerVolume 3 >> return () )
     , ((0 , xF86XK_AudioRaiseVolume ) , raiseVolume 3 >> return () )
     ]
-    
+
     ++
 
     -- mod-[1..9], Switch to workspace N
@@ -143,7 +144,7 @@ main = xmonad $ ewmh $ def {
 
       -- hooks, layouts
       , layoutHook         =
-          let 
+          let
               tiled   = Tall nmaster delta ratio
               nmaster = 1
               ratio   = 1/2
