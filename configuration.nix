@@ -83,7 +83,7 @@ with pkgs.haskell.lib;
       zathura
 	    
       # development
-      androidenv.platformTools
+#      androidenv.platformTools
       clang
       coq
       gdb
@@ -185,11 +185,14 @@ with pkgs.haskell.lib;
     ];
   };
 
-  programs.bash.enableCompletion = true;
-  programs.gnupg.agent.enable = true;
-  programs.gnupg.agent.enableSSHSupport = true;
-  programs.ssh.startAgent = false;
-  programs.slock.enable = true;
+  programs = {
+    adb.enable = true;
+    bash.enableCompletion = true;
+    gnupg.agent.enable = true;
+    gnupg.agent.enableSSHSupport = true;
+    ssh.startAgent = false;
+    slock.enable = true;  
+  };
   
   # List services that you want to enable:
 
@@ -274,6 +277,12 @@ with pkgs.haskell.lib;
         xmonad.enableContribAndExtras = true;
         default = "xmonad";
       };
+
+      xautolock = {
+        enable = true;
+	locker = "slock";
+	time = 5;
+      };
     };
   };
 
@@ -291,14 +300,9 @@ with pkgs.haskell.lib;
 
 	path = [ pkgs.gawk pkgs.gnupg ];
 
-	# environment = {
-	#   DISPLAY = ":0.0";
-	# };
-
 	after       = [ "network-online.target" "gpg-agent.service" ];
         wantedBy    = [ "default.target" ];
       };
-      
     };
 
     timers = {
@@ -315,12 +319,14 @@ with pkgs.haskell.lib;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  # users.extraUsers.guest = {
-  #   isNormalUser = true;
-  #   uid = 1000;
-  # };
+  users.extraUsers.viv = {
+    description = "Nikita Frolov";
+    extraGroups = [ "wheel" "transmission" "adbusers" ];
+    isNormalUser = true;
+    uid = 1000;
+  };
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "16.09";
+  system.stateVersion = "17.09";
 
 }
