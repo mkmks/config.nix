@@ -21,6 +21,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_w     ), spawn "chromium")
 --    , ((modm,               xK_w     ), spawn "firefox")
     , ((modm,               xK_e     ), spawn "emacsclient -c")
+    , ((modm,               xK_d     ), spawn "st sdcv")
     , ((modm,               xK_z     ), spawn "slock")
     , ((modm,               xK_x     ), spawn "dmenu_run")
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -70,10 +71,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     ++
 
-    -- mod-[1..9], Switch to workspace N
-    -- mod-shift-[1..9], Move client to workspace N
+    -- mod-[1..5], Switch to workspace N
+    -- mod-shift-[1..5], Move client to workspace N
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_5]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
 
     ++
@@ -120,10 +121,10 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- 'className' and 'resource' are used below.
 --
 myManageHook = composeAll
-    [ className =? "MPlayer"        --> doFloat
-    , className =? "Gimp"           --> doFloat
-    , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore ]
+    [ className =? "MPlayer"         --> doFloat
+    , className =? "Gimp"            --> doFloat
+    , className =? "TelegramDesktop" --> doShift "5"
+    , resource  =? "desktop_window"  --> doIgnore ]
 
 ------------------------------------------------------------------------
 
@@ -134,7 +135,7 @@ main = xmonad $ ewmh $ def {
       , clickJustFocuses   = False
       , borderWidth        = 1
       , modMask            = mod4Mask
-      , workspaces         = map show [1..9]
+      , workspaces         = map show [1..5]
       , normalBorderColor  = "#dddddd"
       , focusedBorderColor = "#ff0000"
 

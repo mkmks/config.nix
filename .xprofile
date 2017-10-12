@@ -1,6 +1,10 @@
 xsetroot -bg black
 xsetroot -cursor_name left_ptr
 
+udiskie &
+
+telegram-desktop &
+
 if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]; then
 #    export GPG_AGENT_INFO="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent"
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"

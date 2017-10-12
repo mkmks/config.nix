@@ -11,6 +11,11 @@
 (setenv "SSH_AUTH_SOCK"  (concat (getenv "XDG_RUNTIME_DIR")
 				 "/gnupg/S.gpg-agent.ssh"))
 
+(setenv "NIX_GHC" "/run/current-system/sw/bin/ghc")
+(setenv "NIX_GHCPKG" "/run/current-system/sw/bin/ghc-pkg")
+(setenv "NIX_GHC_LIBDIR" "/run/current-system/sw/lib/ghc-8.0.2/")
+(setenv "NIX_GHC_DOCDIR" "/run/current-system/sw/share/x86_64-linux-ghc-8.0.2/")
+
 ;;; loading packages
 
 (add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp")
@@ -48,33 +53,36 @@
 (require 'nix-mode)
 (require 'llvm-mode)
 
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
+
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
 
-;; (setq agda2-include-dirs
-;;       (cons "." (mapcar 'expand-file-name
-;; 			'("~/.nix-profile/share/agda" "~/ornaments"))))
-
 ;(load "ProofGeneral/generic/proof-site")
 
+(require 'haskell-interactive-mode)
+(require 'haskell-process)
 (autoload 'ghc-init "ghc" nil t)
 (autoload 'ghc-debug "ghc" nil t)
-
-(add-hook 'haskell-mode-hook 'haskell-indent-mode)
-(add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
 (add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
-(eval-after-load "haskell-mode"
-       '(progn
-	  (define-key haskell-mode-map (kbd "C-x C-d") nil)
-	  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)	  
-	  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
-	  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
-	  (define-key haskell-mode-map (kbd "C-c C-b") 'haskell-interactive-switch)
-	  (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
-	  (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
-	  (define-key haskell-mode-map (kbd "C-c M-.") nil)
-	  (define-key haskell-mode-map (kbd "C-c C-d") nil)))
+;; (eval-after-load "haskell-interactive-mode"
+;;   '(progn
+;;      (define-key interactive-haskell-mode-map (kbd "M-.") 'haskell-mode-goto-loc)
+;;      (define-key interactive-haskell-mode-map (kbd "C-c C-t") 'haskell-mode-show-type-at)))
+
+;; (eval-after-load "haskell-mode"
+;;        '(progn
+;; 	  (define-key haskell-mode-map (kbd "C-x C-d") nil)
+;; 	  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)	  
+;; 	  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
+;; 	  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
+;; 	  (define-key haskell-mode-map (kbd "C-c C-b") 'haskell-interactive-switch)
+;; 	  (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+;; 	  (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+;; 	  (define-key haskell-mode-map (kbd "C-c M-.") nil)
+;; 	  (define-key haskell-mode-map (kbd "C-c C-d") nil)))
 
 ;; helm
 (require 'projectile)
@@ -114,6 +122,8 @@
  '(LaTeX-command "latex -shell-escape")
  '(Man-width 80)
  '(TeX-PDF-mode t)
+ '(TeX-command-extra-options "-shell-escape")
+ '(TeX-engine (quote xetex))
  '(TeX-parse-self t)
  '(TeX-view-program-selection
    (quote
@@ -126,8 +136,9 @@
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
  '(agda2-highlight-level (quote interactive))
+ '(agda2-program-name "~/.nix-profile/bin/agda")
  '(auto-save-default nil)
- '(browse-url-browser-function (quote browse-url-firefox))
+ '(browse-url-browser-function (quote browse-url-chromium))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -171,6 +182,8 @@
  '(fill-column 80)
  '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
+ '(gdb-many-windows t)
+ '(global-magit-file-mode t)
  '(gnus-directory "~/.emacs.d/news/")
  '(gnus-home-directory "~/.emacs.d/")
  '(gnus-select-method (quote (nntp "news.gmane.org")))
@@ -179,6 +192,12 @@
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
  '(haskell-literate-default (quote bird))
+ '(haskell-mode-hook
+   (quote
+    (haskell-decl-scan-mode haskell-indentation-mode imenu-add-menubar-index interactive-haskell-mode
+			    (lambda nil
+			      (ghc-init)))))
+ '(haskell-stylish-on-save t)
  '(helm-boring-buffer-regexp-list
    (quote
     ("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*GNU Emacs" "\\*Messages" "\\*Completions" "\\*Quail Completions" "\\*fsm-debug" "\\*Help" "\\*Apropos")))
@@ -266,7 +285,7 @@
     (("n" "Something I thought or heard" entry
       (file "")
       "" :prepend t))))
- '(org-default-notes-file "~/Documents/notes/journal.org")
+ '(org-default-notes-file "~/Documents/notes/inbox.org")
  '(org-directory "~/Documents/notes")
  '(org-reverse-note-order t)
  '(package-archives
@@ -275,7 +294,7 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (markdown-mode pass pretty-mode plan9-theme mu4e-maildirs-extension mingus matlab-mode magit log4e llvm-mode linum-relative ibuffer-tramp ibuffer-projectile ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
+    (slack ereader markdown-mode pass pretty-mode plan9-theme mu4e-maildirs-extension mingus matlab-mode magit log4e llvm-mode linum-relative ibuffer-tramp ibuffer-projectile ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes

@@ -54,7 +54,7 @@ with pkgs.haskell.lib;
   # List packages installed in system profile.
 
   nixpkgs.config = {
-  
+
     allowUnfree = true;
 
     packageOverrides = pkgs: {
@@ -94,26 +94,25 @@ with pkgs.haskell.lib;
       sloccount
       valgrind
 
-      # haskell
       ((ghcWithPackages (self: with self;
       	 [
 	   (dontCheck operational-alacarte)
 #	   (dontCheck syntactic)
 #	   (dontCheck imperative-edsl)
+
+#      	   (dontHaddock Agda)
 	   ghc-mod
 	   hakyll
+ 	   alex
+ 	   cabal-install
+ 	   happy
+ 	   hlint
+ 	   stylish-haskell	
+ 	   threadscope	   
 	 ]
       )).override { withLLVM = true; })
-#      (Agda // { doHaddock = false; })
 #      AgdaStdlib
-      alex
-      cabal-install
-      happy
-      hlint
-      stylish-haskell
-      threadscope
 
-      # python
       (python36.withPackages (ps: with ps; [pip pygments setuptools]))
 
       # music
@@ -153,7 +152,6 @@ with pkgs.haskell.lib;
       xfig
       	    	    
       # system
-      bashmount
       bc
       coreutils
       dos2unix
@@ -165,12 +163,16 @@ with pkgs.haskell.lib;
       mc
       nix-repl
       nox
+      oathToolkit
+      pass
       powertop
       psmisc
       p7zip
+      sdcv
       silver-searcher
       st
       tmux
+      udiskie
       usbutils
       which
       xorg.xbacklight
@@ -188,6 +190,7 @@ with pkgs.haskell.lib;
   programs = {
     adb.enable = true;
     bash.enableCompletion = true;
+    browserpass.enable = true;
     gnupg.agent.enable = true;
     gnupg.agent.enableSSHSupport = true;
     ssh.startAgent = false;
