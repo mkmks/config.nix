@@ -18,8 +18,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     [ ((modm,               xK_q     ), spawn $ XMonad.terminal conf)
     --, ((modm,               xK_w     ), spawn "dmenu </dev/null | xargs -0 surf")
-    , ((modm,               xK_w     ), spawn "chromium")
---    , ((modm,               xK_w     ), spawn "firefox")
+--    , ((modm,               xK_w     ), spawn "chromium")
+    , ((modm,               xK_w     ), spawn "firefox")
     , ((modm,               xK_e     ), spawn "emacsclient -c")
     , ((modm,               xK_d     ), spawn "st sdcv")
     , ((modm,               xK_z     ), spawn "slock")
@@ -123,6 +123,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 myManageHook = composeAll
     [ className =? "MPlayer"         --> doFloat
     , className =? "Gimp"            --> doFloat
+    , className =? "GoldenDict" --> doShift "4"
     , className =? "TelegramDesktop" --> doShift "5"
     , resource  =? "desktop_window"  --> doIgnore ]
 

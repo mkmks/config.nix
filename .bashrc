@@ -13,6 +13,8 @@ alias ec="emacsclient -c -n "
 export SDCV_PAGER="less"
 alias d="sdcv"
 
+alias u="udiskie-umount"
+
 alias scpresume="rsync --partial --progress --rsh=ssh"
 #alias tmux="tmux attach || tmux new"
 alias feh="feh -.d"

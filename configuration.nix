@@ -70,13 +70,14 @@ with pkgs.haskell.lib;
       GTK_THEME = "Adwaita";
 #      GTK_DATA_PREFIX = "${config.system.path}";
       GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
-      LIBGL_DISABLE_DRI3 = "1";
+#      LIBGL_DISABLE_DRI3 = "1";
     };
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
-      chromium
+      #chromium
       pkgs.dmenu
+      goldendict
       mpv
       steam
       tdesktop
@@ -147,6 +148,7 @@ with pkgs.haskell.lib;
       pkgs.gnuplot
       graphviz
       pkgs.imagemagick
+      pdf2djvu
       pdftk
       texlive.combined.scheme-full
       xfig
@@ -204,7 +206,7 @@ with pkgs.haskell.lib;
     emacs = {
       enable = true;
       defaultEditor = true;
-      package = pkgs.emacs25.override { withGTK2 = false; withGTK3 = true; };
+#      package = pkgs.emacs25.override { withGTK2 = false; withGTK3 = true; };
     };
   
     mpd = {

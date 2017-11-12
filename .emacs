@@ -22,27 +22,51 @@
 (add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp/mu4e")
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
 
-(require 'cl)
+(global-set-key (kbd "C-x C-f") 'set-fill-column)
+(global-set-key (kbd "C-x s") 'save-buffer)
+(global-set-key (kbd "C-x C-s") 'save-some-buffers)
+
 (require 'package)
 (package-initialize)
+(require 'use-package)
 
-;; mail
-(require 'mu4e)
-(require 'mu4e-maildirs-extension)
+(use-package boon-qwerty
+  :diminish boon-local-mode
+  :config
+  (use-package powerline)
+  (use-package boon-powerline)
+  (boon-powerline-theme))
 
-(add-hook 'mu4e-compose-pre-hook
-  (defun my-set-from-address ()
-    "Set the From address based on the To address of the original."
-    (let ((msg mu4e-compose-parent-message))
-      (when msg
-	(setq user-mail-address
-	  (cond
-	    ((mu4e-message-contact-field-matches msg :to "frolov@chalmers.se")
-	      "frolov@chalmers.se")
-	    (t "nf@mkmks.org")))))))
+(use-package helm
+  :bind (("C-x b" . helm-buffers-list)
+	 ("C-x f" . helm-find-files)
+         ("C-x C-r" . helm-recentf))
+  :config
+  (require 'helm-ghc))
 
-(mu4e-maildirs-extension)
-(global-set-key (kbd "C-x m") 'mu4e)
+(use-package projectile
+  :bind (("C-x p" . projectile-commander)))
+
+(use-package magit
+  :bind (("C-x g" . magit-status)
+	 ("C-x M-g" . magit-dispatch-popup)))
+
+(use-package mu4e
+  :init
+  (add-hook 'mu4e-compose-pre-hook
+	    (defun my-set-from-address ()
+	      "Set the From address based on the To address of the original."
+	      (let ((msg mu4e-compose-parent-message))
+		(when msg
+		  (setq user-mail-address
+			(cond
+			 ((mu4e-message-contact-field-matches msg :to "frolov@chalmers.se")
+			  "frolov@chalmers.se")
+			 (t "nf@mkmks.org")))))))
+  :bind (("C-x m" . mu4e))
+  :config
+  (use-package mu4e-maildirs-extension)
+  (mu4e-maildirs-extension))
 
 ;; instant messaging
 (require 'erc-services)
@@ -53,9 +77,6 @@
 (require 'nix-mode)
 (require 'llvm-mode)
 
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-x M-g") 'magit-dispatch-popup)
-
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
 
@@ -63,9 +84,17 @@
 
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
-(autoload 'ghc-init "ghc" nil t)
-(autoload 'ghc-debug "ghc" nil t)
-(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
+
+(use-package dante
+  :ensure t
+  :after haskell-mode
+  :commands 'dante-mode
+  :init
+  (add-hook 'haskell-mode-hook 'dante-mode)
+  (add-hook 'haskell-mode-hook 'flycheck-mode))
+;(autoload 'ghc-init "ghc" nil t)
+;(autoload 'ghc-debug "ghc" nil t)
+;(add-hook 'haskell-mode-hook (lambda () (ghc-init)))
 
 ;; (eval-after-load "haskell-interactive-mode"
 ;;   '(progn
@@ -75,7 +104,7 @@
 ;; (eval-after-load "haskell-mode"
 ;;        '(progn
 ;; 	  (define-key haskell-mode-map (kbd "C-x C-d") nil)
-;; 	  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)	  
+;; 	  (define-key haskell-mode-map (kbd "C-c C-s") 'ghc-case-split)
 ;; 	  (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
 ;; 	  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
 ;; 	  (define-key haskell-mode-map (kbd "C-c C-b") 'haskell-interactive-switch)
@@ -84,20 +113,10 @@
 ;; 	  (define-key haskell-mode-map (kbd "C-c M-.") nil)
 ;; 	  (define-key haskell-mode-map (kbd "C-c C-d") nil)))
 
-;; helm
-(require 'projectile)
-(require 'helm-projectile)
-(projectile-global-mode)
-
-(require 'helm-ghc)
-
-(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "C-x C-r") 'helm-recentf)
-
 ;;;; just before we are ready
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
+
+  
 ;; store all backup and autosave files in the tmp dir
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -138,7 +157,12 @@
  '(agda2-highlight-level (quote interactive))
  '(agda2-program-name "~/.nix-profile/bin/agda")
  '(auto-save-default nil)
- '(browse-url-browser-function (quote browse-url-chromium))
+ '(battery-mode-line-format " %b%p%")
+ '(boon-mode t)
+ '(boon-special-mode-list
+   (quote
+    (Buffer-menu-mode debugger-mode ediff-mode git-rebase-mode mu4e-headers-mode mu4e-view-mode org-agenda-mode cfw:calendar-mode ereader-mode)))
+ '(browse-url-browser-function (quote browse-url-firefox))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -153,14 +177,14 @@
  '(custom-file nil)
  '(custom-safe-themes
    (quote
-    ("5cd0afd0ca01648e1fff95a7a7f8abec925bd654915153fb39ee8e72a8b56a1f" "6af55f6f26c0c6f113427d8ce72dea34aa1972b70e650486e6c725abd18bbe91" "c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "90b7aaddf859ba6b431c252444d29bab98dd687d2f571707ff70efcb1a2e19f6" "404a8e7f198ef3a5babdf122c7905abc61a8cd04eb2a1ce7d6faec5550b02a90" "37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
+    ("a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "2cf7f9d1d8e4d735ba53facdc3c6f3271086b6906c4165b12e4fd8e3865469a6" "5cd0afd0ca01648e1fff95a7a7f8abec925bd654915153fb39ee8e72a8b56a1f" "6af55f6f26c0c6f113427d8ce72dea34aa1972b70e650486e6c725abd18bbe91" "c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "90b7aaddf859ba6b431c252444d29bab98dd687d2f571707ff70efcb1a2e19f6" "404a8e7f198ef3a5babdf122c7905abc61a8cd04eb2a1ce7d6faec5550b02a90" "37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
  '(default-input-method "russian-computer")
- '(display-battery-mode t)
  '(display-time-24hr-format t)
  '(display-time-day-and-date nil)
- '(display-time-default-load-average 1)
+ '(display-time-default-load-average nil)
  '(display-time-load-average-threshold 1.0)
- '(display-time-mode t)
+ '(display-time-mail-directory "~/Mail/Inbox/new")
+ '(display-time-mail-string "✉")
  '(display-time-use-mail-icon t)
  '(electric-pair-mode t)
  '(elscreen-display-screen-number nil)
@@ -179,11 +203,14 @@
  '(erc-timestamp-format "[%H:%M:%S]")
  '(erc-timestamp-format-right " [%H:%M:%S]")
  '(erc-track-enable-keybindings nil)
+ '(fancy-battery-mode t)
  '(fill-column 80)
  '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
  '(gdb-many-windows t)
+ '(global-flycheck-mode t)
  '(global-magit-file-mode t)
+ '(global-visual-line-mode t)
  '(gnus-directory "~/.emacs.d/news/")
  '(gnus-home-directory "~/.emacs.d/")
  '(gnus-select-method (quote (nntp "news.gmane.org")))
@@ -251,6 +278,7 @@
  '(mu4e-compose-complete-only-personal t)
  '(mu4e-compose-dont-reply-to-self t)
  '(mu4e-compose-signature nil)
+ '(mu4e-confirm-quit nil)
  '(mu4e-drafts-folder "/Drafts")
  '(mu4e-get-mail-command "mbsync -a")
  '(mu4e-headers-date-format "%F %R")
@@ -294,12 +322,14 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (slack ereader markdown-mode pass pretty-mode plan9-theme mu4e-maildirs-extension mingus matlab-mode magit log4e llvm-mode linum-relative ibuffer-tramp ibuffer-projectile ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
+    (delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode plan9-theme mu4e-maildirs-extension mingus matlab-mode magit log4e llvm-mode linum-relative ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
    (quote
     ("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "rcirc-mode" "mu4e-.*-mode")))
+ '(projectile-mode t nil (projectile))
+ '(projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
  '(rcirc-default-nick "mkmks")
  '(rcirc-log-flag nil)
  '(rcirc-server-alist (quote (("localhost"))))
@@ -346,3 +376,6 @@
  '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
  '(show-paren-match ((t (:background "moccasin"))))
  '(variable-pitch ((t (:height 110 :family "DejaVu Serif Condensed")))))
+
+(provide 'emacs)
+;;; .emacs ends here
