@@ -1,9 +1,11 @@
 xsetroot -bg black
 xsetroot -cursor_name left_ptr
+#xmodmap -e 'keysym Return = BackSpace' -e 'keysym BackSpace = Return'
+xcape -e 'Super_L=Escape'
+#xcape -e 'Caps_Lock=BackSpace'
 
 udiskie &
-
-telegram-desktop &
+telegram-desktop -startintray &
 
 if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]; then
 #    export GPG_AGENT_INFO="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent"

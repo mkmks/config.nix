@@ -37,6 +37,17 @@ with pkgs.haskell.lib;
     firewall.allowedTCPPorts = [ 22000 ];
     firewall.allowedUDPPorts = [ 21027 ];
     networkmanager.enable = true;
+    extraHosts = ''
+    127.0.0.1 googlesyndication.com
+    127.0.0.1 tpc.googlesyndication.com
+    127.0.0.1 doubleclick.net
+    127.0.0.1 g.doubleclick.net
+    127.0.0.1 googleads.g.doubleclick.net
+    127.0.0.1 www.google-analytics.com
+    127.0.0.1 ssl.google-analytics.com
+    127.0.0.1 google-analytics.com
+    127.0.0.1 www.onclickmax.com
+    '';
   };
   #networking.proxy.default = "http://127.0.0.1:8118";
   #networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
@@ -44,7 +55,7 @@ with pkgs.haskell.lib;
   # Select internationalisation properties.
   i18n = {
   #   consoleFont = "Lat2-Terminus16";
-  #   consoleKeyMap = "us";
+     consoleUseXkbConfig = true;
      defaultLocale = "en_GB.UTF-8";
   };
 
@@ -75,8 +86,9 @@ with pkgs.haskell.lib;
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
-      #chromium
-      pkgs.dmenu
+      chromium
+      calibre
+      firefox-bin
       goldendict
       mpv
       steam
@@ -84,13 +96,12 @@ with pkgs.haskell.lib;
       zathura
 	    
       # development
-#      androidenv.platformTools
       clang
       coq
       gdb
       gitAndTools.git
       gnumake
-#      linuxPackages.perf
+      linuxPackages.perf
       manpages
       sloccount
       valgrind
@@ -132,7 +143,7 @@ with pkgs.haskell.lib;
       dnsutils
       gnupg
       inetutils
-      isync
+      # isync
       lftp
       mu
       nmap      
@@ -166,7 +177,6 @@ with pkgs.haskell.lib;
       nix-repl
       nox
       oathToolkit
-      pass
       powertop
       psmisc
       p7zip
@@ -175,10 +185,12 @@ with pkgs.haskell.lib;
       st
       tmux
       udiskie
+      unzip
       usbutils
       which
       xorg.xbacklight
       xorg.xkill
+      xorg.xmodmap
     ];
   };
     
@@ -192,11 +204,10 @@ with pkgs.haskell.lib;
   programs = {
     adb.enable = true;
     bash.enableCompletion = true;
-    browserpass.enable = true;
+    fish.enable = true;
     gnupg.agent.enable = true;
     gnupg.agent.enableSSHSupport = true;
     ssh.startAgent = false;
-    slock.enable = true;  
   };
   
   # List services that you want to enable:
@@ -245,12 +256,14 @@ with pkgs.haskell.lib;
         
     udisks2.enable = true;
         
+    unclutter-xfixes.enable = true;
+    
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
-      layout = "us,ru";
+      layout = "us(colemak),ru";
 
-      xkbOptions = "ctrl:nocaps,grp:shifts_toggle,compose:rwin";
+      xkbOptions = "grp:shifts_toggle,compose:rwin,caps:ctrl_modifier";
 
       synaptics = {
         enable = true;
@@ -278,57 +291,59 @@ with pkgs.haskell.lib;
       };
 
       windowManager = {
-        xmonad.enable = true;
-        xmonad.enableContribAndExtras = true;
-        default = "xmonad";
+#        xmonad.enable = true;
+#        xmonad.enableContribAndExtras = true;
+        i3.enable = true;
+        default = "i3";
       };
 
       xautolock = {
         enable = true;
-	locker = "slock";
+	locker = "i3lock -c ff0000";
 	time = 5;
       };
     };
   };
 
-  systemd.user =  {
+  # systemd.user =  {
   
-    services = {
+  #   services = {
     
-      mbsync = {
-        description = "Mailbox syncronization";
+  #     mbsync = {
+  #       description = "Mailbox syncronization";
 
-	serviceConfig = {
-	  Type      = "oneshot";
-	  ExecStart = "${pkgs.isync}/bin/mbsync -aq";
-	};
+  # 	serviceConfig = {
+  # 	  Type      = "oneshot";
+  # 	  ExecStart = "${pkgs.isync}/bin/mbsync -aq";
+  # 	};
 
-	path = [ pkgs.gawk pkgs.gnupg ];
+  # 	path = [ pkgs.gawk pkgs.gnupg ];
 
-	after       = [ "network-online.target" "gpg-agent.service" ];
-        wantedBy    = [ "default.target" ];
-      };
-    };
+  # 	after       = [ "network-online.target" "gpg-agent.service" ];
+  #       wantedBy    = [ "default.target" ];
+  #     };
+  #   };
 
-    timers = {
-      mbsync = {
-        description = "Mailbox syncronization";
+  #   timers = {
+  #     mbsync = {
+  #       description = "Mailbox syncronization";
       
-        timerConfig = {
-          OnCalendar = "*:0/5";
-          Persistent = "true";
-        };
-        wantedBy = [ "timers.target" ];
-      };
-    };
-  };
+  #       timerConfig = {
+  #         OnCalendar = "*:0/5";
+  #         Persistent = "true";
+  #       };
+  #       wantedBy = [ "timers.target" ];
+  #     };
+  #   };
+  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.extraUsers.viv = {
+  users.users.viv = {
     description = "Nikita Frolov";
     extraGroups = [ "wheel" "transmission" "adbusers" ];
     isNormalUser = true;
     uid = 1000;
+    shell = pkgs.fish;
   };
 
   # The NixOS release to be compatible with for stateful data such as databases.
