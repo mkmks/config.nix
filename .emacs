@@ -19,30 +19,37 @@
 ;;; loading packages
 
 (add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp")
-(add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp/mu4e")
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
 
-(global-set-key (kbd "C-x C-f") 'set-fill-column)
-(global-set-key (kbd "C-x s") 'save-buffer)
-(global-set-key (kbd "C-x C-s") 'save-some-buffers)
+;(global-set-key (kbd "C-x C-f") 'set-fill-column)
+;(global-set-key (kbd "C-x s") 'save-buffer)
+;(global-set-key (kbd "C-x C-s") 'save-some-buffers)
 
 (require 'package)
 (package-initialize)
 (require 'use-package)
 
-(use-package boon-qwerty
-  :diminish boon-local-mode
+(use-package emacs
+  :diminish visual-line-mode hi-lock-mode)
+
+(use-package powerline)
+
+(use-package spaceline-config
+  :after powerline
   :config
-  (use-package powerline)
-  (use-package boon-powerline)
-  (boon-powerline-theme))
+  (spaceline-spacemacs-theme))
+
+(use-package boon-colemak
+  :diminish boon-local-mode
+  :disabled)
 
 (use-package helm
+  :diminish helm-mode
   :bind (("C-x b" . helm-buffers-list)
-	 ("C-x f" . helm-find-files)
+	 ("C-x C-f" . helm-find-files)
          ("C-x C-r" . helm-recentf))
   :config
-  (require 'helm-ghc))
+  (use-package helm-ghc))
 
 (use-package projectile
   :bind (("C-x p" . projectile-commander)))
@@ -51,22 +58,8 @@
   :bind (("C-x g" . magit-status)
 	 ("C-x M-g" . magit-dispatch-popup)))
 
-(use-package mu4e
-  :init
-  (add-hook 'mu4e-compose-pre-hook
-	    (defun my-set-from-address ()
-	      "Set the From address based on the To address of the original."
-	      (let ((msg mu4e-compose-parent-message))
-		(when msg
-		  (setq user-mail-address
-			(cond
-			 ((mu4e-message-contact-field-matches msg :to "frolov@chalmers.se")
-			  "frolov@chalmers.se")
-			 (t "nf@mkmks.org")))))))
-  :bind (("C-x m" . mu4e))
-  :config
-  (use-package mu4e-maildirs-extension)
-  (mu4e-maildirs-extension))
+(use-package autorevert
+  :diminish auto-revert-mode)
 
 ;; instant messaging
 (require 'erc-services)
@@ -158,10 +151,9 @@
  '(agda2-program-name "~/.nix-profile/bin/agda")
  '(auto-save-default nil)
  '(battery-mode-line-format " %b%p%")
- '(boon-mode t)
  '(boon-special-mode-list
    (quote
-    (Buffer-menu-mode debugger-mode ediff-mode git-rebase-mode mu4e-headers-mode mu4e-view-mode org-agenda-mode cfw:calendar-mode ereader-mode)))
+    (Buffer-menu-mode debugger-mode ediff-mode git-rebase-mode org-agenda-mode cfw:calendar-mode ereader-mode mingus-playlist-mode mingus-browse-mode)))
  '(browse-url-browser-function (quote browse-url-firefox))
  '(c-default-style
    (quote
@@ -231,7 +223,7 @@
  '(helm-mode t)
  '(ibuffer-never-show-predicates
    (quote
-    ("*GNU Emacs*" "*scratch*" "*Messages*" "*Completions*" "*Quail Completions*" "*fsm-debug*" "*Notmuch errors*" "*Help*" "*Apropos*" "*-jabber-roster-*" "*Mingus")) nil (ibuf-ext))
+    ("*GNU Emacs*" "*scratch*" "*Messages*" "*Completions*" "*Quail Completions*" "*fsm-debug*" "*Help*" "*Apropos*" "*Mingus")) nil (ibuf-ext))
  '(ibuffer-saved-filter-groups
    (quote
     (("default"
@@ -239,13 +231,6 @@
        (or
 	(mode . term-mode)
 	(mode . shell-mode)))
-      ("Mail"
-       (or
-	(mode . message-mode)
-	(mode . mu4e-compose-mode)
-	(mode . mu4e-main-mode)
-	(mode . mu4e-headers-mode)
-	(mode . mu4e-view-mode)))
       ("Chats"
        (mode . rcirc-mode))
       ("Org"
@@ -257,7 +242,6 @@
  '(indicate-empty-lines t)
  '(inferior-lisp-program "/usr/bin/clisp")
  '(inhibit-startup-screen t)
- '(mail-user-agent (quote mu4e-user-agent))
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory nil)
@@ -265,46 +249,6 @@
  '(message-kill-buffer-on-exit t)
  '(message-send-mail-function (quote smtpmail-send-it))
  '(mm-text-html-renderer (quote shr))
- '(mu4e-attachment-dir "/home/viv/Downloads")
- '(mu4e-bookmarks
-   (quote
-    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:/Archive AND NOT maildir:/Spam" "Unread new messages" 117)
-     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:/Archive AND NOT maildir:/Spam" "Unread mailing lists" 108)
-     ("date:today..now AND NOT maildir:/Spam" "Today's messages" 116)
-     ("date:7d..now AND NOT maildir:/Spam" "Last 7 days" 119)
-     ("mime:image/* AND NOT maildir:/Spam" "Messages with images" 112)
-     ("flag:attach AND NOT maildir:/Spam" "Messages with attachments" 97))))
- '(mu4e-change-filenames-when-moving t)
- '(mu4e-compose-complete-only-personal t)
- '(mu4e-compose-dont-reply-to-self t)
- '(mu4e-compose-signature nil)
- '(mu4e-confirm-quit nil)
- '(mu4e-drafts-folder "/Drafts")
- '(mu4e-get-mail-command "mbsync -a")
- '(mu4e-headers-date-format "%F %R")
- '(mu4e-headers-fields
-   (quote
-    ((:human-date . 16)
-     (:flags . 6)
-     (:maildir . 20)
-     (:mailing-list . 20)
-     (:from . 22)
-     (:subject))))
- '(mu4e-headers-skip-duplicates t)
- '(mu4e-maildir "/home/viv/Mail")
- '(mu4e-maildir-shortcuts
-   (quote
-    (("/Inbox" . 105)
-     ("/Sent" . 115)
-     ("/Archive" . 97))))
- '(mu4e-maildirs-extension-use-bookmarks t)
- '(mu4e-refile-folder "/Archive")
- '(mu4e-sent-folder "/Sent")
- '(mu4e-sent-messages-behavior (quote sent))
- '(mu4e-trash-folder "/Trash")
- '(mu4e-user-mail-address-list (quote ("nf@mkmks.org" "frolov@chalmers.se")))
- '(mu4e-view-html-plaintext-ratio-heuristic 30)
- '(mu4e-view-show-images t)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
  '(org-agenda-files (quote ("~/Documents/notes")))
@@ -322,12 +266,12 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode plan9-theme mu4e-maildirs-extension mingus matlab-mode magit log4e llvm-mode linum-relative ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
+    (delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode plan9-theme mingus matlab-mode magit log4e llvm-mode linum-relative ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
    (quote
-    ("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "rcirc-mode" "mu4e-.*-mode")))
+    ("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "rcirc-mode")
  '(projectile-mode t nil (projectile))
  '(projectile-mode-line (quote (:eval (format " [%s]" (projectile-project-name)))))
  '(rcirc-default-nick "mkmks")
@@ -373,7 +317,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
- '(mu4e-header-highlight-face ((t (:inherit region :underline t))))
  '(show-paren-match ((t (:background "moccasin"))))
  '(variable-pitch ((t (:height 110 :family "DejaVu Serif Condensed")))))
 

@@ -143,9 +143,7 @@ with pkgs.haskell.lib;
       dnsutils
       gnupg
       inetutils
-      # isync
       lftp
-      mu
       nmap      
       tor
       
