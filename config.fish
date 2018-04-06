@@ -16,3 +16,8 @@ if [ $TERM = "st-256color" -o $TERM = "dvtm-256color" ]
 end
 
 set -x ALTERNATIVE_EDITOR mcedit
+
+if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]
+    set -x SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"
+    gpg-connect-agent -q updatestartuptty /bye
+end

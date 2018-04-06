@@ -215,7 +215,7 @@ with pkgs.haskell.lib;
          enable = true;
          extraSessionCommands = ''
          export XKB_DEFAULT_LAYOUT=us\(colemak\),ru
-         export XKB_DEFAULT_OPTIONS=grp:lctrl_toggle,compose:rwin,caps:ctrl_modifier;
+         export XKB_DEFAULT_OPTIONS=grp:lctrl_toggle,compose:rwin,caps:ctrl_modifier
          '';
     };
   };
