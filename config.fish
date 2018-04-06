@@ -6,7 +6,7 @@ end
 
 
 alias e "emacsclient -t"
-alias ec "emacsclient -cn"
+alias ec "emacsclient -c -n"
 alias v ebook-viewer
 alias u udiskie-umount
 alias feh "feh -.d"
@@ -15,3 +15,4 @@ if [ $TERM = "st-256color" -o $TERM = "dvtm-256color" ]
    set -x TERM xterm
 end
 
+set -x ALTERNATIVE_EDITOR mcedit

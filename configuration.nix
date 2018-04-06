@@ -22,6 +22,8 @@ with pkgs.haskell.lib;
       preLVM = true; }
   ];
 
+  boot.cleanTmpDir = true;
+
   hardware.bluetooth.enable = true;
   hardware.opengl.driSupport32Bit = true;
   
@@ -46,7 +48,7 @@ with pkgs.haskell.lib;
     127.0.0.1 www.google-analytics.com
     127.0.0.1 ssl.google-analytics.com
     127.0.0.1 google-analytics.com
-    127.0.0.1 www.onclickmax.com
+#    127.0.0.1 www.onclickmax.com
     '';
   };
   #networking.proxy.default = "http://127.0.0.1:8118";
@@ -86,10 +88,9 @@ with pkgs.haskell.lib;
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
-      chromium
-      calibre
-      firefox-bin
+      feh
       goldendict
+      google-chrome
       mpv
       steam
       tdesktop
@@ -113,7 +114,8 @@ with pkgs.haskell.lib;
 #	   (dontCheck imperative-edsl)
 
 #      	   (dontHaddock Agda)
-	   ghc-mod
+	   Agda
+#	   ghc-mod
 	   hakyll
  	   alex
  	   cabal-install
@@ -123,7 +125,7 @@ with pkgs.haskell.lib;
  	   threadscope	   
 	 ]
       )).override { withLLVM = true; })
-#      AgdaStdlib
+      AgdaStdlib
 
       (python36.withPackages (ps: with ps; [pip pygments setuptools]))
 
@@ -163,6 +165,7 @@ with pkgs.haskell.lib;
       xfig
       	    	    
       # system
+      alsaUtils
       bc
       coreutils
       dos2unix
@@ -171,7 +174,7 @@ with pkgs.haskell.lib;
       fdupes
       file
       findutils
-      mc
+      mc      
       nix-repl
       nox
       oathToolkit
@@ -186,9 +189,11 @@ with pkgs.haskell.lib;
       unzip
       usbutils
       which
-      xorg.xbacklight
-      xorg.xkill
-      xorg.xmodmap
+      # xcape
+      # xorg.xbacklight
+      # xorg.xev
+      # xorg.xkill
+      # xorg.xmodmap
     ];
   };
     
@@ -206,6 +211,13 @@ with pkgs.haskell.lib;
     gnupg.agent.enable = true;
     gnupg.agent.enableSSHSupport = true;
     ssh.startAgent = false;
+    sway = {
+         enable = true;
+         extraSessionCommands = ''
+         export XKB_DEFAULT_LAYOUT=us\(colemak\),ru
+         export XKB_DEFAULT_OPTIONS=grp:lctrl_toggle,compose:rwin,caps:ctrl_modifier;
+         '';
+    };
   };
   
   # List services that you want to enable:
@@ -217,7 +229,9 @@ with pkgs.haskell.lib;
       defaultEditor = true;
 #      package = pkgs.emacs25.override { withGTK2 = false; withGTK3 = true; };
     };
-  
+
+    illum.enable = true;
+
     mpd = {
       enable = true;
       group = "users";
@@ -251,14 +265,12 @@ with pkgs.haskell.lib;
     };
 
     transmission.enable = true;
-        
     udisks2.enable = true;
         
-    unclutter-xfixes.enable = true;
     
     # Enable the X11 windowing system.
     xserver = {
-      enable = true;
+      enable = false;
       layout = "us(colemak),ru";
 
       xkbOptions = "grp:shifts_toggle,compose:rwin,caps:ctrl_modifier";
@@ -270,7 +282,7 @@ with pkgs.haskell.lib;
         buttonsMap = [ 1 3 2 ];
         maxSpeed = "0.8";
         minSpeed = "0.3";
-	accelFactor = "0.075";
+        accelFactor = "0.075";
       };
 
       multitouch = {
@@ -280,12 +292,11 @@ with pkgs.haskell.lib;
       };
 
       displayManager.gdm.enable = false;
-      displayManager.slim.enable = true;
+      displayManager.slim.enable = false;
       
       desktopManager = {
         default = "none";
         gnome3.enable = false;
-	xterm.enable  = false;
       };
 
       windowManager = {
@@ -294,57 +305,21 @@ with pkgs.haskell.lib;
         i3.enable = true;
         default = "i3";
       };
-
-      xautolock = {
-        enable = true;
-	locker = "i3lock -c ff0000";
-	time = 5;
-      };
     };
   };
 
   # systemd.user =  {
-  
-  #   services = {
-    
-  #     mbsync = {
-  #       description = "Mailbox syncronization";
-
-  # 	serviceConfig = {
-  # 	  Type      = "oneshot";
-  # 	  ExecStart = "${pkgs.isync}/bin/mbsync -aq";
-  # 	};
-
-  # 	path = [ pkgs.gawk pkgs.gnupg ];
-
-  # 	after       = [ "network-online.target" "gpg-agent.service" ];
-  #       wantedBy    = [ "default.target" ];
-  #     };
-  #   };
-
-  #   timers = {
-  #     mbsync = {
-  #       description = "Mailbox syncronization";
-      
-  #       timerConfig = {
-  #         OnCalendar = "*:0/5";
-  #         Persistent = "true";
-  #       };
-  #       wantedBy = [ "timers.target" ];
-  #     };
-  #   };
-  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.viv = {
     description = "Nikita Frolov";
-    extraGroups = [ "wheel" "transmission" "adbusers" ];
+    extraGroups = [ "wheel" "transmission" "adbusers" "sway" ];
     isNormalUser = true;
     uid = 1000;
     shell = pkgs.fish;
   };
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "17.09";
+  system.stateVersion = "18.03";
 
 }
