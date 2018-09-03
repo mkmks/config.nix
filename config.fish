@@ -1,7 +1,7 @@
 set fish_greeting
 
-function fish_prompt
-    ~/.local/bin/powerline-shell --shell bare $status
+function fish_title
+    echo $USER'@'(cat /etc/hostname)':'$PWD'$' $argv[1]
 end
 
 
@@ -11,11 +11,11 @@ alias v ebook-viewer
 alias u udiskie-umount
 alias feh "feh -.d"
 
-if [ $TERM = "st-256color" -o $TERM = "dvtm-256color" ]
-   set -x TERM xterm
-end
-
 set -x ALTERNATIVE_EDITOR mcedit
+
+#if [ $TERM = "st-256color" -o $TERM = "dvtm-256color" -o $TERM = "xterm-termite" ]
+#   set -x TERM xterm
+#end
 
 if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]
     set -x SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"

@@ -7,6 +7,15 @@
 with pkgs.lib;
 with pkgs.haskell.lib;
 
+let
+  unstableTarball =
+    fetchTarball
+      https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
+  unstable = import unstableTarball {
+           config = config.nixpkgs.config;
+  };
+in
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -70,10 +79,6 @@ with pkgs.haskell.lib;
 
     allowUnfree = true;
 
-    packageOverrides = pkgs: {
-
-    };
-
     zathura.useMupdf = false;
   };
   
@@ -88,11 +93,13 @@ with pkgs.haskell.lib;
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
+      calibre      
+      pkgs.dmenu
       feh
-      goldendict
       google-chrome
+      goldendict
       mpv
-      steam
+#      steam
       tdesktop
       zathura
 	    
@@ -150,14 +157,14 @@ with pkgs.haskell.lib;
       tor
       
       # publishing
-      briss      
+      briss
       djvu2pdf
       djvulibre
       dot2tex
       pkgs.exif
       ghostscript
       pkgs.gnuplot
-      graphviz
+      pkgs.graphviz
       pkgs.imagemagick
       pdf2djvu
       pdftk
@@ -165,6 +172,7 @@ with pkgs.haskell.lib;
       xfig
       	    	    
       # system
+      acpi
       alsaUtils
       bc
       coreutils
@@ -183,14 +191,11 @@ with pkgs.haskell.lib;
       p7zip
       sdcv
       silver-searcher
-      st
-      tmux
       udiskie
       unzip
       usbutils
       which
       # xcape
-      # xorg.xbacklight
       # xorg.xev
       # xorg.xkill
       # xorg.xmodmap
@@ -199,6 +204,8 @@ with pkgs.haskell.lib;
     
   fonts = {
     fonts = with pkgs; [
+      cm_unicode
+      source-code-pro
       kochi-substitute
       wqy_zenhei
     ];
@@ -211,13 +218,26 @@ with pkgs.haskell.lib;
     gnupg.agent.enable = true;
     gnupg.agent.enableSSHSupport = true;
     ssh.startAgent = false;
-    sway = {
-         enable = true;
-         extraSessionCommands = ''
-         export XKB_DEFAULT_LAYOUT=us\(colemak\),ru
-         export XKB_DEFAULT_OPTIONS=grp:lctrl_toggle,compose:rwin,caps:ctrl_modifier
+    slock.enable = true;
+    tmux = {
+         enable = true;         
+#         newSession = true;
+         terminal = "screen-256color";
+         extraTmuxConf = ''
+         set -g mouse on
+         set -g prefix C-x
+         bind-key C-x send-prefix
+         unbind-key x
+         bind-key k confirm-before -p "kill-pane #P? (y/n)" kill-pane
+
+         set -g set-titles on
+         set -g set-titles-string "[#I] #T"
+         set -g status off
+
+         set -g destroy-unattached on
+         new-session -At default
          '';
-    };
+    };   
   };
   
   # List services that you want to enable:
@@ -227,8 +247,8 @@ with pkgs.haskell.lib;
     emacs = {
       enable = true;
       defaultEditor = true;
-#      package = pkgs.emacs25.override { withGTK2 = false; withGTK3 = true; };
-    };
+        package = unstable.emacs26.override { withGTK2 = false; withGTK3 = true; };
+	    };
 
     illum.enable = true;
 
@@ -256,8 +276,8 @@ with pkgs.haskell.lib;
       dataDir = "/home/viv/.syncthing";
       user = "viv";
     };
-    
-    telepathy.enable = false;
+
+    thermald.enable = true;
 
     tor = {
       enable = true;
@@ -270,7 +290,7 @@ with pkgs.haskell.lib;
     
     # Enable the X11 windowing system.
     xserver = {
-      enable = false;
+      enable = true;
       layout = "us(colemak),ru";
 
       xkbOptions = "grp:shifts_toggle,compose:rwin,caps:ctrl_modifier";
@@ -291,29 +311,24 @@ with pkgs.haskell.lib;
         tapButtons = false;
       };
 
-      displayManager.gdm.enable = false;
-      displayManager.slim.enable = false;
-      
-      desktopManager = {
-        default = "none";
-        gnome3.enable = false;
-      };
-
+      desktopManager.default = "none";
       windowManager = {
-#        xmonad.enable = true;
-#        xmonad.enableContribAndExtras = true;
-        i3.enable = true;
-        default = "i3";
+        default = "dwm";
+        session = singleton {
+          name = "dwm";
+          start = ''
+            dwm &
+            waitPID=$!
+          '';
+        };
       };
     };
   };
 
-  # systemd.user =  {
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.viv = {
     description = "Nikita Frolov";
-    extraGroups = [ "wheel" "transmission" "adbusers" "sway" ];
+    extraGroups = [ "wheel" "transmission" "adbusers" ];
     isNormalUser = true;
     uid = 1000;
     shell = pkgs.fish;

@@ -6,6 +6,7 @@
 		       (expand-file-name "~/") ".cabal/bin:"
 		       (expand-file-name "~/") ".nix-profile/bin:"
 		       (getenv "PATH")))
+(setenv "TERM" "screen-256color")
 ;; (setenv "GPG_AGENT_INFO" (concat (getenv "XDG_RUNTIME_DIR")
 ;; 				 "/gnupg/S.gpg-agent"))
 (setenv "SSH_AUTH_SOCK"  (concat (getenv "XDG_RUNTIME_DIR")
@@ -15,6 +16,7 @@
 (setenv "NIX_GHCPKG" "/run/current-system/sw/bin/ghc-pkg")
 (setenv "NIX_GHC_LIBDIR" "/run/current-system/sw/lib/ghc-8.0.2/")
 (setenv "NIX_GHC_DOCDIR" "/run/current-system/sw/share/x86_64-linux-ghc-8.0.2/")
+(setq shell-file-name "/bin/sh")
 
 ;;; loading packages
 
@@ -32,12 +34,19 @@
 (use-package emacs
   :diminish visual-line-mode hi-lock-mode)
 
-(use-package powerline)
-
-(use-package spaceline-config
-  :after powerline
+(use-package base16-theme
+  :ensure t
+  :init
+  (setq base16-theme-256-color-source "colors")
   :config
-  (spaceline-spacemacs-theme))
+  (load-theme 'base16-bright t))
+
+;; (use-package powerline)
+
+;; (use-package spaceline-config
+;;   :after powerline
+;;   :config
+;;   (spaceline-spacemacs-theme))
 
 (use-package boon-colemak
   :diminish boon-local-mode
@@ -121,6 +130,14 @@
 (require 'tramp)
 (setq tramp-backup-directory-alist backup-directory-alist)
 
+; replace mode lines with frame titles
+(setq frame-title-format
+      '((:eval (if (projectile-project-p)
+		   (concat "[" (projectile-project-name) "]/"
+			   (file-relative-name buffer-file-name (projectile-project-root)))
+		 buffer-file-name))
+	(vc-mode vc-mode) " (%m)"))
+
 ;; (require 'server)
 ;; (unless (server-running-p)
 ;;   (server-start))
@@ -132,11 +149,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(LaTeX-command "xelatex -shell-escape")
  '(Man-width 80)
  '(TeX-PDF-mode t)
  '(TeX-command-extra-options "-shell-escape")
- '(TeX-engine (quote xetex))
+ '(TeX-engine (quote luatex))
  '(TeX-parse-self t)
  '(TeX-view-program-selection
    (quote
@@ -149,8 +165,8 @@
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
  '(agda2-highlight-level (quote interactive))
- '(agda2-program-name "~/.nix-profile/bin/agda")
  '(auto-save-default nil)
+ '(base16-highlight-mode-line (quote contrast))
  '(battery-mode-line-format " %b%p%")
  '(boon-special-mode-list
    (quote
@@ -166,11 +182,10 @@
  '(completion-ignored-extensions
    (quote
     (".o" "~" ".bin" ".lbin" ".so" ".a" ".ln" ".blg" ".bbl" ".elc" ".lof" ".glo" ".idx" ".lot" ".svn/" ".hg/" ".git/" ".bzr/" "CVS/" "_darcs/" "_MTN/" ".fmt" ".tfm" ".class" ".fas" ".lib" ".mem" ".x86f" ".sparcf" ".fasl" ".ufsl" ".fsl" ".dxl" ".pfsl" ".dfsl" ".p64fsl" ".d64fsl" ".dx64fsl" ".lo" ".la" ".gmo" ".mo" ".toc" ".aux" ".cp" ".fn" ".ky" ".pg" ".tp" ".vr" ".cps" ".fns" ".kys" ".pgs" ".tps" ".vrs" ".pyc" ".pyo" ".hi")))
- '(custom-enabled-themes (quote (anti-zenburn)))
  '(custom-file nil)
  '(custom-safe-themes
    (quote
-    ("bea5fd3610ed135e6ecc35bf8a9c27277d50336455dbdd2969809f7d7c1f7d79" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "2cf7f9d1d8e4d735ba53facdc3c6f3271086b6906c4165b12e4fd8e3865469a6" "5cd0afd0ca01648e1fff95a7a7f8abec925bd654915153fb39ee8e72a8b56a1f" "6af55f6f26c0c6f113427d8ce72dea34aa1972b70e650486e6c725abd18bbe91" "c58382b9c4fff1aa94b8e3f0f81b0212bb554e83f76957bab735f960a4c441b1" "90b7aaddf859ba6b431c252444d29bab98dd687d2f571707ff70efcb1a2e19f6" "404a8e7f198ef3a5babdf122c7905abc61a8cd04eb2a1ce7d6faec5550b02a90" "37def0fac11a4890922af9febc8394e3b6e3c68904a294a2d440b1904e979c7e" "6a925fdf3a7bf2f3901d8fbc4ef64f9b4b4be2c6bed2b0d49d154db0bec91b33" "5d61bf41bfda37fb1db418b7e41672a081247c4ee8fcf3226d00cd69c1af9fe8" "0ad5a61e6ee6d2e7f884c0da7a6f437a4c84547514b509bdffd06757a8fc751f" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "e16a771a13a202ee6e276d06098bc77f008b73bbac4d526f160faa2d76c1dd0e" "60e70079a187df634db25db4bb778255eaace1ef4309e56389459fb9418b4840" "978ff9496928cc94639cb1084004bf64235c5c7fb0cfbcc38a3871eb95fa88f6" "de2c46ed1752b0d0423cde9b6401062b67a6a1300c068d5d7f67725adc6c3afb" "3d6b08cd1b1def3cc0bc6a3909f67475e5612dba9fa98f8b842433d827af5d30" "50ceca952b37826e860867d939f879921fac3f2032d8767d646dd4139564c68a" default)))
+    ("25c06a000382b6239999582dfa2b81cc0649f3897b394a75ad5a670329600b45" "ef1e992ef341e86397b39ee6b41c1368e1b33d45b0848feac6a8e8d5753daa67" "146061a7ceea4ccc75d975a3bb41432382f656c50b9989c7dc1a7bb6952f6eb4" "5a39d2a29906ab273f7900a2ae843e9aa29ed5d205873e1199af4c9ec921aaab" "df21cdadd3f0648e3106338649d9fea510121807c907e2fd15565dde6409d6e9" "d96587ec2c7bf278269b8ec2b800c7d9af9e22d816827639b332b0e613314dfd" "5b8eccff13d79fc9b26c544ee20e1b0c499587d6c4bfc38cabe34beaf2c2fc77" "4bf5c18667c48f2979ead0f0bdaaa12c2b52014a6abaa38558a207a65caeb8ad" "f984e2f9765a69f7394527b44eaa28052ff3664a505f9ec9c60c088ca4e9fc0b" "16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "3de3f36a398d2c8a4796360bfce1fa515292e9f76b655bb9a377289a6a80a132" "f6f5d5adce1f9a764855c9730e4c3ef3f90357313c1cae29e7c191ba1026bc15" "ef04dd1e33f7cbd5aa3187981b18652b8d5ac9e680997b45dc5d00443e6a46e3" "b3bcf1b12ef2a7606c7697d71b934ca0bdd495d52f901e73ce008c4c9825a3aa" "dd4628d6c2d1f84ad7908c859797b24cc6239dfe7d71b3363ccdd2b88963f336" "f5f3a6fb685fe5e1587bafd07db3bf25a0655f3ddc579ed9d331b6b19827ea46" "1d079355c721b517fdc9891f0fda927fe3f87288f2e6cc3b8566655a64ca5453" "446cc97923e30dec43f10573ac085e384975d8a0c55159464ea6ef001f4a16ba" "80930c775cef2a97f2305bae6737a1c736079fdcc62a6fdf7b55de669fbbcd13" "196df8815910c1a3422b5f7c1f45a72edfa851f6a1d672b7b727d9551bb7c7ba" "6145e62774a589c074a31a05dfa5efdf8789cf869104e905956f0cbd7eda9d0e" "4a91a64af7ff1182ed04f7453bb5a4b0c3d82148d27db699df89a5f1d449e2a4" "50d07ab55e2b5322b2a8b13bc15ddf76d7f5985268833762c500a90e2a09e7aa" "3f67aee8f8d8eedad7f547a346803be4cc47c420602e19d88bdcccc66dba033b" "527df6ab42b54d2e5f4eec8b091bd79b2fa9a1da38f5addd297d1c91aa19b616" "0c3b1358ea01895e56d1c0193f72559449462e5952bded28c81a8e09b53f103f" "7bef2d39bac784626f1635bd83693fae091f04ccac6b362e0405abf16a32230c" "36282815a2eaab9ba67d7653cf23b1a4e230e4907c7f110eebf3cdf1445d8370" "bea5fd3610ed135e6ecc35bf8a9c27277d50336455dbdd2969809f7d7c1f7d79" "cabc32838ccceea97404f6fcb7ce791c6e38491fd19baa0fcfb336dcc5f6e23c" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "3380a2766cf0590d50d6366c5a91e976bdc3c413df963a0ab9952314b4577299" "aea30125ef2e48831f46695418677b9d676c3babf43959c8e978c0ad672a7329" default)))
  '(default-input-method "russian-computer")
  '(display-time-24hr-format t)
  '(display-time-day-and-date nil)
@@ -196,12 +211,12 @@
  '(erc-timestamp-format "[%H:%M:%S]")
  '(erc-timestamp-format-right " [%H:%M:%S]")
  '(erc-track-enable-keybindings nil)
- '(fancy-battery-mode t)
  '(fill-column 80)
  '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
  '(gdb-many-windows t)
  '(global-flycheck-mode t)
+ '(global-linum-mode t)
  '(global-magit-file-mode t)
  '(global-visual-line-mode t)
  '(gnus-directory "~/.emacs.d/news/")
@@ -250,6 +265,7 @@
  '(message-kill-buffer-on-exit t)
  '(message-send-mail-function (quote smtpmail-send-it))
  '(mm-text-html-renderer (quote shr))
+ '(mode-line-format nil)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
  '(org-agenda-files (quote ("~/Documents/notes")))
@@ -267,7 +283,7 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode plan9-theme mingus matlab-mode magit log4e llvm-mode linum-relative ht helm-projectile helm-ghc helm-ag auctex anti-zenburn-theme ag)))
+    (csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode mingus matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
@@ -297,8 +313,8 @@
  '(term-unbind-key-list (quote ("C-z" "C-x" "C-c")))
  '(terminal-scrolling nil)
  '(tool-bar-mode nil)
- '(tramp-default-method "ssh")
- '(tramp-syntax (quote url))
+ '(tramp-default-method "ssh" nil (tramp))
+ '(tramp-syntax (quote url) nil (tramp))
  '(url-queue-timeout 30)
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
@@ -313,14 +329,12 @@
  '(woman-use-own-frame nil)
  '(word-wrap t)
  '(xterm-mouse-mode t))
+
+(provide 'emacs)
+;;; .emacs ends here
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#c0c0c0" :foreground "#232333" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
- '(show-paren-match ((t (:background "moccasin"))))
- '(variable-pitch ((t (:height 110 :family "DejaVu Serif Condensed")))))
-
-(provide 'emacs)
-;;; .emacs ends here
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 90 :width normal)))))
