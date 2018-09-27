@@ -67,7 +67,7 @@ in
   i18n = {
   #   consoleFont = "Lat2-Terminus16";
      consoleUseXkbConfig = true;
-     defaultLocale = "en_GB.UTF-8";
+     defaultLocale = "fr_FR.UTF-8";
   };
 
   # Set your time zone.
@@ -96,16 +96,15 @@ in
       calibre      
       pkgs.dmenu
       feh
-      google-chrome
+      firefox-bin
       goldendict
       mpv
 #      steam
-      tdesktop
+      unstable.tdesktop
       zathura
 	    
       # development
       clang
-      coq
       gdb
       gitAndTools.git
       gnumake
@@ -155,7 +154,11 @@ in
       lftp
       nmap      
       tor
-      
+
+      # provers
+      coq
+      isabelle
+
       # publishing
       briss
       djvu2pdf
@@ -232,7 +235,10 @@ in
 
          set -g set-titles on
          set -g set-titles-string "[#I] #T"
-         set -g status off
+         set -g status on
+         set -g status-position top
+         set -g status-left ""
+         set -g status-right ""
 
          set -g destroy-unattached on
          new-session -At default

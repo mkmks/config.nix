@@ -52,7 +52,7 @@ index a9ac303..e06b1c2 100644
  static const char *termcmd[]  = { "st", NULL };
  
 +static const char *tmuxcmd[]   = { "st", "-e", "tmux", "new-session", "-At", "default", NULL };
-+static const char *browsecmd[] = {"google-chrome-stable",  NULL};
++static const char *browsecmd[] = {"firefox",  NULL};
 +static const char *editcmd[]   = {"emacsclient", "-c", NULL };
 +
 +static const char *lockcmd[]  = {"slock", NULL };
