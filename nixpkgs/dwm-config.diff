@@ -1,5 +1,5 @@
 diff --git a/config.def.h b/config.def.h
-index a9ac303..e06b1c2 100644
+index 7054c06..0deb94d 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,5 +1,7 @@
@@ -8,14 +8,14 @@ index a9ac303..e06b1c2 100644
 +#include <X11/XF86keysym.h>
 +
  /* appearance */
- static const unsigned int borderpx  = 1;        /* border pixel of windows */
- static const unsigned int snap      = 32;       /* snap pixel */
-@@ -19,16 +21,18 @@ static const char *colors[][3]      = {
- };
+ static const char *fonts[] = {
+ 	"monospace:size=10"
+@@ -17,16 +19,19 @@ static const int showbar            = 1;        /* 0 means no bar */
+ static const int topbar             = 1;        /* 0 means bottom bar */
  
  /* tagging */
 -static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-+static const char *tags[] = { "dev", "web", "pdf", "im", "tmp"};
++static const char *tags[] = { "dev", "doc", "web", "app", "tmp"};
  
  static const Rule rules[] = {
  	/* xprop(1):
@@ -26,14 +26,15 @@ index a9ac303..e06b1c2 100644
 -	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 -	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 +	/* class         instance    title      tags mask     isfloating   monitor */
-+	{ "Gimp",        NULL,       NULL,      0,            1,           -1 },
-+	{ "emacs",       NULL,       NULL,      0,            0,           -1 },	
-+	{ "zathura",     NULL,       NULL,      1 << 2,       0,           -1 },
-+	{ "Telegram",    NULL,       NULL,      1 << 3,       0,           -1 },	
++	{ "Evince",      NULL,       NULL,      1 << 1,       0,           -1 },
++	{ "zathura",     NULL,       NULL,      1 << 1,       0,           -1 },
++	{ "Telegram",    NULL,       NULL,      1 << 3,       0,           -1 },
++	{ "Skype",       NULL,       NULL,      1 << 3,       0,           -1 },
++	{ "Spotify",     NULL,       NULL,      1 << 3,       0,           -1 },
  };
  
  /* layout(s) */
-@@ -39,12 +43,11 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
+@@ -37,12 +42,11 @@ static const int resizehints = 1;    /* 1 means respect size hints in tiled resi
  static const Layout layouts[] = {
  	/* symbol     arrange function */
  	{ "[]=",      tile },    /* first entry is default */
@@ -47,11 +48,11 @@ index a9ac303..e06b1c2 100644
  #define TAGKEYS(KEY,TAG) \
  	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
  	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
-@@ -59,23 +62,40 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn()
- static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+@@ -57,23 +61,42 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn()
+ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
  static const char *termcmd[]  = { "st", NULL };
  
-+static const char *tmuxcmd[]   = { "st", "-e", "tmux", "new-session", "-At", "default", NULL };
++static const char *tmuxcmd[]   = { "st", "-f", dmenufont, "-e", "tmux", "new-session", "-At", "default", NULL };
 +static const char *browsecmd[] = {"firefox",  NULL};
 +static const char *editcmd[]   = {"emacsclient", "-c", NULL };
 +
@@ -59,6 +60,7 @@ index a9ac303..e06b1c2 100644
 +static const char *volup[]         = { "amixer", "-q", "set", "Master", "3%+", "unmute", NULL };
 +static const char *voldown[]       = { "amixer", "-q", "set", "Master", "3%-", "unmute", NULL };
 +static const char *voltoggle[]     = { "amixer", "-q", "set", "Master", "toggle", NULL };
++static const char *mictoggle[]     = { "amixer", "-q", "set", "Capture", "toggle", NULL };
 +static const char *mpcnext[]       = { "mpc", "next", NULL };
 +static const char *mpcprev[]       = { "mpc", "prev", NULL };
 +static const char *mpctoggle[]     = { "mpc", "toggle", NULL };
@@ -75,6 +77,7 @@ index a9ac303..e06b1c2 100644
 +	{ 0,         XF86XK_AudioRaiseVolume,      spawn,          {.v = volup} },
 +	{ 0,         XF86XK_AudioLowerVolume,      spawn,          {.v = voldown} },
 +	{ 0,                XF86XK_AudioMute,      spawn,          {.v = voltoggle} },
++	{ 0,             XF86XK_AudioMicMute,      spawn,          {.v = mictoggle} },	
 +	{ 0,                XF86XK_AudioNext,      spawn,          {.v = mpcnext} },
 +	{ 0,                XF86XK_AudioPrev,      spawn,          {.v = mpcprev} },
 +	{ 0,                XF86XK_AudioPlay,      spawn,          {.v = mpctoggle} },
@@ -100,7 +103,7 @@ index a9ac303..e06b1c2 100644
  	{ MODKEY,                       XK_space,  setlayout,      {0} },
  	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
  	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-@@ -89,11 +109,8 @@ static Key keys[] = {
+@@ -87,11 +110,8 @@ static Key keys[] = {
  	TAGKEYS(                        XK_3,                      2)
  	TAGKEYS(                        XK_4,                      3)
  	TAGKEYS(                        XK_5,                      4)

@@ -27,6 +27,12 @@
 ;(global-set-key (kbd "C-x s") 'save-buffer)
 ;(global-set-key (kbd "C-x C-s") 'save-some-buffers)
 
+(setq
+ package-enable-at-startup nil
+ package-archives
+ '(("melpa-stable" . "http://stable.melpa.org/packages/")
+   ("gnu"         . "http://elpa.gnu.org/packages/")))
+
 (require 'package)
 (package-initialize)
 (require 'use-package)
@@ -77,7 +83,7 @@
 ;; development
 (require 'pretty-mode)
 ;(require 'nix-mode)
-(require 'llvm-mode)
+;(require 'llvm-mode)
 
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
@@ -283,7 +289,7 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode mingus matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
+    (pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode mingus matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
@@ -337,4 +343,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 90 :width normal)))))
+ '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 99 :width normal)))))

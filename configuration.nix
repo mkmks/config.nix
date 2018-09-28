@@ -19,6 +19,7 @@ in
 {
   imports =
     [ # Include the results of the hardware scan.
+      <nixos-hardware/lenovo/thinkpad/x1/6th-gen>
       ./hardware-configuration.nix
     ];
 
@@ -27,7 +28,7 @@ in
 
   boot.initrd.luks.devices = [
     { name = "nixos";
-      device = "/dev/sda2";
+      device = "/dev/nvme0n1p4";
       preLVM = true; }
   ];
 
@@ -42,9 +43,9 @@ in
     support32Bit = true;
   };
 
-  # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking = {
+    firewall.enable = true;
     firewall.allowedTCPPorts = [ 22000 ];
     firewall.allowedUDPPorts = [ 21027 ];
     networkmanager.enable = true;
@@ -59,6 +60,7 @@ in
     127.0.0.1 google-analytics.com
 #    127.0.0.1 www.onclickmax.com
     '';
+    hostName = "schildpad";
   };
   #networking.proxy.default = "http://127.0.0.1:8118";
   #networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
@@ -79,29 +81,37 @@ in
 
     allowUnfree = true;
 
-    zathura.useMupdf = false;
+    packageOverrides = pkgs: rec {
+      isabelle = pkgs.isabelle.override {
+        java = pkgs.openjdk10;
+      };
+    };
   };
   
   environment = {
   
     sessionVariables = {
+      _JAVA_AWT_WM_NONREPARENTING = "1";
       GTK_THEME = "Adwaita";
 #      GTK_DATA_PREFIX = "${config.system.path}";
       GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
 #      LIBGL_DISABLE_DRI3 = "1";
+#      GDK_SCALE = "2";
     };
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
       calibre      
       pkgs.dmenu
+      evince
       feh
       firefox-bin
       goldendict
       mpv
-#      steam
-      unstable.tdesktop
-      zathura
+      skypeforlinux
+      spotify
+      steam
+      tdesktop
 	    
       # development
       clang
@@ -110,7 +120,9 @@ in
       gnumake
       linuxPackages.perf
       manpages
+      mercurial
       sloccount
+      st
       valgrind
 
       ((ghcWithPackages (self: with self;
@@ -185,27 +197,29 @@ in
       fdupes
       file
       findutils
+      lm_sensors
       mc      
-      nix-repl
       nox
       oathToolkit
+      pciutils
       powertop
       psmisc
       p7zip
       sdcv
       silver-searcher
+      tpacpi-bat
       udiskie
       unzip
       usbutils
       which
-      # xcape
-      # xorg.xev
-      # xorg.xkill
-      # xorg.xmodmap
+      xorg.xev
+      xorg.xkill
     ];
   };
     
   fonts = {
+#    fontconfig.antialias = false;
+
     fonts = with pkgs; [
       cm_unicode
       source-code-pro
@@ -253,7 +267,7 @@ in
     emacs = {
       enable = true;
       defaultEditor = true;
-        package = unstable.emacs26.override { withGTK2 = false; withGTK3 = true; };
+      #  package = unstable.emacs26.override { withGTK2 = false; withGTK3 = true; };
 	    };
 
     illum.enable = true;
@@ -277,13 +291,21 @@ in
 #      actionsFiles = [ "match-all.action" "default.action" "/etc/privoxy/user.action" ];
 #    };
 
+    redshift = {
+      enable = true;
+      brightness = {
+        day = "1.0";
+        night = "0.7";
+      };
+      latitude = "57";
+      longitude = "11";      
+    };
+
     syncthing = {
       enable = true;
       dataDir = "/home/viv/.syncthing";
       user = "viv";
     };
-
-    thermald.enable = true;
 
     tor = {
       enable = true;
@@ -297,24 +319,19 @@ in
     # Enable the X11 windowing system.
     xserver = {
       enable = true;
+
+      dpi = 160;
+
       layout = "us(colemak),ru";
+      xkbOptions = "grp:rctrl_toggle,compose:prsc,caps:ctrl_modifier";
 
-      xkbOptions = "grp:shifts_toggle,compose:rwin,caps:ctrl_modifier";
-
-      synaptics = {
-        enable = true;
-        dev = "/dev/input/event*";
-        twoFingerScroll = true;
-        buttonsMap = [ 1 3 2 ];
-        maxSpeed = "0.8";
-        minSpeed = "0.3";
-        accelFactor = "0.075";
-      };
-
-      multitouch = {
-        enable = true;
-        invertScroll = true;
-        tapButtons = false;
+      libinput = {
+        accelSpeed = "0.4";
+        clickMethod = "clickfinger";
+        disableWhileTyping = true;
+        naturalScrolling = true;
+        scrollMethod = "twofinger";
+        tapping = false;
       };
 
       desktopManager.default = "none";
@@ -331,6 +348,27 @@ in
     };
   };
 
+  systemd.services.powertop = {
+      description = ''
+        enables powertop's reccomended settings on boot
+      '';
+      wantedBy = [ "multi-user.target" ];
+
+      path = with pkgs; [ powertop ];
+
+      environment = {
+        TERM = "dumb";
+      };
+
+      serviceConfig = {
+        Type = "idle";
+        User = "root";
+        ExecStart = ''
+          ${pkgs.powertop}/bin/powertop --auto-tune
+        '';
+      };
+  };
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.viv = {
     description = "Nikita Frolov";
@@ -341,6 +379,6 @@ in
   };
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.stateVersion = "18.03";
+  system.stateVersion = "18.09";
 
 }
