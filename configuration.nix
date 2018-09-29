@@ -8,9 +8,7 @@ with pkgs.lib;
 with pkgs.haskell.lib;
 
 let
-  unstableTarball =
-    fetchTarball
-      https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
+  unstableTarball = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
   unstable = import unstableTarball {
            config = config.nixpkgs.config;
   };
@@ -108,6 +106,7 @@ in
       firefox-bin
       goldendict
       mpv
+      networkmanager_dmenu
       skypeforlinux
       spotify
       steam
@@ -118,11 +117,13 @@ in
       gdb
       gitAndTools.git
       gnumake
-      linuxPackages.perf
+      haskellPackages.hlint
       manpages
       mercurial
+      linuxPackages.perf
       sloccount
-      st
+      haskellPackages.stylish-haskell
+      haskellPackages.threadscope
       valgrind
 
       ((ghcWithPackages (self: with self;
@@ -131,21 +132,12 @@ in
 #	   (dontCheck syntactic)
 #	   (dontCheck imperative-edsl)
 
-#      	   (dontHaddock Agda)
-	   Agda
 #	   ghc-mod
-	   hakyll
  	   alex
  	   cabal-install
  	   happy
- 	   hlint
- 	   stylish-haskell	
- 	   threadscope	   
 	 ]
       )).override { withLLVM = true; })
-      AgdaStdlib
-
-      (python36.withPackages (ps: with ps; [pip pygments setuptools]))
 
       # music
       cuetools
@@ -168,6 +160,8 @@ in
       tor
 
       # provers
+      haskellPackages.Agda
+      AgdaStdlib
       coq
       isabelle
 
@@ -180,9 +174,11 @@ in
       ghostscript
       pkgs.gnuplot
       pkgs.graphviz
+      haskellPackages.hakyll
       pkgs.imagemagick
       pdf2djvu
       pdftk
+      python3Packages.pygments
       texlive.combined.scheme-full
       xfig
       	    	    
@@ -198,15 +194,15 @@ in
       file
       findutils
       lm_sensors
-      mc      
+      mc
       nox
       oathToolkit
       pciutils
       powertop
       psmisc
       p7zip
-      sdcv
       silver-searcher
+      st
       tpacpi-bat
       udiskie
       unzip
@@ -259,7 +255,15 @@ in
          '';
     };   
   };
-  
+
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+        if (subject.isInGroup('wheel') && subject.local) {
+          return polkit.Result.YES;
+        }
+      });
+  '';  
+
   # List services that you want to enable:
 
   services = {

@@ -2,6 +2,8 @@ xsetroot -bg black
 xsetroot -cursor_name left_ptr
 
 udiskie &
+
+spotify &
 telegram-desktop &
 
 if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]; then
