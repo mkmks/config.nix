@@ -39,6 +39,10 @@ in
     enable = true;
     package = pkgs.pulseaudioFull;
     support32Bit = true;
+
+    extraConfig = ''
+      load-module module-switch-on-connect
+    '';
   };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -65,7 +69,7 @@ in
 
   # Select internationalisation properties.
   i18n = {
-  #   consoleFont = "Lat2-Terminus16";
+     consoleFont = "LatGrkCyr-12x22";
      consoleUseXkbConfig = true;
      defaultLocale = "fr_FR.UTF-8";
   };
@@ -184,7 +188,6 @@ in
       	    	    
       # system
       acpi
-      alsaUtils
       bc
       coreutils
       dos2unix
@@ -197,6 +200,7 @@ in
       mc
       nox
       oathToolkit
+      pamixer
       pciutils
       powertop
       psmisc
@@ -243,6 +247,7 @@ in
          unbind-key x
          bind-key k confirm-before -p "kill-pane #P? (y/n)" kill-pane
 
+         set -g renumber-windows on
          set -g set-titles on
          set -g set-titles-string "[#I] #T"
          set -g status on
