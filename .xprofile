@@ -3,6 +3,7 @@ xsetroot -cursor_name left_ptr
 
 udiskie &
 
+goldendict &
 spotify &
 telegram-desktop &
 
@@ -10,8 +11,3 @@ if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]; then
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"
     gpg-connect-agent -q updatestartuptty /bye
 fi
-
-while true; do
-      xsetroot -name "$(acpi | sed 's/Battery 0: //') | $(date "+%d %b %H:%M")"
-      sleep 1m
-done &

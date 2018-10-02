@@ -40,16 +40,22 @@ in
     package = pkgs.pulseaudioFull;
     support32Bit = true;
 
-    extraConfig = ''
-      load-module module-switch-on-connect
-    '';
+#    extraConfig = ''
+#      load-module module-switch-on-connect
+#    '';
   };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking = {
-    firewall.enable = true;
-    firewall.allowedTCPPorts = [ 22000 ];
-    firewall.allowedUDPPorts = [ 21027 ];
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 22000 57621 ];
+      allowedUDPPorts = [ 21027 57621 ];
+      extraCommands = ''
+        iptables -A INPUT -p udp --sport 1900 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
+        iptables -A INPUT -p udp --sport 5353 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
+      '';
+    };
     networkmanager.enable = true;
     extraHosts = ''
     127.0.0.1 googlesyndication.com
@@ -69,7 +75,7 @@ in
 
   # Select internationalisation properties.
   i18n = {
-     consoleFont = "LatGrkCyr-12x22";
+     consoleFont = "${pkgs.terminus_font}/share/consolefonts/ter-m32n.psf.gz";
      consoleUseXkbConfig = true;
      defaultLocale = "fr_FR.UTF-8";
   };
@@ -115,77 +121,7 @@ in
       spotify
       steam
       tdesktop
-	    
-      # development
-      clang
-      gdb
-      gitAndTools.git
-      gnumake
-      haskellPackages.hlint
-      manpages
-      mercurial
-      linuxPackages.perf
-      sloccount
-      haskellPackages.stylish-haskell
-      haskellPackages.threadscope
-      valgrind
 
-      ((ghcWithPackages (self: with self;
-      	 [
-	   (dontCheck operational-alacarte)
-#	   (dontCheck syntactic)
-#	   (dontCheck imperative-edsl)
-
-#	   ghc-mod
- 	   alex
- 	   cabal-install
- 	   happy
-	 ]
-      )).override { withLLVM = true; })
-
-      # music
-      cuetools
-      pkgs.flac
-      id3v2
-      pkgs.lame
-      monkeysAudio
-      mpc_cli
-      ncmpcpp
-      shntool
-      wavpack
-      
-      # networking
-      cadaver
-      dnsutils
-      gnupg
-      inetutils
-      lftp
-      nmap      
-      tor
-
-      # provers
-      haskellPackages.Agda
-      AgdaStdlib
-      coq
-      isabelle
-
-      # publishing
-      briss
-      djvu2pdf
-      djvulibre
-      dot2tex
-      pkgs.exif
-      ghostscript
-      pkgs.gnuplot
-      pkgs.graphviz
-      haskellPackages.hakyll
-      pkgs.imagemagick
-      pdf2djvu
-      pdftk
-      python3Packages.pygments
-      texlive.combined.scheme-full
-      xfig
-      	    	    
       # system
       acpi
       bc
@@ -214,6 +150,50 @@ in
       which
       xorg.xev
       xorg.xkill
+
+      # development
+      clang
+      gdb
+      gitAndTools.git
+      gnumake
+      haskellPackages.hlint
+      manpages
+      mercurial
+      linuxPackages.perf
+      sloccount
+      haskellPackages.stylish-haskell
+      haskellPackages.threadscope
+      valgrind
+
+      # networking
+      cadaver
+      dnsutils
+      gnupg
+      inetutils
+      lftp
+      nmap      
+
+      # provers
+      haskellPackages.Agda AgdaStdlib
+      coq
+      isabelle
+
+      # publishing
+      briss
+      djvu2pdf
+      djvulibre
+      dot2tex
+      pkgs.exif
+      ghostscript
+      pkgs.gnuplot
+      pkgs.graphviz
+      haskellPackages.hakyll
+      pkgs.imagemagick
+      pdf2djvu
+      pdftk
+      python3Packages.pygments
+      texlive.combined.scheme-full
+      xfig
     ];
   };
     
@@ -224,6 +204,7 @@ in
       cm_unicode
       source-code-pro
       kochi-substitute
+      terminus_font
       wqy_zenhei
     ];
   };
@@ -280,12 +261,6 @@ in
 	    };
 
     illum.enable = true;
-
-    mpd = {
-      enable = true;
-      group = "users";
-      musicDirectory = "/home/viv/Music";
-    };
 
     openssh.enable = false;
 
@@ -344,15 +319,17 @@ in
       };
 
       desktopManager.default = "none";
+
       windowManager = {
-        default = "dwm";
-        session = singleton {
-          name = "dwm";
-          start = ''
-            dwm &
-            waitPID=$!
-          '';
-        };
+        i3.enable = true;
+        default = "i3";
+        # session = singleton {
+        #   name = "dwm";
+        #   start = ''
+        #     dwm &
+        #     waitPID=$!
+        #   '';
+        # };
       };
     };
   };
