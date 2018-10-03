@@ -119,6 +119,7 @@ in
       feh
       firefox-bin
       goldendict
+      gthumb
       libreoffice
       mpv
       networkmanager_dmenu
@@ -148,7 +149,6 @@ in
       psmisc
       p7zip
       silver-searcher
-      st
       tpacpi-bat
       udiskie
       unzip

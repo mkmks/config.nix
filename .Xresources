@@ -1,0 +1,6 @@
+XTerm*font:		xft:monospace-10
+XTerm*fastScroll:	True
+XTerm*foreground:	cyan3
+XTerm*background:	black
+XTerm*cursorColor:	#cccccc
+

@@ -18,7 +18,7 @@ bindsym XF86AudioLowerVolume exec "pamixer -d 3 -u"
 bindsym XF86AudioRaiseVolume exec "pamixer -i 3 -u"
 bindsym XF86AudioMicMute     exec "pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t"
 
-bindsym $mod+underscore exec "st -e tmux new-session -At default"
+bindsym $mod+underscore exec "xterm -e tmux new-session -At default"
 bindsym $mod+Shift+underscore exec "emacsclient -c"
 
 bindsym $mod+z exec "i3lock -c ff0000"
