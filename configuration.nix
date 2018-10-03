@@ -45,8 +45,9 @@ in
 #    '';
   };
 
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking = {
+    hostName = "schildpad";
+
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22000 57621 ];
@@ -56,22 +57,25 @@ in
         iptables -A INPUT -p udp --sport 5353 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
       '';
     };
-    networkmanager.enable = true;
+
     extraHosts = ''
-    127.0.0.1 googlesyndication.com
-    127.0.0.1 tpc.googlesyndication.com
-    127.0.0.1 doubleclick.net
-    127.0.0.1 g.doubleclick.net
-    127.0.0.1 googleads.g.doubleclick.net
-    127.0.0.1 www.google-analytics.com
-    127.0.0.1 ssl.google-analytics.com
-    127.0.0.1 google-analytics.com
-#    127.0.0.1 www.onclickmax.com
+      127.0.0.1 googlesyndication.com
+      127.0.0.1 tpc.googlesyndication.com
+      127.0.0.1 doubleclick.net
+      127.0.0.1 g.doubleclick.net
+      127.0.0.1 googleads.g.doubleclick.net
+      127.0.0.1 www.google-analytics.com
+      127.0.0.1 ssl.google-analytics.com
+      127.0.0.1 google-analytics.com
+      # 127.0.0.1 www.onclickmax.com
     '';
-    hostName = "schildpad";
+
+    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+    networkmanager.enable = true;
+    
+    # proxy.default = "http://127.0.0.1:8118";
+    # proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";   
   };
-  #networking.proxy.default = "http://127.0.0.1:8118";
-  #networking.proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
 
   # Select internationalisation properties.
   i18n = {
@@ -115,8 +119,10 @@ in
       feh
       firefox-bin
       goldendict
+      libreoffice
       mpv
       networkmanager_dmenu
+      pavucontrol
       skypeforlinux
       spotify
       steam
@@ -148,6 +154,7 @@ in
       unzip
       usbutils
       which
+      xcalib
       xorg.xev
       xorg.xkill
 
@@ -269,12 +276,6 @@ in
       drivers = [ pkgs.cups-bjnp pkgs.gutenprint ];
     };
 
-#    privoxy = {
-#      enable = false;
-#      enableEditActions = true;
-#      actionsFiles = [ "match-all.action" "default.action" "/etc/privoxy/user.action" ];
-#    };
-
     redshift = {
       enable = true;
       brightness = {
@@ -323,13 +324,6 @@ in
       windowManager = {
         i3.enable = true;
         default = "i3";
-        # session = singleton {
-        #   name = "dwm";
-        #   start = ''
-        #     dwm &
-        #     waitPID=$!
-        #   '';
-        # };
       };
     };
   };
