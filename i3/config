@@ -11,16 +11,15 @@ font pango:monospace 10
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# apps
-
-bindsym $mod+q exec "st -e tmux new-session -At default"
-bindsym $mod+w exec firefox
-bindsym $mod+f exec "emacsclient -c"
+# apps _ZXC
 
 bindsym XF86AudioMute        exec "pamixer -t"
 bindsym XF86AudioLowerVolume exec "pamixer -d 3 -u"
 bindsym XF86AudioRaiseVolume exec "pamixer -i 3 -u"
 bindsym XF86AudioMicMute     exec "pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t"
+
+bindsym $mod+underscore exec "st -e tmux new-session -At default"
+bindsym $mod+Shift+underscore exec "emacsclient -c"
 
 bindsym $mod+z exec "i3lock -c ff0000"
 bindsym $mod+x exec dmenu_run
@@ -30,10 +29,7 @@ bindsym $mod+Shift+z exec "i3-nagbar -t warning -m 'Exit?' -b 'Yes, exit i3' 'i3
 bindsym $mod+Shift+x restart
 bindsym $mod+c reload
 
-# windows
-
-bindsym $mod+u focus parent
-bindsym $mod+d focus child
+# windows ARST QWFP
 
 bindsym $mod+a focus left
 bindsym $mod+r focus down
@@ -53,6 +49,12 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
+bindsym $mod+q focus child
+bindsym $mod+w focus parent
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+f floating toggle
+bindsym $mod+p mode "resize"
+
 mode "resize" {
         bindsym a resize shrink width 10 px or 10 ppt
         bindsym s resize grow height 10 px or 10 ppt
@@ -68,16 +70,12 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-bindsym $mod+p mode "resize"
-
 # layouts
 
-bindsym $mod+g fullscreen toggle
-bindsym $mod+Shift+g floating toggle
 bindsym $mod+space layout toggle split
-bindsym $mod+Shift+space layout toggle all
+bindsym $mod+Shift+space layout toggle stacked tabbed
 
-# workspaces
+# workspaces 12345
 
 bindsym $mod+1 workspace 1: dev
 bindsym $mod+2 workspace 2: doc
@@ -105,7 +103,7 @@ for_window [class="Spotify"] move to workspace 4: app
 exec --no-startup-id i3-msg "workspace 4: app; append_layout /home/viv/.config/i3/workspace-app.json; exec goldendict; exec telegram-desktop; exec spotify"
 exec --no-startup-id i3-msg "workspace 3: web; exec firefox"
 
-# outputs
+# outputs <>
 
 bindsym $mod+less focus output left
 bindsym $mod+greater focus output right
