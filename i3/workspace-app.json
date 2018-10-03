@@ -1,0 +1,79 @@
+// vim:ts=4:sw=4:et
+// {
+//     "border": "normal",
+//     "current_border_width": 4,
+//     "floating": "auto_off",
+//     "geometry": {
+//        "height": 600,
+//        "width": 800,
+//        "x": 0,
+//        "y": 0
+//     },
+//     "name": "Spotify",
+//     "percent": 0.524598623853211,
+//     "swallows": [
+//        {
+//        "class": "^Spotify$"
+//        // "instance": "^spotify$",
+//        // "title": "^Spotify$",
+//        // "transient_for": "^$"
+//        }
+//     ],
+//     "type": "con"
+// }
+
+{
+    // splitv split container with 2 children
+    "border": "normal",
+    "floating": "auto_off",
+    "layout": "splitv",
+    "percent": 0.475401376146789,
+    "type": "con",
+    "nodes": [
+        {
+            "border": "normal",
+            "current_border_width": 4,
+            "floating": "auto_off",
+            "geometry": {
+               "height": 1367,
+               "width": 845,
+               "x": 1711,
+               "y": 69
+            },
+            "name": "Telegram",
+            "percent": 0.5,
+            "swallows": [
+               {
+               "class": "^TelegramDesktop$"
+               // "instance": "^telegram\\-desktop$",
+               // "title": "^Telegram$",
+               // "transient_for": "^$"
+               }
+            ],
+            "type": "con"
+        },
+        {
+            "border": "normal",
+            "current_border_width": 4,
+            "floating": "auto_off",
+            "geometry": {
+               "height": 1367,
+               "width": 1072,
+               "x": 854,
+               "y": 69
+            },
+            "name": "GoldenDict",
+            "percent": 0.5,
+            "swallows": [
+               {
+               "class": "^GoldenDict$"
+               // "instance": "^goldendict$",
+               // "title": "^GoldenDict$",
+               // "transient_for": "^$"
+               }
+            ],
+            "type": "con"
+        }
+    ]
+}
+
