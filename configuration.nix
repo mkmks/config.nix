@@ -57,6 +57,9 @@ in
         iptables -A INPUT -p udp --sport 5353 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
       '';
     };
+    
+    networkmanager.enable = true;
+    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
     extraHosts = ''
       127.0.0.1 googlesyndication.com
@@ -70,11 +73,8 @@ in
       # 127.0.0.1 www.onclickmax.com
     '';
 
-    # wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-    networkmanager.enable = true;
-    
     # proxy.default = "http://127.0.0.1:8118";
-    # proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";   
+    # proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
   };
 
   # Select internationalisation properties.
@@ -122,7 +122,6 @@ in
       gthumb
       libreoffice
       mpv
-      networkmanager_dmenu
       pavucontrol
       skypeforlinux
       spotify
@@ -149,6 +148,7 @@ in
       psmisc
       p7zip
       silver-searcher
+      st
       tpacpi-bat
       udiskie
       unzip

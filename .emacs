@@ -218,7 +218,6 @@
  '(erc-timestamp-format-right " [%H:%M:%S]")
  '(erc-track-enable-keybindings nil)
  '(fill-column 80)
- '(font-use-system-font t)
  '(fringe-mode (quote (nil . 0)) nil (fringe))
  '(gdb-many-windows t)
  '(global-flycheck-mode t)
@@ -343,4 +342,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "DejaVu Sans Mono" :foundry "PfEd" :slant normal :weight normal :height 99 :width normal)))))
+ '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#e0e0e0" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :family "monospace")))))

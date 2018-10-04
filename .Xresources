@@ -1,7 +1,0 @@
-XTerm*font:		xft:monospace-10
-XTerm*foreground:	cyan3
-XTerm*background:	black
-XTerm*cursorColor:	#cccccc
-XTerm*fastScroll:	True
-XTerm*metaSendsEscape:	True
-XTerm*utf8Title:	True

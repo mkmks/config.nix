@@ -1,7 +1,6 @@
 xcalib $HOME/.local/share/B140QAN02_0_02-10-2018.icm
 xsetroot -bg black
 xsetroot -cursor_name left_ptr
-xrdb -load $HOME/.Xresources
 
 udiskie &
 
