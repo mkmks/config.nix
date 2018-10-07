@@ -70,17 +70,7 @@
   :diminish auto-revert-mode)
 
 (use-package mu4e
-  :init
-  (add-hook 'mu4e-compose-pre-hook
-	    (defun my-set-from-address ()
-	      "Set the From address based on the To address of the original."
-	      (let ((msg mu4e-compose-parent-message))
-		(when msg
-		  (setq user-mail-address
-			(cond
-			 ((mu4e-message-contact-field-matches msg :to "comments@mixailkain.net")
-			  "comments@mixailkain.net")
-			 (t "nf@mkmks.org")))))))
+  :init  
   :bind (("C-x m" . mu4e))
   :config
   (use-package mu4e-maildirs-extension)
