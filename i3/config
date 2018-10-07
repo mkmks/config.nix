@@ -110,7 +110,7 @@ bindsym $mod+Shift+greater move container to output right
 
 bar {
     position top
-    status_command i3status-rs /home/viv/dotfiles/i3/status-rs.toml
+    status_command i3status-rs /home/viv/.config/i3/status-rs.toml
     colors {
         separator #666666
         background #222222
