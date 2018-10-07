@@ -287,6 +287,7 @@
      ("date:7d..now AND NOT maildir:Spam" "Last 7 days" 119)
      ("mime:image/* AND NOT maildir:Spam" "Messages with images" 112)
      ("flag:attach AND NOT maildir:/Spam" "Messages with attachments" 97))))
+ '(mu4e-change-filenames-when-moving t)
  '(mu4e-compose-complete-only-personal t)
  '(mu4e-compose-dont-reply-to-self t)
  '(mu4e-compose-signature nil)
