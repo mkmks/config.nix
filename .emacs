@@ -47,13 +47,6 @@
   :config
   (load-theme 'base16-bright t))
 
-;; (use-package powerline)
-
-;; (use-package spaceline-config
-;;   :after powerline
-;;   :config
-;;   (spaceline-spacemacs-theme))
-
 (use-package boon-colemak
   :diminish boon-local-mode
   :disabled)
@@ -76,13 +69,31 @@
 (use-package autorevert
   :diminish auto-revert-mode)
 
+(use-package mu4e
+  :init
+  (add-hook 'mu4e-compose-pre-hook
+	    (defun my-set-from-address ()
+	      "Set the From address based on the To address of the original."
+	      (let ((msg mu4e-compose-parent-message))
+		(when msg
+		  (setq user-mail-address
+			(cond
+			 ((mu4e-message-contact-field-matches msg :to "comments@mixailkain.net")
+			  "comments@mixailkain.net")
+			 (t "nf@mkmks.org")))))))
+  :bind (("C-x m" . mu4e))
+  :config
+  (use-package mu4e-maildirs-extension)
+  (use-package mu4e-conversation)
+  (mu4e-maildirs-extension))
+
 ;; instant messaging
 (require 'erc-services)
 ;(erc :server "localhost" :port "6667" :nick "mkmks")
 
 ;; development
 (require 'pretty-mode)
-;(require 'nix-mode)
+(require 'nix-mode)
 ;(require 'llvm-mode)
 
 (load-file (let ((coding-system-for-read 'utf-8))
@@ -177,7 +188,7 @@
  '(boon-special-mode-list
    (quote
     (Buffer-menu-mode debugger-mode ediff-mode git-rebase-mode org-agenda-mode cfw:calendar-mode ereader-mode mingus-playlist-mode mingus-browse-mode)))
- '(browse-url-browser-function (quote browse-url-chrome))
+ '(browse-url-browser-function (quote browse-url-firefox))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -224,10 +235,6 @@
  '(global-linum-mode t)
  '(global-magit-file-mode t)
  '(global-visual-line-mode t)
- '(gnus-directory "~/.emacs.d/news/")
- '(gnus-home-directory "~/.emacs.d/")
- '(gnus-select-method (quote (nntp "news.gmane.org")))
- '(gnus-use-full-window nil)
  '(haskell-doc-show-global-types t)
  '(haskell-font-lock-symbols nil)
  '(haskell-indent-thenelse 1)
@@ -271,6 +278,30 @@
  '(message-send-mail-function (quote smtpmail-send-it))
  '(mm-text-html-renderer (quote shr))
  '(mode-line-format nil)
+ '(mu4e-attachment-dir "/home/viv/Downloass")
+ '(mu4e-bookmarks
+   (quote
+    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:Archive AND NOT maildir:Spam" "Unread new messages" 117)
+     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:Archive AND NOT maildir:Spam" "Unread mailing lists" 108)
+     ("date:today..now AND NOT maildir:Spam" "Today's messages" 116)
+     ("date:7d..now AND NOT maildir:Spam" "Last 7 days" 119)
+     ("mime:image/* AND NOT maildir:Spam" "Messages with images" 112)
+     ("flag:attach AND NOT maildir:/Spam" "Messages with attachments" 97))))
+ '(mu4e-compose-complete-only-personal t)
+ '(mu4e-compose-dont-reply-to-self t)
+ '(mu4e-compose-signature nil)
+ '(mu4e-confirm-quit nil)
+ '(mu4e-drafts-folder "/Drafts")
+ '(mu4e-get-mail-command "mbsync -a")
+ '(mu4e-maildir "/home/viv/Mail")
+ '(mu4e-maildirs-extension-use-bookmarks t)
+ '(mu4e-refile-folder "/Archive")
+ '(mu4e-sent-folder "/Sent")
+ '(mu4e-trash-folder "/Trash")
+ '(mu4e-user-mail-address-list
+   (quote
+    ("nf@mkmks.org" "frolov@chalmers.se" "comments@mixailkain.net")))
+ '(mu4e-view-show-images t)
  '(ns-tool-bar-display-mode nil t)
  '(ns-tool-bar-size-mode nil t)
  '(org-agenda-files (quote ("~/Documents/notes")))
@@ -288,7 +319,7 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode mingus matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
+    (mu4e-conversation mu4e-maildirs-extension pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
@@ -342,4 +373,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#e0e0e0" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 105 :width normal :family "monospace")))))
+ '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#e0e0e0" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 99 :width normal :family "DejaVu Sans Mono" :foundry "PfEd")))))

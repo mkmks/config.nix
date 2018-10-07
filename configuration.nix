@@ -10,15 +10,14 @@ with pkgs.haskell.lib;
 let
   unstableTarball = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
   unstable = import unstableTarball {
-           config = config.nixpkgs.config;
-  };
+               config = config.nixpkgs.config;
+             };
+	secrets = import ./secrets.nix;
 in
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      <nixos-hardware/lenovo/thinkpad/x1/6th-gen>
-      ./hardware-configuration.nix
+    [ ./hardware-configuration.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
@@ -39,6 +38,11 @@ in
     enable = true;
     package = pkgs.pulseaudioFull;
     support32Bit = true;
+
+    tcp = {
+      enable = true;
+      anonymousClients.allowedIpRanges = ["127.0.0.1"];
+    };
 
 #    extraConfig = ''
 #      load-module module-switch-on-connect
@@ -104,6 +108,7 @@ in
   
     sessionVariables = {
       _JAVA_AWT_WM_NONREPARENTING = "1";
+      QT_STYLE_OVERRIDE = "adwaita";
       GTK_THEME = "Adwaita";
 #      GTK_DATA_PREFIX = "${config.system.path}";
       GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
@@ -113,9 +118,11 @@ in
   
     systemPackages = with pkgs; with haskellPackages; [
       # desktop
+      pkgs.st
+
+#      adwaita-qt
+      baobab
       calibre      
-      pkgs.dmenu
-      evince
       feh
       firefox-bin
       goldendict
@@ -123,10 +130,9 @@ in
       libreoffice
       mpv
       pavucontrol
-      skypeforlinux
-      spotify
       steam
-      tdesktop
+      unstable.tdesktop
+      zathura
 
       # system
       acpi
@@ -148,8 +154,7 @@ in
       psmisc
       p7zip
       silver-searcher
-      st
-      tpacpi-bat
+      tmuxPlugins.sensible
       udiskie
       unzip
       usbutils
@@ -177,7 +182,10 @@ in
       dnsutils
       gnupg
       inetutils
+      iw
+      isync
       lftp
+      mu
       nmap      
 
       # provers
@@ -205,10 +213,9 @@ in
   };
     
   fonts = {
-#    fontconfig.antialias = false;
-
     fonts = with pkgs; [
       cm_unicode
+      font-awesome_4
       source-code-pro
       kochi-substitute
       terminus_font
@@ -225,27 +232,25 @@ in
     ssh.startAgent = false;
     slock.enable = true;
     tmux = {
-         enable = true;         
-#         newSession = true;
-         terminal = "screen-256color";
-         extraTmuxConf = ''
-         set -g mouse on
-         set -g prefix C-x
-         bind-key C-x send-prefix
-         unbind-key x
-         bind-key k confirm-before -p "kill-pane #P? (y/n)" kill-pane
+      enable = true;         
 
-         set -g renumber-windows on
-         set -g set-titles on
-         set -g set-titles-string "[#I] #T"
-         set -g status on
-         set -g status-position top
-         set -g status-left ""
-         set -g status-right ""
+      extraTmuxConf = ''
+        set -g mouse on
+        set -g prefix C-x
+        bind-key C-x send-prefix
+        unbind-key x
+        bind-key k confirm-before -p "kill-pane #P? (y/n)" kill-pane
 
-         set -g destroy-unattached on
-         new-session -At default
-         '';
+        set -g renumber-windows on
+        set -g set-titles on
+        set -g set-titles-string "[#I] #T"
+        set -g status on
+        set -g status-position top
+        set -g status-left ""
+        set -g status-right ""
+
+        run-shell ${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible/sensible.tmux
+      '';
     };   
   };
 
@@ -268,6 +273,23 @@ in
 	    };
 
     illum.enable = true;
+
+    mopidy = {
+      enable = true;
+      extensionPackages = [ pkgs.mopidy-spotify pkgs.mopidy-spotify-tunigo pkgs.mopidy-iris ];
+
+      configuration = ''
+[audio]
+output = pulsesink server=127.0.0.1
+
+[spotify]
+username = ${secrets.spotify.username}
+password = ${secrets.spotify.password}
+client_id = ${secrets.spotify.client_id}
+client_secret = ${secrets.spotify.client_secret}
+bitrate = 320
+      '';
+    };
 
     openssh.enable = false;
 
@@ -323,6 +345,8 @@ in
 
       windowManager = {
         i3.enable = true;
+        i3.extraPackages = with pkgs; [ dmenu unstable.i3status-rust i3lock ];
+
         default = "i3";
       };
     };
@@ -330,7 +354,7 @@ in
 
   systemd.services.powertop = {
       description = ''
-        enables powertop's reccomended settings on boot
+        enables powertop's recommended settings on boot
       '';
       wantedBy = [ "multi-user.target" ];
 
@@ -347,6 +371,37 @@ in
           ${pkgs.powertop}/bin/powertop --auto-tune
         '';
       };
+  };
+
+  systemd.user = {
+    services = {
+    
+      mbsync = {
+        description = "Mailbox syncronization";
+
+        serviceConfig = {
+        	  Type      = "oneshot";
+            ExecStart = "${pkgs.isync}/bin/mbsync -aq";
+        };
+
+       	path = [ pkgs.gawk pkgs.gnupg ];
+
+        after       = [ "network-online.target" "gpg-agent.service" ];
+        wantedBy    = [ "default.target" ];
+      };
+    };
+
+    timers = {
+      mbsync = {
+        description = "Mailbox syncronization";
+      
+        timerConfig = {
+          OnCalendar = "*:0/15";
+          Persistent = "true";
+        };
+        wantedBy = [ "timers.target" ];
+      };
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
