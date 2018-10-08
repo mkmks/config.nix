@@ -53,7 +53,8 @@ bindsym $mod+q focus child
 bindsym $mod+w focus parent
 bindsym $mod+f fullscreen toggle
 bindsym $mod+Shift+f floating toggle
-bindsym $mod+p mode "resize"
+bindsym $mod+p split toggle
+bindsym $mod+Shift+p mode "resize"
 
 mode "resize" {
         bindsym a resize shrink width 10 px or 10 ppt
@@ -94,9 +95,10 @@ assign [class="libreoffice"] 2: doc
 assign [class="GoldenDict"] 4: app
 assign [class="Telegram"] 4: app
 assign [class="Skype"] 4: app
+assign [class="Spotify"] 4: app
+for_window [class="Spotify"] move to workspace 4: app
 
-exec goldendict
-exec telegram-desktop
+exec --no-startup-id i3-msg "workspace 4: app; append_layout /home/viv/.config/i3/workspace-app.json; exec goldendict; exec telegram-desktop; exec skype; exec spotify"
 exec --no-startup-id i3-msg "workspace 3: web; exec firefox"
 
 # outputs <>
@@ -110,6 +112,7 @@ bindsym $mod+Shift+greater move container to output right
 
 bar {
     position top
+    tray_output none
     status_command i3status-rs /home/viv/.config/i3/status-rs.toml
     colors {
         separator #666666
