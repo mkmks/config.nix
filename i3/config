@@ -98,7 +98,7 @@ assign [class="Skype"] 4: app
 assign [class="Spotify"] 4: app
 for_window [class="Spotify"] move to workspace 4: app
 
-exec --no-startup-id i3-msg "workspace 4: app; append_layout /home/viv/.config/i3/workspace-app.json; exec goldendict; exec telegram-desktop; exec skype; exec spotify"
+exec --no-startup-id i3-msg "workspace 4: app; append_layout /home/viv/.config/i3/workspace-app.json; exec goldendict; exec telegram-desktop; exec skypeforlinux; exec spotify"
 exec --no-startup-id i3-msg "workspace 3: web; exec firefox"
 
 # outputs <>
