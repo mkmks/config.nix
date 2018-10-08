@@ -5,7 +5,7 @@ Host imap.fastmail.com
 SSLType IMAPS
 SSLVersions TLSv1.2
 User nf@mkmks.org
-PassCmd "gpg2 --no-tty -qd ~/.authinfo.gpg | awk '/machine smtp.fastmail.com login nf@mkmks.org/ {print $NF}'"
+PassCmd "secret-tool lookup email nf@mkmks.org"
 
 IMAPStore fastmail-remote
 Account fastmail
