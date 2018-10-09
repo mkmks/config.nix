@@ -1,0 +1,10 @@
+Xcursor.theme:		Adwaita
+Xcursor.size:		32
+
+XTerm*font:		xft:monospace-10
+XTerm*foreground:	white
+XTerm*background:	black
+XTerm*cursorColor:	#cccccc
+XTerm*fastScroll:	True
+XTerm*metaSendsEscape:	True
+XTerm*utf8Title: 	True

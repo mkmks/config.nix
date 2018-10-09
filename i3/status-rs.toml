@@ -2,10 +2,6 @@ theme = "solarized-dark"
 icons = "awesome"
 
 [[block]]
-block = "cpu"
-interval = 1
-
-[[block]]
 block = "memory"
 display_type = "memory"
 format_mem = "{Mup}%"
@@ -60,7 +56,7 @@ block = "sound"
 block = "music"
 player = "spotify"
 buttons = ["play", "next"]
-max_width = 12
+max_width = 16
 
 [[block]]
 block = "maildir"
