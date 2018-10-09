@@ -2,11 +2,6 @@ theme = "solarized-dark"
 icons = "awesome"
 
 [[block]]
-block = "load"
-interval = 1
-format = "{1m}"
-
-[[block]]
 block = "cpu"
 interval = 1
 
@@ -60,6 +55,12 @@ format = "{percentage}% {time}"
 
 [[block]]
 block = "sound"
+
+[[block]]
+block = "music"
+player = "spotify"
+buttons = ["play", "next"]
+max_width = 12
 
 [[block]]
 block = "maildir"
