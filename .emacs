@@ -12,20 +12,12 @@
 (setenv "SSH_AUTH_SOCK"  (concat (getenv "XDG_RUNTIME_DIR")
 				 "/gnupg/S.gpg-agent.ssh"))
 
-(setenv "NIX_GHC" "/run/current-system/sw/bin/ghc")
-(setenv "NIX_GHCPKG" "/run/current-system/sw/bin/ghc-pkg")
-(setenv "NIX_GHC_LIBDIR" "/run/current-system/sw/lib/ghc-8.0.2/")
-(setenv "NIX_GHC_DOCDIR" "/run/current-system/sw/share/x86_64-linux-ghc-8.0.2/")
 (setq shell-file-name "/bin/sh")
 
 ;;; loading packages
 
 (add-to-list 'load-path "/run/current-system/sw/share/emacs/site-lisp")
 (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp")
-
-;(global-set-key (kbd "C-x C-f") 'set-fill-column)
-;(global-set-key (kbd "C-x s") 'save-buffer)
-;(global-set-key (kbd "C-x C-s") 'save-some-buffers)
 
 (setq
  package-enable-at-startup nil
@@ -69,9 +61,19 @@
 (use-package autorevert
   :diminish auto-revert-mode)
 
+(defun mu4e-goodies-detach-view-to-window ()
+  "Detach the current mu4e-view buffer from header to a new window."
+  (interactive)
+  (when (string= (buffer-name (current-buffer)) mu4e~view-buffer-name)
+    (rename-buffer (mu4e-msg-field mu4e~view-msg :subject) t)
+    (setq mu4e~view-buffer nil)
+    (split-window-below)
+    (mu4e-view mu4e~view-msg)))
+
 (use-package mu4e
   :init  
   :bind (("C-x m" . mu4e))
+  :bind (:map mu4e-view-mode-map ("'" . mu4e-goodies-detach-view-to-window))
   :config
   (use-package mu4e-maildirs-extension)
   (use-package mu4e-conversation)
@@ -83,8 +85,9 @@
 
 ;; development
 (require 'pretty-mode)
-(require 'nix-mode)
-;(require 'llvm-mode)
+
+(use-package nix-mode
+  :mode "\\.nix\\'")
 
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
@@ -125,14 +128,6 @@
 
 ;;;; just before we are ready
 
-
-  
-;; store all backup and autosave files in the tmp dir
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
 ;; save backups of tramp edits in the same place as other backups
 (require 'tramp)
 (setq tramp-backup-directory-alist backup-directory-alist)
@@ -142,12 +137,8 @@
       '((:eval (if (projectile-project-p)
 		   (concat "[" (projectile-project-name) "]/"
 			   (file-relative-name buffer-file-name (projectile-project-root)))
-		 buffer-file-name))
+		 (buffer-name (current-buffer))))
 	(vc-mode vc-mode) " (%m)"))
-
-;; (require 'server)
-;; (unless (server-running-p)
-;;   (server-start))
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -172,7 +163,6 @@
      (output-html "xdg-open"))))
  '(agda2-fontset-name nil)
  '(agda2-highlight-level (quote interactive))
- '(auth-sources (quote (default)))
  '(auto-save-default nil)
  '(base16-highlight-mode-line (quote contrast))
  '(battery-mode-line-format " %b%p%")
@@ -264,19 +254,22 @@
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory nil)
+ '(message-citation-line-format "%A %d %B %Y, à %H:%M, %N a écrit:
+")
+ '(message-citation-line-function (quote message-insert-formatted-citation-line))
  '(message-directory "~/.emacs.d/message/")
  '(message-kill-buffer-on-exit t)
  '(message-send-mail-function (quote message-send-mail-with-sendmail))
  '(mm-text-html-renderer (quote shr))
  '(mode-line-format nil)
- '(mu4e-attachment-dir "/home/viv/Downloass")
+ '(mu4e-attachment-dir "/home/viv/Downloads")
  '(mu4e-bookmarks
    (quote
-    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:Archive AND NOT maildir:Spam" "Unread new messages" 117)
-     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:Archive AND NOT maildir:Spam" "Unread mailing lists" 108)
-     ("date:today..now AND NOT maildir:Spam" "Today's messages" 116)
-     ("date:7d..now AND NOT maildir:Spam" "Last 7 days" 119)
-     ("mime:image/* AND NOT maildir:Spam" "Messages with images" 112)
+    (("flag:unread AND NOT flag:list AND NOT flag:trashed AND NOT maildir:/Archive AND NOT maildir:/Spam" "Unread new messages" 117)
+     ("flag:unread AND flag:list AND NOT flag:trashed AND NOT maildir:/Archive AND NOT maildir:/Spam" "Unread mailing lists" 108)
+     ("date:today..now AND NOT maildir:/Spam" "Today's messages" 116)
+     ("date:7d..now AND NOT maildir:/Spam" "Last 7 days" 119)
+     ("mime:image/* AND NOT maildir:/Spam" "Messages with images" 112)
      ("flag:attach AND NOT maildir:/Spam" "Messages with attachments" 97))))
  '(mu4e-change-filenames-when-moving t)
  '(mu4e-compose-complete-only-personal t)
@@ -365,4 +358,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#e0e0e0" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 99 :width normal :family "DejaVu Sans Mono" :foundry "PfEd")))))
+ '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#e0e0e0" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 79 :width normal :family "DejaVu Sans Mono" :foundry "PfEd")))))
