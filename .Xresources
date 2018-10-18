@@ -1,7 +1,7 @@
 Xcursor.theme:		Adwaita
 Xcursor.size:		32
 
-XTerm*font:		xft:monospace-10
+XTerm*font:		xft:monospace-8
 XTerm*foreground:	white
 XTerm*background:	black
 XTerm*cursorColor:	#cccccc

@@ -6,7 +6,7 @@
 
 set $mod Mod4
 
-font pango:monospace 10
+font pango:monospace 8
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -22,7 +22,7 @@ bindsym $mod+underscore exec "xterm -e tmux new-session -At default"
 bindsym $mod+Shift+underscore exec "emacsclient -c"
 
 bindsym $mod+z exec "i3lock -c ff0000"
-bindsym $mod+x exec dmenu_run
+bindsym $mod+x exec "dmenu_run -fn monospace-8"
 bindsym $mod+Shift+c kill
 
 bindsym $mod+Shift+z exec "i3-nagbar -t warning -m 'Exit?' -b 'Yes, exit i3' 'i3-msg exit'"
