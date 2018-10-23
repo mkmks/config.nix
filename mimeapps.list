@@ -1,0 +1,3 @@
+[Default Applications]
+application/pdf=qpdfview.desktop
+application/epub+zip=calibre-ebook-viewer.desktop;

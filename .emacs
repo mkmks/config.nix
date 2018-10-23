@@ -274,6 +274,7 @@
  '(mu4e-change-filenames-when-moving t)
  '(mu4e-compose-complete-only-personal t)
  '(mu4e-compose-dont-reply-to-self t)
+ '(mu4e-compose-in-new-frame t)
  '(mu4e-compose-signature nil)
  '(mu4e-confirm-quit nil)
  '(mu4e-drafts-folder "/Drafts")
