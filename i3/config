@@ -5,15 +5,16 @@ font pango:monospace 8
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# apps _ZXC
+# apps QWF ZXC
 
 bindsym XF86AudioMute        exec "pamixer -t"
 bindsym XF86AudioLowerVolume exec "pamixer -d 3 -u"
 bindsym XF86AudioRaiseVolume exec "pamixer -i 3 -u"
 bindsym XF86AudioMicMute     exec "pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t"
 
-bindsym $mod+underscore exec xterm
-bindsym $mod+Shift+underscore exec "emacsclient -cn"
+bindsym $mod+q exec xterm
+bindsym $mod+w exec chrome
+bindsym $mod+f exec emacseditor
 
 bindsym $mod+z exec "i3lock -c ff0000"
 bindsym $mod+x exec "dmenu_run -fn monospace-8"
@@ -23,52 +24,26 @@ bindsym $mod+Shift+z exec "i3-nagbar -t warning -m 'Exit?' -b 'Yes, exit i3' 'i3
 bindsym $mod+Shift+x restart
 bindsym $mod+c reload
 
-# windows ARST QWFP
+# windows ARST
 
 bindsym $mod+a focus left
 bindsym $mod+r focus down
 bindsym $mod+s focus up
 bindsym $mod+t focus right
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
-
 bindsym $mod+Shift+a move left
 bindsym $mod+Shift+r move down
 bindsym $mod+Shift+s move up
 bindsym $mod+Shift+t move right
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
 
-bindsym $mod+q focus child
-bindsym $mod+w focus parent
-bindsym $mod+f fullscreen toggle
-bindsym $mod+Shift+f floating toggle
-bindsym $mod+p split toggle
-bindsym $mod+Shift+p mode "resize"
-
-mode "resize" {
-        bindsym a resize shrink width 10 px or 10 ppt
-        bindsym s resize grow height 10 px or 10 ppt
-        bindsym r resize shrink height 10 px or 10 ppt
-        bindsym t resize grow width 10 px or 10 ppt
-
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Up resize grow height 10 px or 10 ppt
-        bindsym Down resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
-
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
+bindsym $mod+Mod1+a floating toggle
+bindsym $mod+Mod1+r focus child
+bindsym $mod+Mod1+s focus parent
+bindsym $mod+Mod1+t fullscreen toggle
 
 # layouts
 
-bindsym $mod+space layout toggle split
-bindsym $mod+Shift+space layout toggle stacked tabbed
+bindsym $mod+space layout toggle all
+bindsym $mod+Shift+space split toggle
 
 # workspaces 12345
 
@@ -98,10 +73,11 @@ assign [class="Skype"] 3: net
 
 assign [class="Spotify"] 4
 for_window [class="Spotify"] move to workspace 4
+assign [class="Steam"] 5
 
 exec goldendict
 
-exec --no-startup-id i3-msg "workspace 3: net; append_layout /home/viv/.config/i3/workspace-net.json; exec /home/viv/bin/chrome; exec telegram-desktop; exec skypeforlinux"
+exec --no-startup-id i3-msg "workspace 3: net; append_layout /home/viv/.config/i3/workspace-net.json; exec chrome; exec telegram-desktop; exec skypeforlinux"
 
 # outputs <>
 

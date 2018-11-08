@@ -169,7 +169,7 @@
  '(boon-special-mode-list
    (quote
     (Buffer-menu-mode debugger-mode ediff-mode git-rebase-mode org-agenda-mode cfw:calendar-mode ereader-mode mingus-playlist-mode mingus-browse-mode)))
- '(browse-url-browser-function (quote browse-url-firefox))
+ '(browse-url-browser-function (quote browse-url-chrome))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
