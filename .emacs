@@ -1,14 +1,5 @@
 ;;;; This is my .emacs. There are many like it, but this one is mine.
 
-(add-to-list 'exec-path (concat (expand-file-name "~/") ".cabal/bin"))
-(add-to-list 'exec-path (concat (expand-file-name "~/") ".nix-profile/bin"))
-(setenv "PATH" (concat "/var/setuid-wrappers:"
-		       (expand-file-name "~/") ".cabal/bin:"
-		       (expand-file-name "~/") ".nix-profile/bin:"
-		       (getenv "PATH")))
-(setenv "TERM" "screen-256color")
-;; (setenv "GPG_AGENT_INFO" (concat (getenv "XDG_RUNTIME_DIR")
-;; 				 "/gnupg/S.gpg-agent"))
 (setenv "SSH_AUTH_SOCK"  (concat (getenv "XDG_RUNTIME_DIR")
 				 "/gnupg/S.gpg-agent.ssh"))
 
@@ -338,6 +329,7 @@
  '(tramp-default-method "ssh" nil (tramp))
  '(tramp-syntax (quote url) nil (tramp))
  '(url-queue-timeout 30)
+ '(use-package-always-ensure t)
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
  '(vhdl-upper-case-attributes t)
