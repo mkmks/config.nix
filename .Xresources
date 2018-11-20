@@ -10,3 +10,5 @@ XTerm*cursorColor:	#cccccc
 XTerm*fastScroll:	True
 XTerm*metaSendsEscape:	True
 XTerm*utf8Title: 	True
+XTerm*scrollBar:	False
+XTerm*fullscreen:	never

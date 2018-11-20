@@ -1,8 +1,5 @@
 ;;;; This is my .emacs. There are many like it, but this one is mine.
 
-(setenv "SSH_AUTH_SOCK"  (concat (getenv "XDG_RUNTIME_DIR")
-				 "/gnupg/S.gpg-agent.ssh"))
-
 (setq shell-file-name "/bin/sh")
 
 ;;; loading packages
@@ -70,23 +67,31 @@
   (use-package mu4e-conversation)
   (mu4e-maildirs-extension))
 
-;; instant messaging
-(require 'erc-services)
-;(erc :server "localhost" :port "6667" :nick "mkmks")
+(use-package erc
+  :init
+  (load "~/.ercpass.gpg")  
+  :bind (("C-x c" . erc))
+  :config
+  (require 'erc-networks)
+  (erc-networks-mode 1)
+  (add-to-list 'erc-networks-alist '(BitlBee . "localhost"))
+  (require 'erc-services)
+  (erc-services-mode 1)
+  (setq erc-nickserv-passwords
+        '((BitlBee (("mkmks" . ,bitlbee-pass))))))
 
 ;; development
-(require 'pretty-mode)
+(use-package pretty-mode)
 
 (use-package nix-mode
   :mode "\\.nix\\'")
 
-(load-file (let ((coding-system-for-read 'utf-8))
-	     (shell-command-to-string "agda-mode locate")))
+;(load-file (let ((coding-system-for-read 'utf-8))
+;	     (shell-command-to-string "agda-mode locate")))
 
 ;(load "ProofGeneral/generic/proof-site")
 
-(require 'haskell-interactive-mode)
-(require 'haskell-process)
+(use-package haskell-mode)
 
 (use-package dante
   :ensure t
@@ -117,11 +122,9 @@
 ;; 	  (define-key haskell-mode-map (kbd "C-c M-.") nil)
 ;; 	  (define-key haskell-mode-map (kbd "C-c C-d") nil)))
 
-;;;; just before we are ready
-
-;; save backups of tramp edits in the same place as other backups
-(require 'tramp)
-(setq tramp-backup-directory-alist backup-directory-alist)
+(use-package tramp
+  :init
+  (setq tramp-backup-directory-alist backup-directory-alist))
 
 ; replace mode lines with frame titles
 (setq frame-title-format
@@ -157,10 +160,11 @@
  '(auto-save-default nil)
  '(base16-highlight-mode-line (quote contrast))
  '(battery-mode-line-format " %b%p%")
+ '(blink-cursor-mode nil)
  '(boon-special-mode-list
    (quote
     (Buffer-menu-mode debugger-mode ediff-mode git-rebase-mode org-agenda-mode cfw:calendar-mode ereader-mode mingus-playlist-mode mingus-browse-mode)))
- '(browse-url-browser-function (quote browse-url-chrome))
+ '(browse-url-browser-function (quote browse-url-default-browser))
  '(c-default-style
    (quote
     ((c-mode . "k&r")
@@ -192,6 +196,7 @@
  '(erc-enable-logging nil)
  '(erc-nick "mkmks")
  '(erc-nickserv-identify-mode (quote nick-change))
+ '(erc-notifications-mode t)
  '(erc-prompt-for-nickserv-password nil)
  '(erc-prompt-for-password nil)
  '(erc-query-display (quote frame))
@@ -245,8 +250,6 @@
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory nil)
- '(message-citation-line-format "%A %d %B %Y, à %H:%M, %N a écrit:
-")
  '(message-citation-line-function (quote message-insert-formatted-citation-line))
  '(message-directory "~/.emacs.d/message/")
  '(message-kill-buffer-on-exit t)
@@ -296,7 +299,7 @@
      ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (mu4e-conversation mu4e-maildirs-extension pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
+    (erc-services fish-mode dockerfile-mode diminish projectile mu4e-conversation mu4e-maildirs-extension pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
@@ -327,7 +330,7 @@
  '(terminal-scrolling nil)
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh" nil (tramp))
- '(tramp-syntax (quote url) nil (tramp))
+ '(tramp-syntax (quote default) nil (tramp))
  '(url-queue-timeout 30)
  '(use-package-always-ensure t)
  '(user-mail-address "nf@mkmks.org")

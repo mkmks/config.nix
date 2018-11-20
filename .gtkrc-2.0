@@ -1,0 +1,4 @@
+gtk-icon-theme-name = "Adwaita"
+gtk-theme-name = "Adwaita"
+gtk-key-theme-name = "Emacs"
+gtk-font-name = "DejaVu Sans 8"

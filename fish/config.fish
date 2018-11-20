@@ -1,18 +1,20 @@
 set fish_greeting
 
 function fish_title
-    echo $USER'@'(cat /etc/hostname)':'$PWD'$' $argv[1]
+    echo $USER'@'(hostname)':'$PWD'$' $argv[1]
 end
 
-alias e "emacsclient -t"
-alias ec "emacsclient -c -n"
+alias ec "emacsclient -n"
 alias v ebook-viewer
 alias u udiskie-umount
 alias feh "feh -.d"
 
-set -x ALTERNATIVE_EDITOR mcedit
+set -x EDITOR "emacsclient -cn"
+set -x ALTERNATIVE_EDITOR "mg -n"
+set -x SDCV_PAGER "less -R"
 
-if [ -d "$XDG_RUNTIME_DIR/gnupg/" ]
-    set -x SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh"
-    gpg-connect-agent -q updatestartuptty /bye > /dev/null
-end
+set -x CVSROOT "anoncvs@anoncvs.eu.openbsd.org:/cvs"
+
+
+gpg-connect-agent -q updatestartuptty /bye > /dev/null
+
