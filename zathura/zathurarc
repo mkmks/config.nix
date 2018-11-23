@@ -1,0 +1,3 @@
+set font "Monospace 8"
+set window-title-page true
+set guioptions ""
