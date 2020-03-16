@@ -1,6 +1,6 @@
 set $mod Mod4
 
-font pango:monospace 8
+font Monospace 9
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -12,15 +12,7 @@ bindsym XF86AudioLowerVolume exec "pamixer -d 3 -u"
 bindsym XF86AudioRaiseVolume exec "pamixer -i 3 -u"
 bindsym XF86AudioMicMute     exec "pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t"
 
-bindsym $mod+q exec xterm
-bindsym $mod+w exec chrome
-bindsym $mod+f exec emacseditor
-
-bindsym $mod+z exec "i3lock -c ff0000"
-bindsym $mod+x exec "dmenu_run -fn monospace-8"
 bindsym $mod+Shift+c kill
-
-bindsym $mod+Shift+z exec "i3-nagbar -t warning -m 'Exit?' -b 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Shift+x restart
 bindsym $mod+c reload
 
@@ -30,22 +22,13 @@ bindsym $mod+a focus left
 bindsym $mod+r focus down
 bindsym $mod+s focus up
 bindsym $mod+t focus right
+
 bindsym $mod+Shift+a move left
 bindsym $mod+Shift+r move down
 bindsym $mod+Shift+s move up
 bindsym $mod+Shift+t move right
 
-bindsym $mod+Mod1+a floating toggle
-bindsym $mod+Mod1+r focus child
-bindsym $mod+Mod1+s focus parent
-bindsym $mod+Mod1+t fullscreen toggle
-
-# layouts
-
-bindsym $mod+space layout toggle all
-bindsym $mod+Shift+space split toggle
-
-# workspaces 12345
+# workspaces 1234 ARST
 
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -57,23 +40,26 @@ bindsym $mod+Shift+2 move container to workspace 2
 bindsym $mod+Shift+3 move container to workspace 3
 bindsym $mod+Shift+4 move container to workspace mmm
 
-for_window [class="Google-chrome"] border pixel 0
+bindsym $mod+Shift+Mod1+a move workspace to output left
+bindsym $mod+Shift+Mod1+r move workspace to output down
+bindsym $mod+Shift+Mod1+s move workspace to output up
+bindsym $mod+Shift+Mod1+t move workspace to output right
 
-exec --no-startup-id i3-msg "workspace mmm; append_layout /home/viv/.config/i3/workspace-mmm.json; exec telegram-desktop; exec whatsapp; exec skypeforlinux; exec new-mu4e-frame.sh"
+# layouts
 
-# outputs <>
-
-bindsym $mod+less focus output left
-bindsym $mod+greater focus output right
-bindsym $mod+Shift+less move container to output left
-bindsym $mod+Shift+greater move container to output right
+bindsym $mod+space layout toggle all
+bindsym $mod+Shift+space split toggle
+bindsym $mod+Control+a floating toggle
+bindsym $mod+Control+r focus child
+bindsym $mod+Control+s focus parent
+bindsym $mod+Control+t fullscreen toggle
 
 # bar
 
 bar {
     position top
-    tray_output none
-    status_command i3status-rs /home/viv/.config/i3/status-rs.toml
+#    tray_output none
+    status_command i3status-rs /home/viv/dotfiles/i3/status-rs.toml
     colors {
         separator #666666
         background #222222

@@ -1,0 +1,61 @@
+include /home/viv/dotfiles/i3/config.common
+
+set $lockscreen-fg ff0000
+
+bindsym $mod+q exec termite
+
+bindsym $mod+z exec "swaylock -c $lockscreen-fg"
+bindsym $mod+x exec "bemenu-run --fn 'Monospace 9'"
+
+bindsym $mod+Shift+z exec "swaynag -t warning -m 'Exit?' -b 'Yes, exit sway' 'swaymsg exit'"
+
+# appearance
+
+set $gnome-schema org.gnome.desktop.interface
+
+exec_always {
+    gsettings set $gnome-schema font-name 'DejaVu Sans 9'
+    gsettings set $gnome-schema document-font-name 'DejaVu Sans 8'
+    gsettings set $gnome-schema monospace-font-name 'Monospace 9'
+    gsettings set $gnome-schema gtk-theme 'Adwaita'
+    gsettings set $gnome-schema icon-theme 'Adwaita'
+    gsettings set $gnome-schema cursor-theme 'Adwaita'
+}
+
+exec swayidle -w \
+                timeout 300  'swaylock -f -c $lockscreen-fg' \
+                timeout 600  'swaymsg "output * dpms off"' \
+                resume       'swaymsg "output * dpms on"' \
+                before-sleep 'swaylock -f -c $lockscreen-fg'
+
+# app-specific
+
+for_window [app_id="firefox"] border pixel 0
+
+output * background #000000 solid_color
+output DP-4 {
+       scale 1.2
+       pos 0 0
+}
+output eDP-1 {
+       scale 2
+       pos 0 1000
+}
+
+input * {
+      xkb_layout "us,ru"
+      xkb_variant "colemak,"
+      xkb_options "grp:rctrl_toggle,compose:prsc,caps:ctrl_modifier"
+
+      accel_profile adaptive     
+      click_method clickfinger
+      natural_scroll enabled
+      tap disabled
+}
+
+input "Synaptics TM3288-011" {
+      dwt enabled
+      scroll_method two_finger
+}
+
+#exec swaymsg "workspace mmm; append_layout /home/viv/dotfiles/i3/workspace-mmm.json; exec telegram-desktop; exec skypeforlinux; exec new-mu4e-frame.sh"
