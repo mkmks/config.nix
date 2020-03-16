@@ -59,21 +59,21 @@
                             ],
                             "type": "con"
                         },
-                        {
-                            "border": "pixel",
-                            "current_border_width": 0,
-                            "floating": "auto_off",
-                            "name": "WhatsApp",
-                            "percent": 0.333333333333333,
-                            "swallows": [
-                               {
-				   "class": "^Google\\-chrome$",
-				   "instance": "^web\\.whatsapp\\.com$"
-				   // "title": "^WhatsApp$"
-                               }
-                            ],
-                            "type": "con"
-                        },
+                        // {
+                        //     "border": "pixel",
+                        //     "current_border_width": 0,
+                        //     "floating": "auto_off",
+                        //     "name": "WhatsApp",
+                        //     "percent": 0.333333333333333,
+                        //     "swallows": [
+                        //        {
+			// 	   "class": "^Google\\-chrome$",
+			// 	   "instance": "^web\\.whatsapp\\.com$"
+			// 	   // "title": "^WhatsApp$"
+                        //        }
+                        //     ],
+                        //     "type": "con"
+                        // },
                         {
                             "border": "normal",
                             "current_border_width": 5,
