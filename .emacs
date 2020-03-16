@@ -2,15 +2,32 @@
 
 (setq shell-file-name "/bin/sh")
 
-(setq
- package-enable-at-startup nil
- package-archives
- '(("melpa-stable" . "http://stable.melpa.org/packages/")
-   ("gnu"         . "http://elpa.gnu.org/packages/")))
+(setenv "JAVA_HOME" "/nix/store/a6l8iabc8978cx6fdv4z5csanf1ib3zh-openjdk-11.0.4-ga/lib/openjdk")
 
 (require 'package)
+
+(setq
+ package-enable-at-startup t
+ package-archives
+ '(("melpa" . "http://melpa.org/packages/")
+   ("gnu"   . "http://elpa.gnu.org/packages/")))
+
 (package-initialize)
-(require 'use-package)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+    (package-install 'use-package))
+
+(eval-when-compile
+  (require 'use-package))
+
+(setq use-package-always-defer t
+      use-package-always-ensure t
+      backup-directory-alist `((".*" . ,temporary-file-directory))
+      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
+
+(use-package diminish)
+(use-package bind-key)
 
 (use-package emacs
   :diminish visual-line-mode hi-lock-mode)
@@ -26,9 +43,12 @@
   :diminish helm-mode
   :bind (("C-x b" . helm-buffers-list)
 	 ("C-x C-f" . helm-find-files)
-         ("C-x C-r" . helm-recentf))
+         ("C-x C-r" . helm-recentf)
+	 ("M-x" . helm-M-x))
   :config
-  (use-package helm-ghc))
+  (use-package helm-ghc)
+  (use-package helm-projectile)
+  (helm-projectile-on))
 
 (use-package projectile
   :bind (("C-x p" . projectile-commander)))
@@ -45,6 +65,9 @@
 (use-package nix-mode
   :mode "\\.nix\\'")
 
+(use-package nov-mode
+  :mode "\\.epub\\'")
+
 (load-file (let ((coding-system-for-read 'utf-8))
 	     (shell-command-to-string "agda-mode locate")))
 
@@ -60,6 +83,34 @@
   (add-hook 'haskell-mode-hook 'dante-mode)
   (add-hook 'haskell-mode-hook 'flycheck-mode))
 
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false")))
+
+(use-package lsp-mode
+  ;; Optional - enable lsp-mode automatically in scala files
+  :hook  (scala-mode . lsp)
+         (lsp-mode . lsp-lens-mode)
+	 :config (setq lsp-prefer-flymake nil))
+
+(use-package lsp-ui)
+
+(use-package lsp-treemacs
+  :config
+  (lsp-metals-treeview-enable t)
+  (setq lsp-metals-treeview-show-when-views-received t))
+
 (use-package tramp
   :init
   (setq tramp-backup-directory-alist backup-directory-alist))
@@ -74,7 +125,15 @@
     (mu4e-view mu4e~view-msg)))
 
 (use-package mu4e
-  :init  
+  :commands
+  (mu4e)
+  :init
+  (defun mu4e~draft-open-file (path)
+    "Open the the draft file at PATH."
+    (if mu4e-compose-in-new-frame
+	(find-file-other-frame path)
+      (find-file path))
+    (mime-to-mml))
   :bind (:map mu4e-view-mode-map ("'" . mu4e-goodies-detach-view-to-window))
   :config
   (use-package mu4e-maildirs-extension)
@@ -146,7 +205,7 @@
    (quote
     (haskell-decl-scan-mode haskell-indentation-mode imenu-add-menubar-index interactive-haskell-mode
 			    (lambda nil
-			      (ghc-init)))))
+			      (ghc-Init)))))
  '(haskell-stylish-on-save t)
  '(helm-boring-buffer-regexp-list
    (quote
@@ -165,7 +224,6 @@
  '(message-send-mail-function (quote message-send-mail-with-sendmail))
  '(mm-coding-system-priorities (quote (utf8)))
  '(mm-text-html-renderer (quote shr))
- '(mode-line-format nil)
  '(mu4e-attachment-dir "/home/viv/Downloads")
  '(mu4e-bookmarks
    (quote
@@ -201,15 +259,10 @@
  '(org-default-notes-file "~/Documents/notes/inbox.org")
  '(org-directory "~/Documents/notes")
  '(org-reverse-note-order t)
- '(package-archives
-   (quote
-    (("gnu" . "http://elpa.gnu.org/packages/")
-     ("melpa" . "http://melpa.milkbox.net/packages/"))))
  '(package-selected-packages
    (quote
-    (0xc erc-services fish-mode dockerfile-mode diminish projectile mu4e-conversation mu4e-maildirs-extension pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
+    (treemacs helm haskell-mode mu4e lsp-haskell lsp-mode lsp-ui 0xc erc-services fish-mode dockerfile-mode diminish projectile mu4e-conversation mu4e-maildirs-extension pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
  '(projectile-completion-system (quote helm))
- '(projectile-global-mode t)
  '(projectile-globally-ignored-modes
    (quote
     ("erc-mode" "help-mode" "completion-list-mode" "Buffer-menu-mode" "gnus-.*-mode" "occur-mode" "rcirc-mode")))
@@ -220,7 +273,7 @@
  '(show-paren-style (quote expression))
  '(size-indication-mode t)
  '(tool-bar-mode nil)
- '(tramp-default-method "ssh" nil (tramp))
+ '(tramp-default-method "ssh")
  '(tramp-syntax (quote default) nil (tramp))
  '(url-queue-timeout 30)
  '(use-package-always-ensure t)
