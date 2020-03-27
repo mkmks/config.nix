@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{config, pkgs, ...}:
 
 with pkgs;
 
@@ -21,7 +21,7 @@ with pkgs;
       address = "nf@mkmks.org";
       realName = "Nikita Frolov";
       userName = "nf@mkmks.org";
-      passwordCommand = "secret-tool lookup email nf@mkmks.org";
+      passwordCommand = "${pkgs.gnome3.libsecret}/bin/secret-tool lookup email nf@mkmks.org";
       
       imap.host = "imap.fastmail.com";      
       smtp.host = "smtp.fastmail.com";
@@ -155,6 +155,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       userEmail = "nf@mkmks.org";
     };
 
+    emacs.enable = true;
+    
     mbsync.enable = true;
     msmtp.enable = true;
     
@@ -207,6 +209,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
   };
 
   services = {
+    emacs.enable = true;
     gnome-keyring.enable = true;
     
     gpg-agent = {
@@ -218,8 +221,14 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       maxCacheTtl = 604800;
       maxCacheTtlSsh = 604800;
     };
+
+    mpd = {
+      enable = true;
+      musicDirectory = "${config.home.homeDirectory}/Music";
+    };
     
     mbsync.enable = true;
+    syncthing.enable = true;
     udiskie.enable = true;
   };
 
