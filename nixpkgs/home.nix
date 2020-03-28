@@ -2,12 +2,9 @@
 
 with pkgs;
 
-#let
-#  unstableTarball = fetchTarball #https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
-#  unstable = import unstableTarball {
-#               config = config.nixpkgs.config;
-#             };
-#in
+let
+  metals = import ./metals;
+in
 
 {
   
@@ -88,7 +85,10 @@ with pkgs;
       gthumb
       pkgs.imagemagick
       pdftk
-      xfig       
+      xfig
+
+      # dev
+      metals
     ];
     
     sessionVariables = {
