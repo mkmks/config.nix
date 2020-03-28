@@ -95,8 +95,8 @@
 (use-package nix-mode
   :mode "\\.nix\\'")
 
-;;(load-file (let ((coding-system-for-read 'utf-8))
-;;	     (shell-command-to-string "agda-mode locate")))
+(load-file (let ((coding-system-for-read 'utf-8))
+	     (shell-command-to-string "agda-mode locate")))
 
 ;(load "ProofGeneral/generic/proof-site")
 

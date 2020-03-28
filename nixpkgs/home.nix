@@ -88,6 +88,7 @@ in
       xfig
 
       # dev
+      haskellPackages.Agda
       metals
     ];
     
