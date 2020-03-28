@@ -6,114 +6,40 @@
 
 (require 'package)
 
-(setq
- package-enable-at-startup t
- package-archives
- '(("melpa" . "http://melpa.org/packages/")
-   ("gnu"   . "http://elpa.gnu.org/packages/")))
-
 (package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-    (package-install 'use-package))
 
 (eval-when-compile
   (require 'use-package))
 
-(setq use-package-always-defer t
-      use-package-always-ensure t
-      backup-directory-alist `((".*" . ,temporary-file-directory))
-      auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-
-(use-package diminish)
-(use-package bind-key)
-
-(use-package emacs
-  :diminish visual-line-mode hi-lock-mode)
-
 (use-package base16-theme
-  :ensure t
   :init
   (setq base16-theme-256-color-source "colors")
   :config
   (load-theme 'base16-bright t))
 
-(use-package helm
-  :diminish helm-mode
-  :bind (("C-x b" . helm-buffers-list)
-	 ("C-x C-f" . helm-find-files)
-         ("C-x C-r" . helm-recentf)
-	 ("M-x" . helm-M-x))
-  :config
-  (use-package helm-ghc)
-  (use-package helm-projectile)
-  (helm-projectile-on))
-
-(use-package projectile
-  :bind (("C-x p" . projectile-commander)))
-
-(use-package magit
-  :bind (("C-x g" . magit-status)
-	 ("C-x M-g" . magit-dispatch-popup)))
+(use-package emacs
+  :init
+  (setq use-package-always-defer t
+	backup-directory-alist `((".*" . ,temporary-file-directory))
+	auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+	frame-title-format '((:eval (if (projectile-project-p)
+					(concat "[" (projectile-project-name) "]/"
+						(file-relative-name buffer-file-name
+								    (projectile-project-root)))
+				      (buffer-name (current-buffer))))
+			     (vc-mode vc-mode) " (%m)"))
+  :diminish visual-line-mode hi-lock-mode)
 
 (use-package autorevert
   :diminish auto-revert-mode)
 
-(use-package pretty-mode)
-
-(use-package nix-mode
-  :mode "\\.nix\\'")
-
-(use-package nov-mode
-  :mode "\\.epub\\'")
-
-(load-file (let ((coding-system-for-read 'utf-8))
-	     (shell-command-to-string "agda-mode locate")))
-
-;(load "ProofGeneral/generic/proof-site")
-
-(use-package haskell-mode)
-
-(use-package dante
-  :ensure t
-  :after haskell-mode
-  :commands 'dante-mode
-  :init
-  (add-hook 'haskell-mode-hook 'dante-mode)
-  (add-hook 'haskell-mode-hook 'flycheck-mode))
-
-(use-package scala-mode
-  :mode "\\.s\\(cala\\|bt\\)$")
-
-(use-package sbt-mode
-  :commands sbt-start sbt-command
-  :config
-  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
-  ;; allows using SPACE when in the minibuffer
-  (substitute-key-definition
-   'minibuffer-complete-word
-   'self-insert-command
-   minibuffer-local-completion-map)
-   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
-   (setq sbt:program-options '("-Dsbt.supershell=false")))
-
-(use-package lsp-mode
-  ;; Optional - enable lsp-mode automatically in scala files
-  :hook  (scala-mode . lsp)
-         (lsp-mode . lsp-lens-mode)
-	 :config (setq lsp-prefer-flymake nil))
-
-(use-package lsp-ui)
-
-(use-package lsp-treemacs
-  :config
-  (lsp-metals-treeview-enable t)
-  (setq lsp-metals-treeview-show-when-views-received t))
-
 (use-package tramp
   :init
   (setq tramp-backup-directory-alist backup-directory-alist))
+
+(use-package pretty-mode)
+
+;;;; APPS
 
 (defun mu4e-goodies-detach-view-to-window ()
   "Detach the current mu4e-view buffer from header to a new window."
@@ -140,14 +66,73 @@
   (use-package mu4e-conversation)
   (mu4e-maildirs-extension))
 
-; replace mode lines with frame titles
+(use-package nov
+  :config
+  (push '("\\.epub\\'" . nov-mode) auto-mode-alist))
 
-(setq frame-title-format
-      '((:eval (if (projectile-project-p)
-		   (concat "[" (projectile-project-name) "]/"
-			   (file-relative-name buffer-file-name (projectile-project-root)))
-		 (buffer-name (current-buffer))))
-	(vc-mode vc-mode) " (%m)"))
+;;;; PROJECT MANAGEMENT
+
+(use-package helm
+  :diminish helm-mode
+  :bind (("C-x b" . helm-buffers-list)
+	 ("C-x C-f" . helm-find-files)
+         ("C-x C-r" . helm-recentf)
+	 ("M-x" . helm-M-x))
+  :config
+  (use-package helm-ghc)
+  (use-package helm-projectile)
+  (helm-projectile-on))
+
+(use-package projectile
+  :bind (("C-x p" . projectile-commander)))
+
+(use-package magit
+  :bind (("C-x g" . magit-status)
+	 ("C-x M-g" . magit-dispatch-popup)))
+
+;;;; PROGRAMMING LANGUAGES 
+
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
+;;(load-file (let ((coding-system-for-read 'utf-8))
+;;	     (shell-command-to-string "agda-mode locate")))
+
+;(load "ProofGeneral/generic/proof-site")
+
+(use-package haskell-mode)
+
+(use-package scala-mode
+  :mode "\\.s\\(cala\\|bt\\)$")
+
+(use-package sbt-mode
+  :commands sbt-start sbt-command
+  :config
+  ;; WORKAROUND: https://github.com/ensime/emacs-sbt-mode/issues/31
+  ;; allows using SPACE when in the minibuffer
+  (substitute-key-definition
+   'minibuffer-complete-word
+   'self-insert-command
+   minibuffer-local-completion-map)
+   ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
+   (setq sbt:program-options '("-Dsbt.supershell=false")))
+
+;;;; LANGUAGE SERVER PROTOCOL
+
+(use-package lsp-mode
+  :hook
+  (scala-mode . lsp)
+  (java-mode . lsp)
+  (lsp-mode . lsp-lens-mode)
+  :config
+  (setq lsp-prefer-flymake nil))
+
+(use-package lsp-ui)
+
+(use-package lsp-treemacs
+  :config
+  (lsp-metals-treeview-enable t)
+  (setq lsp-metals-treeview-show-when-views-received t))
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -241,7 +226,7 @@
  '(mu4e-confirm-quit nil)
  '(mu4e-drafts-folder "/Drafts")
  '(mu4e-get-mail-command "mbsync -a")
- '(mu4e-maildir "/home/viv/Mail")
+ '(mu4e-maildir "/home/viv/Mail/fastmail")
  '(mu4e-maildirs-extension-use-bookmarks t)
  '(mu4e-refile-folder "/Archive")
  '(mu4e-sent-folder "/Sent")
@@ -259,9 +244,6 @@
  '(org-default-notes-file "~/Documents/notes/inbox.org")
  '(org-directory "~/Documents/notes")
  '(org-reverse-note-order t)
- '(package-selected-packages
-   (quote
-    (treemacs helm haskell-mode mu4e lsp-haskell lsp-mode lsp-ui 0xc erc-services fish-mode dockerfile-mode diminish projectile mu4e-conversation mu4e-maildirs-extension pdf-tools csv-mode base16-theme hide-mode-line nix-mode delight avy evil fancy-battery spaceline boon powerline term-projectile smooth-scrolling use-package dante company slack ereader markdown-mode pass pretty-mode matlab-mode magit log4e llvm-mode ht helm-projectile helm-ghc helm-ag auctex ag)))
  '(projectile-completion-system (quote helm))
  '(projectile-globally-ignored-modes
    (quote
