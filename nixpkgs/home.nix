@@ -58,12 +58,14 @@ with pkgs;
 
   home = {
     packages = [
-      # desktop-brands
+      # desktop-gui
       libreoffice
-      skypeforlinux
       spotify
       steam
+      skypeforlinux
       tdesktop
+      baobab
+      pavucontrol
       
       # desktop-cli
       ncmpcpp
@@ -82,7 +84,8 @@ with pkgs;
       # img
       pkgs.exif
       exiftool
-      fdupes      
+      fdupes
+      gthumb
       pkgs.imagemagick
       pdftk
       xfig       
@@ -155,7 +158,33 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       userEmail = "nf@mkmks.org";
     };
 
-    emacs.enable = true;
+    emacs = {
+      enable = true;
+      extraPackages = e: [
+	      e.base16-theme
+        e.use-package
+	      e.diminish
+	      e.bind-key
+	      e.pretty-mode
+        # apps
+	      e.nov
+        # project management
+	      e.helm
+        e.helm-ghc
+	      e.helm-projectile
+	      e.projectile
+	      e.magit
+        # programming languages
+	      e.haskell-mode
+        e.nix-mode
+	      e.scala-mode
+	      e.sbt-mode
+        # language server protocol
+        e.lsp-mode
+	      e.lsp-ui
+	      e.lsp-treemacs
+      ];
+    };
     
     mbsync.enable = true;
     msmtp.enable = true;
