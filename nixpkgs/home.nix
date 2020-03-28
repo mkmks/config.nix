@@ -70,9 +70,11 @@ in
       bc
       dtach
       fdupes
+      file
       mc
       mg
       p7zip
+      psmisc
       sdcv
       silver-searcher
       unzip
