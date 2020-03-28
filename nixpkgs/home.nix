@@ -57,39 +57,54 @@ in
     packages = [
       # desktop-gui
       libreoffice
-      spotify
       steam
       skypeforlinux
       tdesktop
-      baobab
-      pavucontrol
-      
-      # desktop-cli
-      ncmpcpp
-      sdcv
+
+      gnome3.baobab
+      gnome3.dconf-editor
+      gnome3.evince
+      gnome3.libsecret
 
       # base
+      bc
+      dtach
+      fdupes
       mc
       mg
+      p7zip
+      sdcv
       silver-searcher
+      unzip
 
       # net
+      dnsutils
+      inetutils
       lftp
       mu
-      nmap      
+      nmap
+      picocom
 
       # img
       pkgs.exif
       exiftool
-      fdupes
+      gnuplot
       gthumb
       pkgs.imagemagick
       pdftk
+      poppler_utils
       xfig
+
+      # snd
+      ncmpcpp
+      pamixer
+      pavucontrol
+      spotify
 
       # dev
       haskellPackages.Agda
       metals
+      sbt
     ];
     
     sessionVariables = {
