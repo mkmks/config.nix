@@ -118,6 +118,7 @@ in
   };  
   
   programs = {
+    home-manager.enable = true;
 
     termite = {
       enable = true;
