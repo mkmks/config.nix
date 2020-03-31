@@ -33,7 +33,7 @@ exec swayidle -w \
 for_window [app_id="firefox"] border pixel 0
 
 output * background #000000 solid_color
-output DP-4 {
+output "Dell Inc. DELL U2415 7MT0188M11YU"c {
        scale 1.2
        pos 0 0
 }
