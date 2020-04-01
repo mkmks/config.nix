@@ -317,8 +317,15 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
                                 resume       'swaymsg \"output * dpms on\"' \
                                 before-sleep 'swaylock -f -c ${lockscreen-fg}'
                     ''; }
-        { command = "telegram-desktop";  }
+        { command = "telegram-desktop"; }
       ];
+
+      assigns = {
+        "mmm" = [
+          { app_id = "^telegramdesktop$"; }
+          { title = "^Spotify.*$"; }
+        ];
+      };
 
       terminal = "termite";
       menu = "bemenu-run --fn '${term-font}'";
