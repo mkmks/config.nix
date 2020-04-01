@@ -292,8 +292,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
   systemd.user.startServices = true;
 
   wayland.windowManager.sway = let
-    cfg = config.wayland.windowManager.sway;
-    mod = cfg.config.modifier;
+    cfg = config.wayland.windowManager.sway.config;
+    mod = cfg.modifier;
     lockscreen-fg = "ff0000";    
   in {
     enable = true;
@@ -329,8 +329,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       right = "t";
       
       keybindings = {
-        "${mod}+q" = "exec ${cfg.config.terminal}";
-        "${mod}+x" = "exec ${cfg.config.menu}";
+        "${mod}+q" = "exec ${cfg.terminal}";
+        "${mod}+x" = "exec ${cfg.menu}";
 
         "XF86AudioMute"        = "exec \"pamixer -t\"";
         "XF86AudioLowerVolume" = "exec \"pamixer -d 3 -u\"";
@@ -345,15 +345,15 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
         # windows
         
-        "${mod}+${cfg.config.left}" = "focus left";
-        "${mod}+${cfg.config.down}" = "focus down";
-        "${mod}+${cfg.config.up}" = "focus up";
-        "${mod}+${cfg.config.right}" = "focus right";
+        "${mod}+${cfg.left}" = "focus left";
+        "${mod}+${cfg.down}" = "focus down";
+        "${mod}+${cfg.up}" = "focus up";
+        "${mod}+${cfg.right}" = "focus right";
 
-        "${mod}+Shift+${cfg.config.left}" = "move left";
-        "${mod}+Shift+${cfg.config.down}" = "move down";
-        "${mod}+Shift+${cfg.config.up}" = "move up";
-        "${mod}+Shift+${cfg.config.right}" = "move right";
+        "${mod}+Shift+${cfg.left}" = "move left";
+        "${mod}+Shift+${cfg.down}" = "move down";
+        "${mod}+Shift+${cfg.up}" = "move up";
+        "${mod}+Shift+${cfg.right}" = "move right";
 
         # workspaces
         
