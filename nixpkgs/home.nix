@@ -123,7 +123,9 @@ in
       ALTERNATIVE_EDITOR = "mg -n";
       SDCV_PAGER = "less -R";
       MOZ_ENABLE_WAYLAND = 1;
-    };    
+    };
+
+    stateVersion = "20.03";
   };  
   
   programs = {
@@ -284,6 +286,18 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     mpd = {
       enable = true;
       musicDirectory = "${config.home.homeDirectory}/Music";
+    };
+
+    redshift = {
+      enable = true;
+      package = redshift-wlr;
+      brightness = {
+        day = "1.0";
+        night = "0.7";
+      };
+      latitude = "48.8566";
+      longitude = "2.3522";
+      provider = "manual";
     };
     
     mbsync.enable = true;
