@@ -2,8 +2,10 @@
 
 with pkgs;
 
-let
+let  
   metals = import ./metals;
+
+  term-font = "Monospace 9";
 in
 
 {
@@ -65,6 +67,11 @@ in
       gnome3.dconf-editor
       gnome3.evince
       gnome3.libsecret
+
+      bemenu
+      i3status-rust
+      swayidle
+      swaylock
 
       # base
       bc
@@ -246,7 +253,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     zathura = {
       enable = true;
       options = {
-        font = "Monospace 9";
+        font = "${term-font}";
         window-title-basename = true;
         window-title-page = true;
         guioptions = "";
@@ -281,5 +288,160 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
   };
 
   systemd.user.startServices = true;
+
+  wayland.windowManager.sway = let
+    cfg = config.wayland.windowManager.sway;
+    mod = cfg.config.modifier;
+    lockscreen-fg = "ff0000";    
+  in {
+    enable = true;
+    extraSessionCommands = ''
+        export SDL_VIDEODRIVER=wayland
+        # needs qt5.qtwayland in systemPackages
+        export QT_QPA_PLATFORM=wayland
+        export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
+        export _JAVA_AWT_WM_NONREPARENTING=1
+      '';
+    config = {
+      fonts = [ "${term-font}" ];
+
+      startup = [
+        { command = ''
+                      swayidle -w \
+                                timeout 300  'swaylock -f -c ${lockscreen-fg}' \
+                                timeout 600  'swaymsg \"output * dpms off\"' \
+                                resume       'swaymsg \"output * dpms on\"' \
+                                before-sleep 'swaylock -f -c ${lockscreen-fg}'
+                    ''; }
+        { command = "telegram-desktop";  }
+      ];
+
+      terminal = "termite";
+      menu = "bemenu-run --fn '${term-font}'";
+      
+      modifier = "Mod4";
+
+      left = "a";
+      down = "r";
+      up = "s";
+      right = "t";
+      
+      keybindings = {
+        "${mod}+q" = "exec ${cfg.config.terminal}";
+        "${mod}+x" = "exec ${cfg.config.menu}";
+
+        "XF86AudioMute"        = "exec \"pamixer -t\"";
+        "XF86AudioLowerVolume" = "exec \"pamixer -d 3 -u\"";
+        "XF86AudioRaiseVolume" = "exec \"pamixer -i 3 -u\"";
+        "XF86AudioMicMute"     = "exec \"pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t\"";
+        
+        "${mod}+z" = "exec \"swaylock -c ${lockscreen-fg}\"";
+        "${mod}+Shift+z" = "exec \"swaynag -t warning -m 'Exit?' -b 'Yes, exit sway' 'swaymsg exit'\"";
+        "${mod}+Shift+c" = "kill";
+        "${mod}+Shift+x" = "restart";
+        "${mod}+c" = "reload";
+
+        # windows
+        
+        "${mod}+${cfg.config.left}" = "focus left";
+        "${mod}+${cfg.config.down}" = "focus down";
+        "${mod}+${cfg.config.up}" = "focus up";
+        "${mod}+${cfg.config.right}" = "focus right";
+
+        "${mod}+Shift+${cfg.config.left}" = "move left";
+        "${mod}+Shift+${cfg.config.down}" = "move down";
+        "${mod}+Shift+${cfg.config.up}" = "move up";
+        "${mod}+Shift+${cfg.config.right}" = "move right";
+
+        # workspaces
+        
+        "${mod}+1" = "workspace 1";
+        "${mod}+2" = "workspace 2";
+        "${mod}+3" = "workspace 3";
+        "${mod}+4" = "workspace mmm";
+
+        "${mod}+Shift+1" = "move container to workspace 1";
+        "${mod}+Shift+2" = "move container to workspace 2";
+        "${mod}+Shift+3" = "move container to workspace 3";
+        "${mod}+Shift+4" = "move container to workspace mmm";
+
+        "${mod}+Shift+Mod1+a" = "move workspace to output left";
+        "${mod}+Shift+Mod1+r" = "move workspace to output down";
+        "${mod}+Shift+Mod1+s" = "move workspace to output up";
+        "${mod}+Shift+Mod1+t" = "move workspace to output right";
+
+        # layouts
+        
+        "${mod}+space" = "layout toggle all";
+        "${mod}+Shift+space" = "split toggle";
+        "${mod}+Control+a" = "floating toggle";
+        "${mod}+Control+r" = "focus child";
+        "${mod}+Control+s" = "focus parent";
+        "${mod}+Control+t" = "fullscreen toggle";       
+      };
+
+      workspaceLayout = "tabbed";
+      window.hideEdgeBorders = "both";
+      
+      bars = [
+        {
+          position = "top";
+          statusCommand = "i3status-rs /home/viv/dotfiles/status-rs.toml";
+        
+          colors = {
+            background = "#222222";
+            statusline = "#dddddd";
+
+            activeWorkspace = {
+              border = "#333333";
+              background = "#333333";
+              text = "#ffffff";
+            };
+            inactiveWorkspace = {
+              border = "#333333";
+              background = "#333333";
+              text = "#888888";
+            };
+          };
+
+          fonts = [ "${term-font}" ];
+        }
+      ];
+      
+      input = {
+        "*" = {
+          xkb_layout = "us,ru";
+          xkb_variant = "colemak,";
+          xkb_options = "grp:rctrl_toggle,compose:prsc,caps:ctrl_modifier";
+
+          accel_profile = "adaptive";
+          click_method = "clickfinger";
+          natural_scroll = "enabled";
+          tap = "disabled";
+        };
+        
+        "Synaptics TM3288-011" = {
+          dwt = "enabled";
+          scroll_method = "two_finger";
+        };
+      };
+
+      output = {
+        "*" = {
+          background = "#000000 solid_color";
+        };
+
+        "Dell Inc. DELL U2415 7MT0188M11YU" = {
+          scale = "1.2";
+          pos = "0 0";
+        };
+          
+        "eDP-1" = {
+          scale = "2";
+          pos = "0 1000";
+        };        
+      };
+    };
+  };
   
 }
