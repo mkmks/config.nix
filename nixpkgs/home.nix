@@ -445,5 +445,25 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       };
     };
   };
+
+  xdg = {
+    enable = true;
+    mime.enable = true;
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+        "application/epub+zip" = [ "emacsclient.desktop" ];
+        "image/vnd.djvu" = [ "org.pwmt.zathura.desktop" ];
+        "text/plain" = [ "emacsclient.desktop" ];
+        "text/html" = [ "firefox.desktop" ];
+        "x-scheme-handler/http" = [ "firefox.desktop" ];
+        "x-scheme-handler/https" = [ "firefox.desktop" ];
+        "x-scheme-handler/chrome" = [ "firefox.desktop" ];
+        "x-scheme-handler/webcal" = [ "firefox.desktop" ];        
+      };
+    };
+    userDirs.enable = true;
+  };
   
 }
