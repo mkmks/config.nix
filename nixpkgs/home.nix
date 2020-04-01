@@ -193,6 +193,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.bind-key
 	      e.pretty-mode
         # apps
+        e.mu4e-conversation
+        e.mu4e-maildirs-extension
 	      e.nov
         # project management
 	      e.helm
