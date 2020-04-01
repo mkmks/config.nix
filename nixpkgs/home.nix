@@ -310,6 +310,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       fonts = [ "${term-font}" ];
 
       startup = [
+        { command = "dbus-update-activation-environment --systemd --all"; }
         { command = ''
                       swayidle -w \
                                 timeout 300  'swaylock -f -c ${lockscreen-fg}' \
