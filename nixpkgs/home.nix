@@ -68,7 +68,9 @@ in
       gnome3.evince
       gnome3.libsecret
 
+      # wayland
       bemenu
+      mako
       i3status-rust
       swayidle
       swaylock
