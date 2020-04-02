@@ -2,6 +2,8 @@
 
 let
   unstable = import <nixpkgs-unstable> {};
+  chrpkgsBall = builtins.fetchTarball { url = "https://github.com/colemickens/nixpkgs-chromium/archive/master.tar.gz"; };
+  chrpkgs = import chrpkgsBall;
   term-font = "Monospace 9";
 in
 
@@ -232,6 +234,11 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     firefox = {
       enable = true;
       package = unstable.firefox-beta-bin;
+    };
+
+    chromium = {
+      enable = true;
+      package = chrpkgs.chromium-dev-wayland;
     };
     
     feh.enable = true;
