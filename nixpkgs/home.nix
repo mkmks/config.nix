@@ -229,10 +229,10 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     mbsync.enable = true;
     msmtp.enable = true;
     
-#    firefox = {
-#      enable = true;
-#      package = firefox-beta-bin;
-#    };
+    firefox = {
+      enable = true;
+      package = unstable.firefox-beta-bin;
+    };
     
     feh.enable = true;
     gpg.enable = true;
