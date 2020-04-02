@@ -1,7 +1,5 @@
 {config, pkgs, ...}:
 
-with pkgs;
-
 let  
   metals = import ./metals;
 
@@ -38,15 +36,15 @@ in
     enable = true;
     font = {
       name = "Dejavu Sans 9";
-      package = dejavu_fonts;
+      package = pkgs.dejavu_fonts;
     };
     iconTheme = {
       name = "Adwaita";
-      package = gnome3.adwaita-icon-theme;
+      package = pkgs.gnome3.adwaita-icon-theme;
     };
     theme = {
       name = "Adwaita";
-      package = gnome3.adwaita-icon-theme;
+      package = pkgs.gnome3.adwaita-icon-theme;
     };
     gtk2.extraConfig = "gtk-key-theme-name = \"Emacs\"";
     gtk3.extraConfig = {
@@ -56,7 +54,7 @@ in
   };
 
   home = {
-    packages = [
+    packages = with pkgs; [
       # desktop-gui
       android-file-transfer
       libreoffice
@@ -128,7 +126,7 @@ in
       ALTERNATIVE_EDITOR = "mg -n";
       SDCV_PAGER = "less -R";
       MOZ_ENABLE_WAYLAND = 1;
-      DIGESTIFDATA = "${lua53Packages.digestif}/digestif-${lua53Packages.digestif.version}-rocks/digestif/${lua53Packages.digestif.version}/data";
+      DIGESTIFDATA = "${pkgs.lua53Packages.digestif}/digestif-${pkgs.lua53Packages.digestif.version}-rocks/digestif/${pkgs.lua53Packages.digestif.version}/data";
     };
 
     stateVersion = "20.03";
@@ -301,7 +299,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
     redshift = {
       enable = true;
-      package = redshift-wlr;
+      package = pkgs.redshift-wlr;
       brightness = {
         day = "1.0";
         night = "0.7";
