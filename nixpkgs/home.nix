@@ -58,6 +58,7 @@ in
   home = {
     packages = [
       # desktop-gui
+      android-file-transfer
       libreoffice
       steam
       skypeforlinux
@@ -114,11 +115,12 @@ in
 
       # dev
       haskellPackages.Agda
+      haskellPackages.cabal-install
       lua53Packages.digestif
+      python37Packages.python-language-server      
       metals
-      sbt
       maven
-      python37Packages.python-language-server
+      sbt
     ];
     
     sessionVariables = {
