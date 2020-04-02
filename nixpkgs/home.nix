@@ -117,6 +117,7 @@ in
       metals
       sbt
       maven
+      python37Packages.python-language-server
     ];
     
     sessionVariables = {

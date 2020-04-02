@@ -121,6 +121,7 @@
   :hook
   (scala-mode . lsp)
   (java-mode . lsp)
+  (python-mode . lsp)
   (lsp-mode . lsp-lens-mode)
   :config
   (setq lsp-prefer-flymake nil))
