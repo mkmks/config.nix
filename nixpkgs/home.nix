@@ -1,8 +1,7 @@
 {config, pkgs, ...}:
 
-let  
-  metals = import ./metals;
-
+let
+  unstable = import <nixpkgs-unstable> {};
   term-font = "Monospace 9";
 in
 
@@ -60,7 +59,7 @@ in
       libreoffice
       steam
       skypeforlinux
-      tdesktop
+      unstable.tdesktop
 
       gnome3.baobab
       gnome3.dconf-editor
@@ -116,7 +115,7 @@ in
       haskellPackages.cabal-install
       lua53Packages.digestif
       python37Packages.python-language-server      
-      metals
+      unstable.metals
       maven
       sbt
     ];
