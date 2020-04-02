@@ -116,6 +116,7 @@ in
       haskellPackages.Agda
       metals
       sbt
+      maven
     ];
     
     sessionVariables = {
@@ -200,9 +201,12 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.mu4e-conversation
         e.mu4e-maildirs-extension
 	      e.nov
-        # project management
+        # IDE
+        e.company
+        e.company-lsp
 	      e.helm
         e.helm-ghc
+        e.helm-lsp
 	      e.helm-projectile
 	      e.projectile
 	      e.magit
@@ -212,6 +216,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.scala-mode
 	      e.sbt-mode
         # language server protocol
+        e.dap-mode
+        e.lsp-java
         e.lsp-mode
 	      e.lsp-ui
 	      e.lsp-treemacs

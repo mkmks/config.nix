@@ -2,8 +2,6 @@
 
 (setq shell-file-name "/bin/sh")
 
-(setenv "JAVA_HOME" "/nix/store/a6l8iabc8978cx6fdv4z5csanf1ib3zh-openjdk-11.0.4-ga/lib/openjdk")
-
 (require 'package)
 
 (package-initialize)
