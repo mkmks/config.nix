@@ -114,6 +114,7 @@ in
 
       # dev
       haskellPackages.Agda
+      lua53Packages.digestif
       metals
       sbt
       maven
@@ -125,6 +126,7 @@ in
       ALTERNATIVE_EDITOR = "mg -n";
       SDCV_PAGER = "less -R";
       MOZ_ENABLE_WAYLAND = 1;
+      DIGESTIFDATA = "${lua53Packages.digestif}/digestif-${lua53Packages.digestif.version}-rocks/digestif/${lua53Packages.digestif.version}/data";
     };
 
     stateVersion = "20.03";
