@@ -67,6 +67,7 @@ in
       gnome3.dconf-editor
       gnome3.evince
       gnome3.libsecret
+      gnome3.seahorse
 
       # wayland
       bemenu
@@ -231,10 +232,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     mbsync.enable = true;
     msmtp.enable = true;
     
-    firefox = {
-      enable = true;
-      package = unstable.firefox-beta-bin;
-    };
+    firefox.enable = true;
 
     chromium = {
       enable = true;
