@@ -279,6 +279,12 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       };
     };
 
+    mako = {
+      enable = true;
+      font = "${term-font}";
+      defaultTimeout = 5000;
+    };
+    
 #    vscode.enable = true;
   };
 
@@ -345,6 +351,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
                                 resume       'swaymsg \"output * dpms on\"' \
                                 before-sleep 'swaylock -f -c ${lockscreen-fg}'
                     ''; }
+        { command = "mako"; }
         { command = "telegram-desktop"; }
       ];
 
