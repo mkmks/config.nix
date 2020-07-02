@@ -190,6 +190,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     
     git = {
       enable = true;
+      lfs.enable = true;
       userName = "Nikita Frolov";
       userEmail = "nf@mkmks.org";
     };
@@ -210,6 +211,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.company
         e.company-lsp
 	      e.helm
+        e.helm-ag
         e.helm-ghc
         e.helm-lsp
 	      e.helm-projectile
@@ -234,10 +236,10 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     
     firefox.enable = true;
 
-    chromium = {
-      enable = true;
-      package = chrpkgs.chromium-dev-wayland;
-    };
+    #chromium = {
+    #  enable = true;
+    #  package = chrpkgs.chromium-dev-wayland;
+    #};
     
     feh.enable = true;
     gpg.enable = true;
