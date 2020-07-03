@@ -203,6 +203,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.diminish
 	      e.bind-key
 	      e.pretty-mode
+        e.ag
         # apps
         e.mu4e-conversation
         e.mu4e-maildirs-extension
