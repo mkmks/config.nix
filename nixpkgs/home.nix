@@ -219,6 +219,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.helm-projectile
 	      e.projectile
 	      e.magit
+        e.which-key
         # programming languages
 	      e.haskell-mode
         e.nix-mode

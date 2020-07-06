@@ -85,6 +85,8 @@
 (use-package projectile
   :bind (("C-x p" . projectile-commander)))
 
+(use-package which-key)
+
 (use-package magit
   :bind (("C-x g" . magit-status)
 	 ("C-x M-g" . magit-dispatch-popup)))
@@ -129,6 +131,7 @@
   (latex-mode . lsp)
   (sh-mode . lsp)
   (lsp-mode . lsp-lens-mode)
+  (lsp-mode . lsp-enable-which-key-integration)
   :config
   (setq lsp-prefer-flymake nil))
 
@@ -274,6 +277,7 @@
  '(visual-line-fringe-indicators (quote (left-curly-arrow nil)))
  '(visual-line-mode nil t)
  '(which-function-mode nil)
+ '(which-key-mode t)
  '(woman-fill-frame t)
  '(woman-use-own-frame nil)
  '(word-wrap t)
