@@ -199,6 +199,7 @@
  '(helm-mode t)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
+ '(lsp-treemacs-sync-mode t)
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory nil)
