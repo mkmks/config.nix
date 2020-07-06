@@ -127,6 +127,7 @@
   (python-mode . lsp)
   (tex-mode . lsp)
   (latex-mode . lsp)
+  (sh-mode . lsp)
   (lsp-mode . lsp-lens-mode)
   :config
   (setq lsp-prefer-flymake nil))

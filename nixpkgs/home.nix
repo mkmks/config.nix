@@ -117,7 +117,8 @@ in
       haskellPackages.Agda
       haskellPackages.cabal-install
       lua53Packages.digestif
-      python37Packages.python-language-server      
+      python37Packages.python-language-server
+      nodePackages.bash-language-server
       unstable.metals
       maven
       sbt
