@@ -17,6 +17,7 @@
 
 (use-package emacs
   :init
+  (unbind-key "C-x l" global-map)
   (setq use-package-always-defer t
 	backup-directory-alist `((".*" . ,temporary-file-directory))
 	auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
@@ -119,7 +120,7 @@
 
 (use-package lsp-mode
   :init
-  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-keymap-prefix "C-x l")
   :hook
   (scala-mode . lsp)
   (java-mode . lsp)
