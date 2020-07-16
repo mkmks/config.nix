@@ -217,20 +217,23 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.helm-ghc
         e.helm-lsp
 	      e.helm-projectile
-	      e.projectile
 	      e.magit
+	      e.projectile
+        e.restclient
         e.which-key
         # programming languages
 	      e.haskell-mode
         e.nix-mode
 	      e.scala-mode
 	      e.sbt-mode
+        e.sql-clickhouse
         # language server protocol
         e.dap-mode
         e.lsp-java
         e.lsp-mode
 	      e.lsp-ui
 	      e.lsp-treemacs
+        e.posframe
       ];
     };
     

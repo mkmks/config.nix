@@ -71,6 +71,9 @@
 
 ;;;; PROJECT MANAGEMENT
 
+(use-package flycheck
+  :init (global-flycheck-mode))
+
 (use-package helm
   :diminish helm-mode
   :bind (("C-x b" . helm-buffers-list)
@@ -82,14 +85,16 @@
   (use-package helm-projectile)
   (helm-projectile-on))
 
-(use-package projectile
-  :bind (("C-x p" . projectile-commander)))
-
-(use-package which-key)
-
 (use-package magit
   :bind (("C-x g" . magit-status)
 	 ("C-x M-g" . magit-dispatch-popup)))
+
+(use-package projectile
+  :bind (("C-x p" . projectile-commander)))
+
+(use-package restclient)
+
+(use-package which-key)
 
 ;;;; PROGRAMMING LANGUAGES 
 
@@ -117,6 +122,10 @@
    minibuffer-local-completion-map)
    ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
    (setq sbt:program-options '("-Dsbt.supershell=false")))
+
+(use-package sql)
+
+(use-package sql-clickhouse)
 
 ;;;; LANGUAGE SERVER PROTOCOL
 
@@ -263,11 +272,23 @@
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
  '(size-indication-mode t)
+ '(sql-clickhouse-login-params
+   (quote
+    ((user :default "default")
+     password
+     (server :default "localhost")
+     port)))
+ '(sql-connection-alist
+   (quote
+    (("rafal"
+      (sql-user "default")
+      (sql-password "thisIsADevPassword")
+      (sql-server "localhost")
+      (sql-port 9091)))))
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote default) nil (tramp))
  '(url-queue-timeout 30)
- '(use-package-always-ensure t)
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
  '(vhdl-upper-case-attributes t)
