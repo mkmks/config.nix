@@ -144,12 +144,23 @@
   :config
   (setq lsp-prefer-flymake nil))
 
+(use-package lsp-metals)
+
 (use-package lsp-ui)
 
 (use-package lsp-treemacs
   :config
   (lsp-metals-treeview-enable t)
   (setq lsp-metals-treeview-show-when-views-received t))
+
+(use-package posframe)
+
+(use-package dap-mode
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode))
+
+(use-package company-lsp)
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -215,7 +226,10 @@
  '(helm-mode t)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
+ '(lsp-file-watch-threshold 10000)
  '(lsp-treemacs-sync-mode t)
+ '(lsp-ui-sideline-show-hover nil)
+ '(lsp-ui-sideline-show-symbol nil)
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory nil)
