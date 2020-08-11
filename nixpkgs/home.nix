@@ -99,6 +99,13 @@ in
       nmap
       picocom
 
+      # cloud
+      aws
+      unstable.aws-google-auth
+      aws-iam-authenticator
+      helm
+      kubectl
+
       # img
       pkgs.exif
       exiftool
