@@ -3,7 +3,7 @@
 let
   unstable = import <nixpkgs-unstable> {};
   chrpkgsBall = builtins.fetchTarball { url = "https://github.com/colemickens/nixpkgs-chromium/archive/master.tar.gz"; };
-  chrpkgs = import chrpkgsBall;
+  chromium-dev-ozone = import chrpkgsBall;
   term-font = "Monospace 9";
 in
 
@@ -232,11 +232,14 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     mbsync.enable = true;
     msmtp.enable = true;
     
-    firefox.enable = true;
+    firefox = {
+      enable = true;
+      package = pkgs.firefox-wayland;
+    };
 
     chromium = {
       enable = true;
-      package = chrpkgs.chromium-dev-wayland;
+      package = chromium-dev-ozone;
     };
     
     feh.enable = true;
