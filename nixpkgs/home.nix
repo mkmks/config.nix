@@ -81,12 +81,14 @@ in
       dtach
       fdupes
       file
+      jq
       mc
       mg
       p7zip
       psmisc
       sdcv
       silver-searcher
+      unrar
       unzip
 
       # net
