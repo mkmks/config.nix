@@ -61,7 +61,7 @@ in
       libreoffice
       steam
       skypeforlinux
-      unstable.tdesktop
+      tdesktop
 
       gnome3.baobab
       gnome3.dconf-editor
