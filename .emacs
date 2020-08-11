@@ -17,6 +17,7 @@
 
 (use-package emacs
   :init
+  (unbind-key "C-x l" global-map)
   (setq use-package-always-defer t
 	backup-directory-alist `((".*" . ,temporary-file-directory))
 	auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
@@ -70,6 +71,9 @@
 
 ;;;; PROJECT MANAGEMENT
 
+(use-package flycheck
+  :init (global-flycheck-mode))
+
 (use-package helm
   :diminish helm-mode
   :bind (("C-x b" . helm-buffers-list)
@@ -81,12 +85,16 @@
   (use-package helm-projectile)
   (helm-projectile-on))
 
-(use-package projectile
-  :bind (("C-x p" . projectile-commander)))
-
 (use-package magit
   :bind (("C-x g" . magit-status)
 	 ("C-x M-g" . magit-dispatch-popup)))
+
+(use-package projectile
+  :bind (("C-x p" . projectile-commander)))
+
+(use-package restclient)
+
+(use-package which-key)
 
 ;;;; PROGRAMMING LANGUAGES 
 
@@ -115,18 +123,28 @@
    ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
    (setq sbt:program-options '("-Dsbt.supershell=false")))
 
+(use-package sql)
+
+(use-package sql-clickhouse)
+
 ;;;; LANGUAGE SERVER PROTOCOL
 
 (use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-x l")
   :hook
   (scala-mode . lsp)
   (java-mode . lsp)
   (python-mode . lsp)
   (tex-mode . lsp)
   (latex-mode . lsp)
+  (sh-mode . lsp)
   (lsp-mode . lsp-lens-mode)
+  (lsp-mode . lsp-enable-which-key-integration)
   :config
   (setq lsp-prefer-flymake nil))
+
+(use-package lsp-metals)
 
 (use-package lsp-ui)
 
@@ -134,6 +152,15 @@
   :config
   (lsp-metals-treeview-enable t)
   (setq lsp-metals-treeview-show-when-views-received t))
+
+(use-package posframe)
+
+(use-package dap-mode
+  :hook
+  (lsp-mode . dap-mode)
+  (lsp-mode . dap-ui-mode))
+
+(use-package company-lsp)
 
 ;;;;;;HERE GO CUSTOM SET VARIABLES;;;;;;
 
@@ -199,6 +226,10 @@
  '(helm-mode t)
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
+ '(lsp-file-watch-threshold 10000)
+ '(lsp-treemacs-sync-mode t)
+ '(lsp-ui-sideline-show-hover nil)
+ '(lsp-ui-sideline-show-symbol nil)
  '(make-backup-files nil)
  '(menu-bar-mode nil)
  '(message-auto-save-directory nil)
@@ -255,11 +286,23 @@
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
  '(size-indication-mode t)
+ '(sql-clickhouse-login-params
+   (quote
+    ((user :default "default")
+     password
+     (server :default "localhost")
+     port)))
+ '(sql-connection-alist
+   (quote
+    (("rafal"
+      (sql-user "default")
+      (sql-password "thisIsADevPassword")
+      (sql-server "localhost")
+      (sql-port 9091)))))
  '(tool-bar-mode nil)
  '(tramp-default-method "ssh")
  '(tramp-syntax (quote default) nil (tramp))
  '(url-queue-timeout 30)
- '(use-package-always-ensure t)
  '(user-mail-address "nf@mkmks.org")
  '(vc-follow-symlinks t)
  '(vhdl-upper-case-attributes t)
@@ -269,6 +312,7 @@
  '(visual-line-fringe-indicators (quote (left-curly-arrow nil)))
  '(visual-line-mode nil t)
  '(which-function-mode nil)
+ '(which-key-mode t)
  '(woman-fill-frame t)
  '(woman-use-own-frame nil)
  '(word-wrap t)

@@ -126,7 +126,8 @@ in
       haskellPackages.Agda
       haskellPackages.cabal-install
       lua53Packages.digestif
-      python37Packages.python-language-server      
+      python37Packages.python-language-server
+      nodePackages.bash-language-server
       unstable.metals
       maven
       sbt
@@ -199,6 +200,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     
     git = {
       enable = true;
+      lfs.enable = true;
       userName = "Nikita Frolov";
       userEmail = "nf@mkmks.org";
     };
@@ -211,6 +213,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.diminish
 	      e.bind-key
 	      e.pretty-mode
+        e.ag
         # apps
         e.mu4e-conversation
         e.mu4e-maildirs-extension
@@ -219,22 +222,27 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.company
         e.company-lsp
 	      e.helm
+        e.helm-ag
         e.helm-ghc
         e.helm-lsp
 	      e.helm-projectile
-	      e.projectile
 	      e.magit
+	      e.projectile
+        e.restclient
+        e.which-key
         # programming languages
 	      e.haskell-mode
         e.nix-mode
 	      e.scala-mode
 	      e.sbt-mode
+        e.sql-clickhouse
         # language server protocol
         e.dap-mode
         e.lsp-java
         e.lsp-mode
 	      e.lsp-ui
 	      e.lsp-treemacs
+        e.posframe
       ];
     };
     
