@@ -251,7 +251,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     msmtp.enable = true;
     
     firefox = {
-      enable = true;
+      enable = false;
       package = pkgs.firefox-wayland;
     };
 
@@ -521,11 +521,11 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         "application/epub+zip" = [ "emacsclient.desktop" ];
         "image/vnd.djvu" = [ "org.pwmt.zathura.desktop" ];
         "text/plain" = [ "emacsclient.desktop" ];
-        "text/html" = [ "firefox.desktop" ];
-        "x-scheme-handler/http" = [ "firefox.desktop" ];
-        "x-scheme-handler/https" = [ "firefox.desktop" ];
-        "x-scheme-handler/chrome" = [ "firefox.desktop" ];
-        "x-scheme-handler/webcal" = [ "firefox.desktop" ];        
+        "text/html" = [ "chromium.desktop" ];
+        "x-scheme-handler/http" = [ "chromium.desktop" ];
+        "x-scheme-handler/https" = [ "chromium.desktop" ];
+        "x-scheme-handler/chrome" = [ "chromium.desktop" ];
+        "x-scheme-handler/webcal" = [ "chromium.desktop" ];        
       };
     };
     userDirs.enable = true;
