@@ -131,6 +131,7 @@ in
       unstable.metals
       maven
       sbt
+      scalafmt
     ];
     
     sessionVariables = {
