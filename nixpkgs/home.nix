@@ -454,7 +454,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       bars = [
         {
           position = "top";
-          statusCommand = "i3status-rs /home/viv/dotfiles/status-rs.toml";
+          statusCommand = "i3status-rs ~/dotfiles/status-rs.toml";
         
           colors = {
             background = "#222222";
