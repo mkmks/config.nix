@@ -139,12 +139,15 @@
   (tex-mode . lsp)
   (latex-mode . lsp)
   (sh-mode . lsp)
+  (typescript-mode . lsp)
   (lsp-mode . lsp-lens-mode)
   (lsp-mode . lsp-enable-which-key-integration)
   :config
   (setq lsp-prefer-flymake nil))
 
 (use-package lsp-metals)
+
+(use-package lsp-typescript)
 
 (use-package lsp-ui)
 

@@ -128,6 +128,8 @@ in
       lua53Packages.digestif
       python37Packages.python-language-server
       nodePackages.bash-language-server
+      nodePackages.typescript
+      nodePackages.typescript-language-server
       unstable.metals
       maven
       sbt
@@ -238,6 +240,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.scala-mode
 	      e.sbt-mode
         e.sql-clickhouse
+        e.typescript-mode
         # language server protocol
         e.dap-mode
         e.lsp-java
