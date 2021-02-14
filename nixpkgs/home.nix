@@ -136,9 +136,12 @@ in
       lua53Packages.digestif
       python37Packages.python-language-server
       nodePackages.bash-language-server
+      nodePackages.typescript
+      nodePackages.typescript-language-server
       unstable.metals
       maven
       sbt
+      scalafmt
     ];
     
     sessionVariables = {
@@ -244,6 +247,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.scala-mode
 	      e.sbt-mode
         e.sql-clickhouse
+        e.typescript-mode
         # language server protocol
         e.dap-mode
         e.lsp-java
@@ -460,7 +464,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       bars = [
         {
           position = "top";
-          statusCommand = "i3status-rs /home/viv/dotfiles/status-rs.toml";
+          statusCommand = "i3status-rs ~/dotfiles/status-rs.toml";
         
           colors = {
             background = "#222222";
