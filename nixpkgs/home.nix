@@ -110,7 +110,7 @@ in
 
       # cloud
       aws
-      unstable.aws-google-auth
+      aws-google-auth
       aws-iam-authenticator
       helm
       kubectl
@@ -216,7 +216,6 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
     emacs = {
       enable = true;
-      package = unstable.emacs;
       extraPackages = e: [
 	      e.base16-theme
         e.use-package
