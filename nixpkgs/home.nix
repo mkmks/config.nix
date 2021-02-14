@@ -61,7 +61,6 @@ in
       # desktop-gui
       android-file-transfer
       libreoffice
-      steam
       skypeforlinux
       tdesktop
 
