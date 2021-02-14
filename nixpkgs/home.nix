@@ -33,6 +33,8 @@ in
     };  
   };
 
+  fonts.fontconfig.enable = true;
+  
   gtk = {
     enable = true;
     font = {
@@ -76,6 +78,13 @@ in
       swayidle
       swaylock
 
+      # fonts
+      cm_unicode
+      font-awesome_4
+      source-code-pro
+      kochi-substitute
+      wqy_zenhei
+      
       # base
       bc
       dtach
