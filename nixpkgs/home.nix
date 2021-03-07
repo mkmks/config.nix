@@ -250,8 +250,10 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.typescript-mode
         # language server protocol
         e.dap-mode
+        e.lsp-haskell
         e.lsp-java
         e.lsp-mode
+        e.lsp-metals
 	      e.lsp-ui
 	      e.lsp-treemacs
         e.posframe
