@@ -233,6 +233,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         # IDE
         e.company
         e.company-lsp
+        e.flycheck
 	      e.helm
         e.helm-ag
         e.helm-ghc
