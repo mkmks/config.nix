@@ -133,6 +133,8 @@
   :init
   (setq lsp-keymap-prefix "C-x l")
   :hook
+  (haskell-mode . lsp)
+  (haskell-literate-mode . lsp)
   (scala-mode . lsp)
   (java-mode . lsp)
   (python-mode . lsp)
@@ -144,6 +146,8 @@
   (lsp-mode . lsp-enable-which-key-integration)
   :config
   (setq lsp-prefer-flymake nil))
+
+(use-package lsp-haskell)
 
 (use-package lsp-metals)
 
@@ -225,6 +229,7 @@
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
  '(lsp-file-watch-threshold 10000)
+ '(lsp-haskell-process-path-hie "haskell-language-server-wrapper")
  '(lsp-treemacs-sync-mode t)
  '(lsp-ui-sideline-show-hover nil)
  '(lsp-ui-sideline-show-symbol nil)

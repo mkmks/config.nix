@@ -62,7 +62,7 @@ in
       android-file-transfer
       libreoffice
       skypeforlinux
-      tdesktop
+      unstable.tdesktop
 
       gnome3.baobab
       gnome3.dconf-editor
@@ -133,6 +133,7 @@ in
       # dev
       haskellPackages.Agda
       haskellPackages.cabal-install
+      haskellPackages.haskell-language-server
       lua53Packages.digestif
       python37Packages.python-language-server
       nodePackages.bash-language-server
