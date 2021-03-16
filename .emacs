@@ -87,7 +87,7 @@
 
 (use-package magit
   :bind (("C-x g" . magit-status)
-	 ("C-x M-g" . magit-dispatch-popup)))
+	 ("C-x M-g" . magit-dispatch)))
 
 (use-package projectile
   :bind (("C-x p" . projectile-commander)))
@@ -96,7 +96,7 @@
 
 (use-package which-key)
 
-;;;; PROGRAMMING LANGUAGES 
+;;;; PROGRAMMING LANGUAGES
 
 (use-package nix-mode
   :mode "\\.nix\\'")

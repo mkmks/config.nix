@@ -2,8 +2,6 @@
 
 let
   unstable = import <nixpkgs-unstable> {};
-  chrpkgsBall = builtins.fetchTarball { url = "https://github.com/colemickens/nixpkgs-chromium/archive/master.tar.gz"; };
-  chromium-dev-ozone = import chrpkgsBall;
   term-font = "Monospace 9";
 in
 
@@ -155,6 +153,12 @@ in
 
     stateVersion = "20.03";
   };  
+
+  nixpkgs.overlays = [
+    (import (builtins.fetchTarball {
+      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+    }))
+  ];
   
   programs = {
     home-manager.enable = true;
@@ -219,6 +223,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
     emacs = {
       enable = true;
+      package = pkgs.emacsPgtk;
       extraPackages = e: [
 	      e.base16-theme
         e.use-package
@@ -270,10 +275,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       package = pkgs.firefox-wayland;
     };
 
-    chromium = {
-      enable = true;
-      package = chromium-dev-ozone;
-    };
+    chromium.enable = true;
     
     feh.enable = true;
     gpg.enable = true;
