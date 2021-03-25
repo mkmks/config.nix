@@ -258,7 +258,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
     emacs = {
       enable = true;
-      package = pkgs.emacsPgtk;
+      package = pkgs.emacsPgtkGcc;
       extraPackages = e: [
 	      e.base16-theme
         e.use-package
