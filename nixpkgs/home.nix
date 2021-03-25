@@ -129,9 +129,11 @@ in
       spotify
 
       # dev
+      rnix-lsp
+#      haskell.packages.ghc8102.ghcWithPackages (pkgs: with pkgs; [ cabal-install haskell-language-server ])
       haskellPackages.Agda
       haskellPackages.cabal-install
-      haskellPackages.haskell-language-server
+      unstable.haskell-language-server
       lua53Packages.digestif
       python37Packages.python-language-server
       nodePackages.bash-language-server
@@ -142,7 +144,7 @@ in
       sbt
       scalafmt
     ];
-    
+  
     sessionVariables = {
       EDITOR = "emacsclient -ct";
       ALTERNATIVE_EDITOR = "mg -n";
