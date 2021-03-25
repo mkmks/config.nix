@@ -164,23 +164,6 @@ in
   
   programs = {
     home-manager.enable = true;
-
-    termite = {
-      enable = true;
-
-      cursorBlink = "off";
-      scrollbar = "off";
-      
-      clickableUrl = true;
-      dynamicTitle = true;
-
-      browser = "firefox";
-
-      foregroundColor = "white";
-      backgroundColor = "black";
-      cursorColor = "#cccccc";
-    };
-
     
     fish = {
       enable = true;
@@ -437,7 +420,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         ];
       };
 
-      terminal = "termite";
+      terminal = "emacsclient -cn";
       menu = "bemenu-run --fn '${term-font}'";
       
       modifier = "Mod4";
