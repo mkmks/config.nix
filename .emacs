@@ -309,7 +309,7 @@
  '(vhdl-upper-case-types t)
  '(visual-line-fringe-indicators '(left-curly-arrow nil))
  '(visual-line-mode nil t)
- '(vterm-buffer-name-string "vterm %s")
+ '(vterm-buffer-name-string "%s")
  '(vterm-shell "fish")
  '(which-function-mode nil)
  '(which-key-mode t)
