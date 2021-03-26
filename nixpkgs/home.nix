@@ -447,15 +447,22 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
         # windows
         
-        "${mod}+${cfg.left}" = "focus left";
-        "${mod}+${cfg.down}" = "focus down";
-        "${mod}+${cfg.up}" = "focus up";
+        "${mod}+${cfg.left}"  = "focus left";
+        "${mod}+${cfg.down}"  = "focus down";
+        "${mod}+${cfg.up}"    = "focus up";
         "${mod}+${cfg.right}" = "focus right";
-
-        "${mod}+Shift+${cfg.left}" = "move left";
-        "${mod}+Shift+${cfg.down}" = "move down";
-        "${mod}+Shift+${cfg.up}" = "move up";
+        "${mod}+Mod1+${cfg.down}" = "focus child";
+        "${mod}+Mod1+${cfg.up}"   = "focus parent";
+        
+        "${mod}+Shift+${cfg.left}"  = "move left";
+        "${mod}+Shift+${cfg.down}"  = "move down";
+        "${mod}+Shift+${cfg.up}"    = "move up";
         "${mod}+Shift+${cfg.right}" = "move right";
+
+        "${mod}+Control+${cfg.left}"  = "focus output left";
+        "${mod}+Control+${cfg.down}"  = "focus output down";
+        "${mod}+Control+${cfg.up}"    = "focus output up";
+        "${mod}+Control+${cfg.right}" = "focus output right";        
 
         # workspaces
         
@@ -469,19 +476,17 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         "${mod}+Shift+3" = "move container to workspace 3";
         "${mod}+Shift+4" = "move container to workspace mmm";
 
-        "${mod}+Shift+Mod1+a" = "move workspace to output left";
-        "${mod}+Shift+Mod1+r" = "move workspace to output down";
-        "${mod}+Shift+Mod1+s" = "move workspace to output up";
-        "${mod}+Shift+Mod1+t" = "move workspace to output right";
+        "${mod}+Shift+Mod1+${cfg.left}"  = "move workspace to output left";
+        "${mod}+Shift+Mod1+${cfg.down}"  = "move workspace to output down";
+        "${mod}+Shift+Mod1+${cfg.up}"    = "move workspace to output up";
+        "${mod}+Shift+Mod1+${cfg.right}" = "move workspace to output right";
 
         # layouts
         
         "${mod}+space" = "layout toggle all";
         "${mod}+Shift+space" = "split toggle";
-        "${mod}+Control+a" = "floating toggle";
-        "${mod}+Control+r" = "focus child";
-        "${mod}+Control+s" = "focus parent";
-        "${mod}+Control+t" = "fullscreen toggle";       
+#        "${mod}+Control+a" = "floating toggle";
+#        "${mod}+Control+t" = "fullscreen toggle";       
       };
 
       workspaceLayout = "tabbed";
@@ -528,6 +533,10 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
           dwt = "enabled";
           scroll_method = "two_finger";
         };
+
+        "TPPS/2 Elan TrackPoint" = {
+          pointer_accel = "0.3";
+        };
       };
 
       output = {
@@ -536,14 +545,18 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         };
 
         "Dell Inc. DELL U2415 7MT0188M11YU" = {
-          scale = "1.2";
           pos = "0 0";
         };
-          
-        "eDP-1" = {
-          scale = "2";
-          pos = "0 1000";
-        };        
+
+        "Unknown 0x403D 0x00000000" = {
+          scale = "1.2";
+          pos = "0 1200";
+        };
+
+#        "eDP-1" = {
+#          scale = "2";
+#          pos = "0 1200";
+#        };        
       };
     };
   };
