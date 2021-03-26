@@ -553,10 +553,9 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
           pos = "0 1200";
         };
 
-#        "eDP-1" = {
-#          scale = "2";
-#          pos = "0 1200";
-#        };        
+        "Unknown 0x2036 0x00000000" = {
+          pos = "0 1200";
+        };        
       };
     };
   };
