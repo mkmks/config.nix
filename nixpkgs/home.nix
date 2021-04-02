@@ -2,7 +2,7 @@
 
 let
   unstable = import <nixpkgs-unstable> {};
-  term-font = "Monospace 9";
+  term-font = "DejaVu Sans Mono for Powerline 9";
 in
 
 {
@@ -81,6 +81,7 @@ in
       source-code-pro
       kochi-substitute
       wqy_zenhei
+      powerline-fonts
       
       # base
       bc
