@@ -438,6 +438,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         "XF86AudioLowerVolume" = "exec \"pamixer -d 3 -u\"";
         "XF86AudioRaiseVolume" = "exec \"pamixer -i 3 -u\"";
         "XF86AudioMicMute"     = "exec \"pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t\"";
+        "XF86MonBrightnessDown" = "exec \"light -U 5\"";
+        "XF86MonBrightnessUp"   = "exec \"light -A 5\"";
         
         "${mod}+z" = "exec \"swaylock -c ${lockscreen-fg}\"";
         "${mod}+Shift+z" = "exec \"swaynag -t warning -m 'Exit?' -b 'Yes, exit sway' 'swaymsg exit'\"";
