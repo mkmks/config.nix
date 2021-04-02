@@ -263,7 +263,7 @@ switch $argv[1]
 	case rr
 	    set dict 'ExplanatoryBTS (Ru-Ru)'
 end
-sdcv --color -u $dict $argv[2]          
+sdcv -0c -u $dict $argv[2]          
         '';
       };
       
