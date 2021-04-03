@@ -403,26 +403,6 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         gpu-context = "wayland";
       };
     };
-
-    tmux = {
-      enable = true;
-
-      extraConfig = ''
-        set -g mouse on
-        set -g prefix C-x
-        bind-key C-x send-prefix
-        unbind-key x
-        bind-key k confirm-before -p "kill-pane #P? (y/n)" kill-pane
-
-        set -g renumber-windows on
-        set -g set-titles on
-        set -g set-titles-string "[#I] #T"
-        set -g status on
-        set -g status-position top
-        set -g status-left ""
-        set -g status-right ""
-      '';
-    };
     
     zathura = {
       enable = true;
@@ -439,8 +419,6 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       font = "${term-font}";
       defaultTimeout = 5000;
     };
-    
-#    vscode.enable = true;
   };
 
   services = {
@@ -550,18 +528,18 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         "${mod}+${cfg.down}"  = "focus down";
         "${mod}+${cfg.up}"    = "focus up";
         "${mod}+${cfg.right}" = "focus right";
-        "${mod}+Mod1+${cfg.down}" = "focus child";
-        "${mod}+Mod1+${cfg.up}"   = "focus parent";
+        "${mod}+Control+${cfg.down}" = "focus child";
+        "${mod}+Control+${cfg.up}"   = "focus parent";
         
         "${mod}+Shift+${cfg.left}"  = "move left";
         "${mod}+Shift+${cfg.down}"  = "move down";
         "${mod}+Shift+${cfg.up}"    = "move up";
         "${mod}+Shift+${cfg.right}" = "move right";
 
-        "${mod}+Control+${cfg.left}"  = "focus output left";
-        "${mod}+Control+${cfg.down}"  = "focus output down";
-        "${mod}+Control+${cfg.up}"    = "focus output up";
-        "${mod}+Control+${cfg.right}" = "focus output right";        
+        "${mod}+Mod1+${cfg.left}"  = "focus output left";
+        "${mod}+Mod1+${cfg.down}"  = "focus output down";
+        "${mod}+Mod1+${cfg.up}"    = "focus output up";
+        "${mod}+Mod1+${cfg.right}" = "focus output right";        
 
         # workspaces
         
@@ -584,8 +562,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         
         "${mod}+space" = "layout toggle all";
         "${mod}+Shift+space" = "split toggle";
-#        "${mod}+Control+a" = "floating toggle";
-#        "${mod}+Control+t" = "fullscreen toggle";       
+        "${mod}+Control+a" = "floating toggle";
+        "${mod}+Control+t" = "fullscreen toggle";       
       };
 
       workspaceLayout = "tabbed";
@@ -634,7 +612,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         };
 
         "TPPS/2 Elan TrackPoint" = {
-          pointer_accel = "0.3";
+          pointer_accel = "0.5";
         };
       };
 

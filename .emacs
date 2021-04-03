@@ -191,6 +191,7 @@
      (output-html "xdg-open")))
  '(agda2-fontset-name nil)
  '(agda2-highlight-level 'interactive)
+ '(auth-source-save-behavior nil)
  '(auto-save-default nil)
  '(base16-highlight-mode-line 'contrast)
  '(blink-cursor-mode nil)
@@ -220,7 +221,7 @@
  '(haskell-mode-hook
    '(haskell-decl-scan-mode haskell-indentation-mode imenu-add-menubar-index interactive-haskell-mode
 			    (lambda nil
-			      (ghc-Init))))
+			      (ghc-Init))) t)
  '(haskell-stylish-on-save t)
  '(helm-boring-buffer-regexp-list
    '("\\` " "\\*helm" "\\*helm-mode" "\\*Echo Area" "\\*Minibuf" "\\*GNU Emacs" "\\*Messages" "\\*Completions" "\\*Quail Completions" "\\*fsm-debug" "\\*Help" "\\*Apropos"))
