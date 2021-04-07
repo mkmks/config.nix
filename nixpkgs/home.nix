@@ -83,7 +83,6 @@ chromium \
       mako
       i3status-rust
       swayidle
-      swaylock
 
       # fonts
       cm_unicode
