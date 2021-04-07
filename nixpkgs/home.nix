@@ -157,7 +157,7 @@ chromium \
     ];
   
     sessionVariables = {
-      EDITOR = "emacsclient -ct";
+      EDITOR = "emacsclient -c";
       ALTERNATIVE_EDITOR = "mg -n";
       SDCV_PAGER = "less -R";
       MOZ_ENABLE_WAYLAND = 1;
@@ -462,7 +462,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
   wayland.windowManager.sway = let
     cfg = config.wayland.windowManager.sway.config;
     mod = cfg.modifier;
-    lockscreen-fg = "ff0000";    
+    lockcmd = "swaylock -f -c ff0000";
   in {
     enable = true;
     extraSessionCommands = ''
@@ -479,10 +479,10 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         { command = "dbus-update-activation-environment --systemd --all"; }
         { command = ''
                       swayidle -w \
-                                timeout 300  'swaylock -f -c ${lockscreen-fg}' \
+                                timeout 300  '${lockcmd}' \
                                 timeout 600  'swaymsg \"output * dpms off\"' \
                                 resume       'swaymsg \"output * dpms on\"' \
-                                before-sleep 'swaylock -f -c ${lockscreen-fg}'
+                                before-sleep '${lockcmd}'
                     ''; }
         { command = "mako"; }
         { command = "telegram-desktop"; }
@@ -500,23 +500,23 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       
       modifier = "Mod4";
 
-      left = "a";
-      down = "r";
-      up = "s";
+      left  = "a";
+      down  = "r";
+      up    = "s";
       right = "t";
       
       keybindings = {
         "${mod}+q" = "exec ${cfg.terminal}";
         "${mod}+x" = "exec ${cfg.menu}";
 
-        "XF86AudioMute"        = "exec \"pamixer -t\"";
-        "XF86AudioLowerVolume" = "exec \"pamixer -d 3 -u\"";
-        "XF86AudioRaiseVolume" = "exec \"pamixer -i 3 -u\"";
-        "XF86AudioMicMute"     = "exec \"pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t\"";
-        "XF86MonBrightnessDown" = "exec \"light -U 5\"";
-        "XF86MonBrightnessUp"   = "exec \"light -A 5\"";
+        "XF86AudioMute"        = "exec 'pamixer -t'";
+        "XF86AudioLowerVolume" = "exec 'pamixer -d 3 -u'";
+        "XF86AudioRaiseVolume" = "exec 'pamixer -i 3 -u'";
+        "XF86AudioMicMute"     = "exec 'pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t'";
+        "XF86MonBrightnessDown" = "exec 'light -U 5'";
+        "XF86MonBrightnessUp"   = "exec 'light -A 5'";
         
-        "${mod}+z" = "exec \"swaylock -c ${lockscreen-fg}\"";
+        "${mod}+z" = "exec '${lockcmd}'";
         "${mod}+Shift+z" = "exec \"swaynag -t warning -m 'Exit?' -b 'Yes, exit sway' 'swaymsg exit'\"";
         "${mod}+Shift+c" = "kill";
         "${mod}+Shift+x" = "restart";
