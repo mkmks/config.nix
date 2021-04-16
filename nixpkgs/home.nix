@@ -505,21 +505,20 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       right = "t";
       
       keybindings = {
-        "${mod}+q" = "exec ${cfg.terminal}";
-        "${mod}+x" = "exec ${cfg.menu}";
-
         "XF86AudioMute"        = "exec 'pamixer -t'";
         "XF86AudioLowerVolume" = "exec 'pamixer -d 3 -u'";
         "XF86AudioRaiseVolume" = "exec 'pamixer -i 3 -u'";
         "XF86AudioMicMute"     = "exec 'pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t'";
         "XF86MonBrightnessDown" = "exec 'light -U 5'";
         "XF86MonBrightnessUp"   = "exec 'light -A 5'";
-        
+
         "${mod}+z" = "exec '${lockcmd}'";
+        "${mod}+x" = "exec ${cfg.menu}";
+        "${mod}+c" = "exec ${cfg.terminal}";
+
         "${mod}+Shift+z" = "exec \"swaynag -t warning -m 'Exit?' -b 'Yes, exit sway' 'swaymsg exit'\"";
+        "${mod}+Shift+x" = "reload";
         "${mod}+Shift+c" = "kill";
-        "${mod}+Shift+x" = "restart";
-        "${mod}+c" = "reload";
 
         # windows
         
@@ -624,6 +623,14 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
           pos = "0 0";
         };
 
+        "Samsung Electric Company S27C450 HTPFC00841" = {
+          pos = "1920 0";
+        };
+
+        "Samsung Electric Company S27C450 HTPFC00855" = {
+          pos = "0 0";
+        };
+
         "Unknown 0x403D 0x00000000" = {
           scale = "1.2";
           pos = "0 1200";
@@ -631,7 +638,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
         "Unknown 0x2036 0x00000000" = {
           pos = "0 1200";
-        };        
+        };
       };
     };
   };
