@@ -466,7 +466,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
           {
             block = "battery";
             interval = 10;
-            format = "{percentage}% {time}";            
+            format = "{percentage} {time}";            
           }
           {
             block = "sound";            
