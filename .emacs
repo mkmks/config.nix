@@ -9,11 +9,9 @@
 (eval-when-compile
   (require 'use-package))
 
-(use-package base16-theme
-  :init
-  (setq base16-theme-256-color-source "colors")
+(use-package vs-light-theme
   :config
-  (load-theme 'base16-bright t))
+  (load-theme 'vs-light t))
 
 (use-package emacs
   :init
@@ -31,6 +29,9 @@
 
 (use-package autorevert
   :diminish auto-revert-mode)
+
+(use-package company
+  :diminish company-mode)
 
 (use-package tramp
   :init
@@ -94,7 +95,8 @@
 
 (use-package restclient)
 
-(use-package which-key)
+(use-package which-key
+  :diminish which-key-mode)
 
 ;;;; PROGRAMMING LANGUAGES
 
@@ -203,12 +205,11 @@
      (other . "gnu")))
  '(column-number-mode t)
  '(custom-file nil)
- '(custom-safe-themes
-   '("25c06a000382b6239999582dfa2b81cc0649f3897b394a75ad5a670329600b45" "ef1e992ef341e86397b39ee6b41c1368e1b33d45b0848feac6a8e8d5753daa67" "146061a7ceea4ccc75d975a3bb41432382f656c50b9989c7dc1a7bb6952f6eb4" "5a39d2a29906ab273f7900a2ae843e9aa29ed5d205873e1199af4c9ec921aaab" "df21cdadd3f0648e3106338649d9fea510121807c907e2fd15565dde6409d6e9" "d96587ec2c7bf278269b8ec2b800c7d9af9e22d816827639b332b0e613314dfd" "5b8eccff13d79fc9b26c544ee20e1b0c499587d6c4bfc38cabe34beaf2c2fc77" "4bf5c18667c48f2979ead0f0bdaaa12c2b52014a6abaa38558a207a65caeb8ad" "f984e2f9765a69f7394527b44eaa28052ff3664a505f9ec9c60c088ca4e9fc0b" "16dd114a84d0aeccc5ad6fd64752a11ea2e841e3853234f19dc02a7b91f5d661" "3de3f36a398d2c8a4796360bfce1fa515292e9f76b655bb9a377289a6a80a132" "f6f5d5adce1f9a764855c9730e4c3ef3f90357313c1cae29e7c191ba1026bc15" "ef04dd1e33f7cbd5aa3187981b18652b8d5ac9e680997b45dc5d00443e6a46e3" "b3bcf1b12ef2a7606c7697d71b934ca0bdd495d52f901e73ce008c4c9825a3aa" "dd4628d6c2d1f84ad7908c859797b24cc6239dfe7d71b3363ccdd2b88963f336" "f5f3a6fb685fe5e1587bafd07db3bf25a0655f3ddc579ed9d331b6b19827ea46" "1d079355c721b517fdc9891f0fda927fe3f87288f2e6cc3b8566655a64ca5453" "446cc97923e30dec43f10573ac085e384975d8a0c55159464ea6ef001f4a16ba" "80930c775cef2a97f2305bae6737a1c736079fdcc62a6fdf7b55de669fbbcd13" "196df8815910c1a3422b5f7c1f45a72edfa851f6a1d672b7b727d9551bb7c7ba" "6145e62774a589c074a31a05dfa5efdf8789cf869104e905956f0cbd7eda9d0e" "4a91a64af7ff1182ed04f7453bb5a4b0c3d82148d27db699df89a5f1d449e2a4" "50d07ab55e2b5322b2a8b13bc15ddf76d7f5985268833762c500a90e2a09e7aa" "3f67aee8f8d8eedad7f547a346803be4cc47c420602e19d88bdcccc66dba033b" "527df6ab42b54d2e5f4eec8b091bd79b2fa9a1da38f5addd297d1c91aa19b616" "0c3b1358ea01895e56d1c0193f72559449462e5952bded28c81a8e09b53f103f" "7bef2d39bac784626f1635bd83693fae091f04ccac6b362e0405abf16a32230c" "36282815a2eaab9ba67d7653cf23b1a4e230e4907c7f110eebf3cdf1445d8370" "bea5fd3610ed135e6ecc35bf8a9c27277d50336455dbdd2969809f7d7c1f7d79" "cabc32838ccceea97404f6fcb7ce791c6e38491fd19baa0fcfb336dcc5f6e23c" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "3380a2766cf0590d50d6366c5a91e976bdc3c413df963a0ab9952314b4577299" "aea30125ef2e48831f46695418677b9d676c3babf43959c8e978c0ad672a7329" default))
  '(default-input-method "russian-computer")
  '(electric-pair-mode t)
  '(epg-gpg-program "gpg2")
  '(fill-column 80)
+ '(font-use-system-font t)
  '(fringe-mode '(nil . 0) nil (fringe))
  '(gdb-many-windows t)
  '(global-flycheck-mode t)
@@ -230,6 +231,7 @@
  '(inhibit-startup-screen t)
  '(lsp-file-watch-threshold 10000)
  '(lsp-haskell-process-path-hie "haskell-language-server-wrapper")
+ '(lsp-headerline-breadcrumb-segments '(symbols))
  '(lsp-metals-show-implicit-conversions-and-classes t)
  '(lsp-metals-show-inferred-type t)
  '(lsp-treemacs-sync-mode t)
@@ -331,5 +333,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#000000" :foreground "#e0e0e0" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#ffffff" :foreground "#000000" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight semi-bold :height 88 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(lsp-ui-sideline-symbol ((t (:background "blue" :foreground "grey" :box (:line-width -1 :color "grey") :height 0.99)))))

@@ -87,10 +87,10 @@ chromium \
       # fonts
       cm_unicode
       font-awesome_4
+      powerline-fonts
       source-code-pro
       kochi-substitute
       wqy_zenhei
-      powerline-fonts
       
       # base
       bc
@@ -150,6 +150,7 @@ chromium \
       nodePackages.typescript
       nodePackages.typescript-language-server
       unstable.metals
+      unstable.bloop
       maven
       sbt
       scalafmt
@@ -339,7 +340,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       enable = true;
       package = pkgs.emacsPgtkGcc;
       extraPackages = e: [
-	      e.base16-theme
+        e.vs-dark-theme
+        e.vs-light-theme
         e.use-package
 	      e.diminish
 	      e.bind-key
