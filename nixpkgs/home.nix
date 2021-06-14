@@ -500,13 +500,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       musicDirectory = "${config.home.homeDirectory}/Music";
     };
 
-    redshift = {
+    gammastep = {
       enable = true;
-      package = pkgs.redshift-wlr;
-      brightness = {
-        day = "1.0";
-        night = "0.7";
-      };
       latitude = "48.8566";
       longitude = "2.3522";
       provider = "manual";
