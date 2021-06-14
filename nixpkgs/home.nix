@@ -81,7 +81,6 @@ chromium \
       # wayland
       bemenu
       mako
-      i3status-rust
       swayidle
 
       # fonts
@@ -420,6 +419,66 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       font = "${term-font}";
       defaultTimeout = 5000;
     };
+
+    i3status-rust = {
+      enable = true;
+      bars.default = {
+        icons = "awesome";
+        theme = "solarized-dark";
+        blocks = [
+          {
+            block = "memory";
+            display_type = "memory";
+            clickable = false;
+            format_mem = "{mem_avail;G}";
+          }          
+          {
+            block = "disk_space";
+            path = "/";
+            alias = "/";
+            unit = "GB";
+            interval = 20;
+            warning = 20.0;
+            alert = 10.0;
+          }
+          {
+            block = "maildir";
+            interval = 60;
+            inboxes = ["/home/viv/Mail/fastmail/Inbox"];
+            threshold_warning = 1;
+            threshold_critical = 10;
+          }
+          {
+            block = "net";
+            device = "wlan0";
+            interval = 5;
+          }
+          {
+            block = "net";
+            device = "wwp0s20f0u6";
+            interval = 5;
+          }
+          {
+            block = "net";
+            device = "enp0s31f6";
+            interval = 5;
+          }
+          {
+            block = "battery";
+            interval = 10;
+            format = "{percentage}% {time}";            
+          }
+          {
+            block = "sound";            
+          }
+          {
+            block = "time";
+            interval = 60;
+            format = "%a %b %d %R";            
+          }
+        ];
+      };
+    };
   };
 
   services = {
@@ -572,7 +631,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
       bars = [
         {
           position = "top";
-          statusCommand = "i3status-rs";
+          statusCommand = "i3status-rs ~/.config/i3status-rust/config-default.toml";
         
           colors = {
             background = "#222222";
