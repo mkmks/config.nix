@@ -444,7 +444,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
           {
             block = "maildir";
             interval = 60;
-            inboxes = ["/home/viv/Mail/fastmail/Inbox"];
+            inboxes = ["${config.home.homeDirectory}/Mail/fastmail/Inbox"];
             threshold_warning = 1;
             threshold_critical = 10;
           }
