@@ -354,11 +354,9 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.multi-vterm
         # IDE
         e.company
-        e.company-lsp
         e.flycheck
 	      e.helm
         e.helm-ag
-        e.helm-ghc
         e.helm-lsp
 	      e.helm-projectile
 	      e.magit
@@ -394,7 +392,6 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 
     chromium.enable = true;
     
-    feh.enable = true;
     gpg.enable = true;
     
     mpv = {
@@ -449,19 +446,8 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
             threshold_critical = 10;
           }
           {
-            block = "net";
-            device = "wlan0";
-            interval = 5;
-          }
-          {
-            block = "net";
-            device = "wwp0s20f0u6";
-            interval = 5;
-          }
-          {
-            block = "net";
-            device = "enp0s31f6";
-            interval = 5;
+            block = "networkmanager";
+            interface_name_exclude = ["br\\-[0-9a-f]{12}" "docker\\d+"];
           }
           {
             block = "battery";
