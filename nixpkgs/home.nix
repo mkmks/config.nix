@@ -69,8 +69,9 @@ chromium \
       # desktop-gui
       android-file-transfer
       libreoffice
-      skypeforlinux
+      skypeforlinux      
       unstable.tdesktop
+      unstable.zoom-us
 
       gnome3.baobab
       gnome3.dconf-editor
@@ -105,6 +106,7 @@ chromium \
       silver-searcher
       unrar
       unzip
+      xdg-utils
 
       # net
       dnsutils
@@ -153,6 +155,7 @@ chromium \
       maven
       sbt
       scalafmt
+      vscode-with-extensions
     ];
   
     sessionVariables = {
@@ -365,10 +368,12 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         e.which-key
         # programming languages
 	      e.haskell-mode
+        e.merlin
         e.nix-mode
 	      e.scala-mode
 	      e.sbt-mode
         e.sql-clickhouse
+        e.tuareg
         e.typescript-mode
         # language server protocol
         e.dap-mode
