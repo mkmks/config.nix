@@ -65,14 +65,35 @@ chromium \
              '';
     };
 
-    packages = with pkgs; [
+    file."bin/spotify" = {
+      executable = true;
+      text = ''
+#/bin/sh
+spotify \
+    --enable-features=UseOzonePlatform --ozone-platform=wayland
+             '';
+    };
+    
+    packages = let
+      inherit (unstable) fetchurl;
+      concordium-desktop-wallet = pkgs.appimageTools.wrapType2 { # or wrapType1
+        name = "concordium-desktop-wallet";
+        src = fetchurl {
+          url = "https://distribution.mainnet.concordium.software/tools/linux/concordium-desktop-wallet-1.2.0.AppImage";
+          sha256 = "526fc9f3d894eeb2bc49451d5d68dbd092fb3b40699158f3bb8e7693914d89c1";
+        };
+        extraPkgs = pkgs: with pkgs; [ ];
+      };
+    in with pkgs; [
       # desktop-gui
       android-file-transfer
       libreoffice
-      skypeforlinux      
+      skypeforlinux
+      concordium-desktop-wallet
+      unstable.ledger-live-desktop
       unstable.tdesktop
       unstable.zoom-us
-
+      
       gnome3.baobab
       gnome3.dconf-editor
       gnome3.evince
