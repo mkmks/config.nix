@@ -416,7 +416,16 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     mbsync.enable = true;
     msmtp.enable = true;
     
-    chromium.enable = true;
+    chromium = {
+      enable = true;
+      extensions = [
+        { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
+        { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } # privacy badger
+        { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
+        { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
+        { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark reader
+      ];
+    };
     
     gpg.enable = true;
     
