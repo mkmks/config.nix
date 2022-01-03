@@ -25,6 +25,8 @@
 								    (projectile-project-root)))
 				      (buffer-name (current-buffer))))
 			     (vc-mode vc-mode) " (%m)"))
+  (when (daemonp)
+    (exec-path-from-shell-initialize))
   :diminish visual-line-mode hi-lock-mode)
 
 (use-package autorevert
@@ -38,6 +40,8 @@
   (setq tramp-backup-directory-alist backup-directory-alist))
 
 (use-package pretty-mode)
+
+(use-package pixel-scroll-precision-mode)
 
 ;;;; APPS
 

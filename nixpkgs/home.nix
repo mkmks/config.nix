@@ -3,6 +3,10 @@
 let
   unstable = import <nixpkgs-unstable> {};
   term-font = "DejaVu Sans Mono for Powerline 9";
+  term-fonts-set = {
+    names = [ "DejaVu Sans Mono" ];
+    size = 9.0;
+  };
 in
 
 {
@@ -55,6 +59,9 @@ in
   };
 
   home = {
+    username = "viv";
+    homeDirectory = "/home/viv";
+
     file."bin/chrome" = {
       executable = true;
       text = ''
@@ -178,16 +185,17 @@ spotify \
       scalafmt
       vscode-with-extensions
     ];
-  
+
+    sessionPath = [ "${config.home.homeDirectory}/bin" ];
+    
     sessionVariables = {
       EDITOR = "emacsclient -c";
       ALTERNATIVE_EDITOR = "mg -n";
       SDCV_PAGER = "less -R";
-      MOZ_ENABLE_WAYLAND = 1;
       DIGESTIFDATA = "${pkgs.lua53Packages.digestif}/digestif-${pkgs.lua53Packages.digestif.version}-rocks/digestif/${pkgs.lua53Packages.digestif.version}/data";
     };
 
-    stateVersion = "20.03";
+    stateVersion = "21.11";
   };  
 
   nixpkgs.overlays = [
@@ -340,10 +348,6 @@ end
 gpg-connect-agent -q updatestartuptty /bye > /dev/null
       '';
       
-      promptInit = ''
-
-          '';
-
       shellAliases = {
         ec = "emacsclient -n";
         v = "ebook-viewer";
@@ -370,6 +374,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
 	      e.bind-key
 	      e.pretty-mode
         e.ag
+        e.exec-path-from-shell
         # apps
         e.mu4e-conversation
         e.mu4e-maildirs-extension
@@ -411,11 +416,6 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     mbsync.enable = true;
     msmtp.enable = true;
     
-    firefox = {
-      enable = false;
-      package = pkgs.firefox-wayland;
-    };
-
     chromium.enable = true;
     
     gpg.enable = true;
@@ -538,9 +538,11 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
         export QT_QPA_PLATFORM=wayland
         export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
         export _JAVA_AWT_WM_NONREPARENTING=1
+        export BEMENU_BACKEND=wayland
       '';
+    wrapperFeatures.gtk = true;
     config = {
-      fonts = [ "${term-font}" ];
+      fonts = term-fonts-set;
 
       startup = [
         { command = "dbus-update-activation-environment --systemd --all"; }
@@ -656,7 +658,7 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
             };
           };
 
-          fonts = [ "${term-font}" ];
+          fonts = term-fonts-set;
         }
       ];
       
