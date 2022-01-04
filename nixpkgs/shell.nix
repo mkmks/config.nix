@@ -35,6 +35,7 @@
       
       # snd
       pamixer
+      spotify-tui
     ];
 
     sessionVariables = {
@@ -192,6 +193,5 @@ gpg-connect-agent -q updatestartuptty /bye > /dev/null
     };
 
     ncmpcpp.enable = true;
-    ncspot.enable = true;
   };
 }

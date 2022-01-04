@@ -29,6 +29,7 @@
 	    e.nov
       e.vterm
       e.multi-vterm
+      e.smudge
       # IDE
       e.company
       e.flycheck

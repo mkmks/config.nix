@@ -142,7 +142,6 @@ in
       assigns = {
         "mmm" = [
           { app_id = "^telegramdesktop$"; }
-          { title = "^Spotify.*$"; }
         ];
       };
 

@@ -27,15 +27,6 @@ chromium \
     --disable-gpu-memory-buffer-video-frames
              '';
     };
-
-    file."bin/spotify" = {
-      executable = true;
-      text = ''
-#/bin/sh
-spotify \
-    --enable-features=UseOzonePlatform --ozone-platform=wayland
-             '';
-    };
     
     packages = let
       inherit (unstable) fetchurl;
@@ -50,7 +41,6 @@ spotify \
     in with pkgs; [
       android-file-transfer
       libreoffice
-      spotify
       skypeforlinux
       unstable.tdesktop
       unstable.zoom-us
@@ -127,6 +117,18 @@ spotify \
     mpd = {
       enable = true;
       musicDirectory = "${config.home.homeDirectory}/Music";
+    };
+
+    spotifyd = {
+      enable = true;
+      settings = {
+        global = {
+          username = "mkmks";
+          password_cmd = "${pkgs.gnome3.libsecret}/bin/secret-tool lookup service spotifyd username mkmks";
+          device_name = "schildpad";
+          bitrate = 320;
+        };
+      };
     };
     
     syncthing.enable = true;
