@@ -3,7 +3,6 @@
 {
   home = {
     packages = with pkgs; [
-      # base
       bc
       dtach
       fdupes

@@ -1,9 +1,9 @@
 {config, pkgs, ...}:
 
 let
-  term-font = "DejaVu Sans Mono for Powerline 9";
+  term-font = "DejaVu Sans Mono 9";
   term-fonts-set = {
-    names = [ "DejaVu Sans Mono" ];
+    names = [ "DejaVu Sans Mono for Powerline" ];
     size = 9.0;
   };  
 in
