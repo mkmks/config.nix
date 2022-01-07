@@ -10,7 +10,7 @@ in
     ./devel.nix
     ./emacs.nix
     ./mail.nix
-    ./shell.nix    
+    ./term.nix    
     ./wayland.nix
   ];
 

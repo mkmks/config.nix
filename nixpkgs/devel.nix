@@ -8,23 +8,22 @@ in
     packages = with pkgs; [
       vscode-with-extensions
 
-      #haskell.packages.ghc8102.ghcWithPackages (pkgs: with pkgs; [ cabal-install haskell-language-server ])
       haskellPackages.Agda
       
       # language servers
       rnix-lsp
-      unstable.haskell-language-server
       lua53Packages.digestif
       #     python37Packages.python-language-server
       nodePackages.bash-language-server
       nodePackages.typescript
       nodePackages.typescript-language-server
-      unstable.metals
+      metals
+      rls
 
       # build
-      haskellPackages.cabal-install
+      cabal2nix
+      bloop
       maven
-      unstable.bloop
       sbt
       scalafmt
 
@@ -41,10 +40,22 @@ in
     };
   };
 
-  programs.git = {
-    enable = true;
-    lfs.enable = true;
-    userName = "Nikita Frolov";
-    userEmail = "nf@mkmks.org";
+  programs = {
+    direnv = {
+      enable = true;
+      nix-direnv = {
+        enable = true;
+        enableFlakes = true;
+      };
+    };
+    
+    git = {
+      enable = true;
+      lfs.enable = true;
+      userName = "Nikita Frolov";
+      userEmail = "nf@mkmks.org";
+    };    
   };
+
+  services.lorri.enable = true;
 }

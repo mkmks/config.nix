@@ -74,10 +74,25 @@
   :config
   (push '("\\.epub\\'" . nov-mode) auto-mode-alist))
 
+(use-package smudge
+  :config
+  (setq smudge-transport 'connect))
+
+(use-package telega
+  :config
+  (setq telega-use-images t))
+
 ;;;; PROJECT MANAGEMENT
 
 (use-package flycheck
-  :init (global-flycheck-mode))
+  :init
+  (global-flycheck-mode))
+
+(use-package flycheck-haskell)
+
+(use-package flycheck-rust
+  :config
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 (use-package helm
   :diminish helm-mode
@@ -101,6 +116,8 @@
 
 (use-package which-key
   :diminish which-key-mode)
+
+(use-package direnv)
 
 ;;;; PROGRAMMING LANGUAGES
 
@@ -133,14 +150,22 @@
 
 (use-package sql-clickhouse)
 
+(use-package protobuf-mode)
+
+(use-package toml-mode)
+
+(use-package rustic)
+
+(use-package cargo)
+
 ;;;; LANGUAGE SERVER PROTOCOL
 
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-x l")
   :hook
-  (haskell-mode . lsp)
-  (haskell-literate-mode . lsp)
+  (haskell-mode . lsp-deferred)
+  (haskell-literate-mode . lsp-deferred)
   (scala-mode . lsp)
   (java-mode . lsp)
   (python-mode . lsp)
@@ -150,6 +175,8 @@
   (typescript-mode . lsp)
   (lsp-mode . lsp-lens-mode)
   (lsp-mode . lsp-enable-which-key-integration)
+  :commands
+  (lsp lsp-deferred)
   :config
   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
   (setq lsp-prefer-flymake nil))
@@ -201,18 +228,22 @@
  '(auto-save-default nil)
  '(base16-highlight-mode-line 'contrast)
  '(blink-cursor-mode nil)
- '(browse-url-browser-function 'browse-url-default-browser)
  '(c-default-style
    '((c-mode . "k&r")
      (java-mode . "java")
      (awk-mode . "awk")
      (other . "gnu")))
+ '(cargo-mode-command-build "build --release --features static")
+ '(cargo-path-to-bin "cargo")
  '(column-number-mode t)
  '(custom-file nil)
  '(default-input-method "russian-computer")
+ '(direnv-always-show-summary nil)
+ '(direnv-mode t)
  '(electric-pair-mode t)
  '(epg-gpg-program "gpg2")
  '(fill-column 80)
+ '(flycheck-haskell-stack-ghc-executable "stack --no-nix --system-ghc")
  '(font-use-system-font t)
  '(fringe-mode '(nil . 0) nil (fringe))
  '(gdb-many-windows t)

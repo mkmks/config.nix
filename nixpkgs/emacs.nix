@@ -30,9 +30,13 @@
       e.vterm
       e.multi-vterm
       e.smudge
+      e.telega
       # IDE
       e.company
+      e.direnv
       e.flycheck
+      e.flycheck-haskell
+      e.flycheck-rust
 	    e.helm
       e.helm-ag
       e.helm-lsp
@@ -42,12 +46,16 @@
       e.restclient
       e.which-key
       # programming languages
+      e.cargo-mode
 	    e.haskell-mode
       e.merlin
       e.nix-mode
+      e.protobuf-mode
+      e.rustic
 	    e.scala-mode
 	    e.sbt-mode
       e.sql-clickhouse
+      e.toml-mode
       e.tuareg
       e.typescript-mode
       # language server protocol
