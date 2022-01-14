@@ -1,23 +1,12 @@
-{config, pkgs, nixpkgs-unstable, ...}:
+{config, pkgs, ...}:
 
 let
-#  unstable = import <nixpkgs-unstable> {};
   term-font = "DejaVu Sans Mono for Powerline 9";
 in
 
 {
-  imports = [
-    ./devel.nix
-    ./emacs.nix
-    ./mail.nix
-    ./term.nix    
-    ./wayland.nix
-  ];
 
   home = {
-    username = "viv";
-    homeDirectory = "/home/viv";
-
     file."bin/chrome" = {
       executable = true;
       text = ''
@@ -37,7 +26,7 @@ column-number-mode
     };
     
     packages = let
-      inherit (nixpkgs-unstable) fetchurl;
+      inherit (pkgs) fetchurl;
       concordium-desktop-wallet = pkgs.appimageTools.wrapType2 { # or wrapType1
         name = "concordium-desktop-wallet";
         src = fetchurl {
@@ -59,8 +48,8 @@ column-number-mode
       android-file-transfer
       libreoffice
       skypeforlinux
-      nixpkgs-unstable.tdesktop
-      nixpkgs-unstable.zoom-us
+      tdesktop
+      zoom-us
       
       gnome3.baobab
       gnome3.dconf-editor
@@ -76,12 +65,10 @@ column-number-mode
 
 #      concordium-desktop-wallet
       concordium-desktop-wallet-testnet
-      nixpkgs-unstable.ledger-live-desktop      
+      ledger-live-desktop      
     ];
 
-    sessionPath = [ "${config.home.homeDirectory}/bin" ];
-    
-    stateVersion = "21.11";
+    sessionPath = [ "${config.home.homeDirectory}/bin" ];    
   };  
   
   programs = {

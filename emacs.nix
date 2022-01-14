@@ -1,14 +1,10 @@
-{pkgs, emacs, ...}:
+{pkgs, ...}:
 
 {
   home.sessionVariables = {
     EDITOR = "emacsclient -c";    
   };
-  
-  nixpkgs.overlays = [
-    emacs.overlay
-  ];
-  
+    
   programs.emacs = {
     enable = true;
     package = pkgs.emacsPgtkGcc;
