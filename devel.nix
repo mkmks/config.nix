@@ -1,8 +1,5 @@
 {pkgs, ...}:
 
-let
-  unstable = import <nixpkgs-unstable> {};
-in
 {
   home = {    
     packages = with pkgs; [

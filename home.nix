@@ -1,7 +1,7 @@
-{config, pkgs, ...}:
+{config, pkgs, nixpkgs-unstable, ...}:
 
 let
-  unstable = import <nixpkgs-unstable> {};
+#  unstable = import <nixpkgs-unstable> {};
   term-font = "DejaVu Sans Mono for Powerline 9";
 in
 
@@ -27,23 +27,40 @@ chromium \
     --disable-gpu-memory-buffer-video-frames
              '';
     };
+
+    file.".mg" = {
+      text = ''
+set-default-mode indent
+make-backup-files 0
+column-number-mode
+             '';
+    };
     
     packages = let
-      inherit (unstable) fetchurl;
+      inherit (nixpkgs-unstable) fetchurl;
       concordium-desktop-wallet = pkgs.appimageTools.wrapType2 { # or wrapType1
         name = "concordium-desktop-wallet";
         src = fetchurl {
-          url = "https://distribution.mainnet.concordium.software/tools/linux/concordium-desktop-wallet-1.2.0.AppImage";
-          sha256 = "526fc9f3d894eeb2bc49451d5d68dbd092fb3b40699158f3bb8e7693914d89c1";
+          url = "https://distribution.mainnet.concordium.software/tools/linux/concordium-desktop-wallet-1.3.0.AppImage";
+          sha256 = "6660da7cbc16772ab8cf2986f4775ce62c4d60140043fca124e5cc93f4d98fab";
         };
         extraPkgs = pkgs: with pkgs; [ ];
       };
+      concordium-desktop-wallet-testnet = pkgs.appimageTools.wrapType2 { # or wrapType1
+        name = "concordium-desktop-wallet";
+        src = fetchurl {
+          url = "https://s3.eu-west-1.amazonaws.com/desktopwallet.concordium.com/1.3.1/testnet/concordium-desktop-wallet-testnet-1.3.1.AppImage";
+          sha256 = "80da238ee1ef92894ed53ad21690275afb9dd46c20a5c31465ccbcfce093f038";
+        };
+        extraPkgs = pkgs: with pkgs; [ ];
+      };
+
     in with pkgs; [
       android-file-transfer
       libreoffice
       skypeforlinux
-      unstable.tdesktop
-      unstable.zoom-us
+      nixpkgs-unstable.tdesktop
+      nixpkgs-unstable.zoom-us
       
       gnome3.baobab
       gnome3.dconf-editor
@@ -57,8 +74,9 @@ chromium \
       gnuplot
       xfig
 
-      concordium-desktop-wallet
-      unstable.ledger-live-desktop      
+#      concordium-desktop-wallet
+      concordium-desktop-wallet-testnet
+      nixpkgs-unstable.ledger-live-desktop      
     ];
 
     sessionPath = [ "${config.home.homeDirectory}/bin" ];

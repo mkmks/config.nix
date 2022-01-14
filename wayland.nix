@@ -34,6 +34,7 @@ in
   home.packages = with pkgs; [
     bemenu
     swayidle
+    swayr
 
     # fonts
     cm_unicode
