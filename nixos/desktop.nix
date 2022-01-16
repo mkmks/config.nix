@@ -1,52 +1,25 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
-
-  boot = {
-    cleanTmpDir = true;
-
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-  };
-
   console.keyMap = "colemak";
+  time.timeZone = "Europe/Paris";
+  nixpkgs.config.allowUnfree = true;
+  
+  environment = {
+    homeBinInPath = true;
+    systemPackages = with pkgs; [
+      pciutils
+      usbutils      
+      swaylock
+    ];
+  };
 
   hardware = {
     bluetooth.enable = true;
-    cpu.intel.updateMicrocode = true;
     ledger.enable = true;
-    
-    opengl = {
-      enable = true;
-      driSupport = true;
-      package = (pkgs.mesa.override {
-        galliumDrivers = [ "nouveau" "virgl" "swrast" "iris" ];
-      }).drivers;
-      extraPackages = with pkgs; [ vaapiIntel vaapiVdpau libvdpau-va-gl ];  
-    };
-    
-    video.hidpi.enable = true;
   };
 
-  netkit.xmm7360 = {
-    enable = false;
-    autoStart = true;
-    config = {
-      apn = "orange";
-      nodefaultroute = false;
-      noresolv = true;
-    };
-    package = pkgs.netkit.xmm7360-pci_latest;
-  };
-  
-  powerManagement.powertop.enable = true;
-  
   networking = {
-    hostName = "schildpad";
-
     firewall = {
       enable = true;
       allowedTCPPorts = [ 22000 57621 ];
@@ -73,56 +46,11 @@
 
     # proxy.default = "http://127.0.0.1:8118";
     # proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
-
-    wireless.iwd.enable = true;
-
-    networkmanager = {
-      enable = true;
-      wifi.backend = "iwd";
-    };
   };
-
-  time.timeZone = "Europe/Paris";
-
-  nix = {
-    binaryCachePublicKeys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-    ];
-    binaryCaches = [
-      "https://nix-community.cachix.org"
-      "https://hydra.iohk.io"
-    ];
-    package = pkgs.nixUnstable;
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  };
-
-  environment.homeBinInPath = true;
-  environment.systemPackages = with pkgs; [
-      acpi
-      iw
-      lm_sensors
-      ntfs3g
-      pciutils
-      powertop
-      swaylock
-      usbutils
-  ];
-  environment.variables = {
-    MESA_LOADER_DRIVER_OVERRIDE = "iris";
-  };
-    
-  nixpkgs.config.allowUnfree = true;
   
   programs = {
     adb.enable = true;
     dconf.enable = true;
-    java = {
-      enable = true;
-      package = pkgs.jdk11;
-    };
     light.enable = true;
     steam.enable = true;
   };
@@ -134,15 +62,10 @@
     };
     rtkit.enable = true;
   };
-
-  virtualisation.docker.enable = true;
   
   services = {
 
-    # hardware
-    
-    fstrim.enable = true;
-    fwupd.enable = true;
+    dbus.packages = [ pkgs.gnome3.dconf pkgs.gcr ];
     gpm.enable = true;
 
     greetd = {
@@ -201,40 +124,15 @@
       drivers = [ pkgs.cups-bjnp pkgs.gutenprint ];
     };
 
-    throttled.enable = true;
-    tlp = {
-      enable = pkgs.lib.mkDefault true;
-      settings = {
-        START_CHARGE_THRESH_BAT0 = 75;
-        STOP_CHARGE_THRESH_BAT0 = 80;
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-        ENERGY_PERF_POLICY_ON_BAT = "powersave";
-      };
-    };
-
-    # network
-
-    transmission.enable = true;
-    
-    # desktop
-
-    dbus.packages = [ pkgs.gnome3.dconf pkgs.gcr ];
-    udisks2.enable = true;
+    transmission.enable = true;    
+    udisks2.enable = true;    
   };
 
-  users.users.viv = {
-    description = "Nikita Frolov";
-    extraGroups = [ "wheel" "transmission" "adbusers" "dialout" "docker" "video" ];
-    isNormalUser = true;
-    uid = 1000;
-    shell = pkgs.fish;
-  };
-
+  virtualisation.docker.enable = true;
+  
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [ xdg-desktop-portal-gtk xdg-desktop-portal-wlr ];
     gtkUsePortal = true;
   };
-  
-  system.stateVersion = "21.11";
 }

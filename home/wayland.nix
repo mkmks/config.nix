@@ -31,19 +31,31 @@ in
     };
   };
 
-  home.packages = with pkgs; [
-    bemenu
-    swayidle
-    swayr
+  home = {  
+    file."bin/chrome" = {
+      executable = true;
+      text = ''
+#!/bin/sh
+chromium \
+    --enable-features=UseOzonePlatform --ozone-platform=wayland \
+    --disable-gpu-memory-buffer-video-frames
+             '';
+    };
+  
+    packages = with pkgs; [
+      bemenu
+      swayidle
+      swayr
 
-    # fonts
-    cm_unicode
-    font-awesome_4
-    powerline-fonts
-    source-code-pro
-    kochi-substitute
-    wqy_zenhei    
-  ];
+      # fonts
+      cm_unicode
+      font-awesome_4
+      powerline-fonts
+      source-code-pro
+      kochi-substitute
+      wqy_zenhei    
+    ];
+  };
   
   programs = {
     mako = {
@@ -273,23 +285,7 @@ in
 
         "Dell Inc. DELL U2415 7MT0188M11YU" = {
           pos = "0 0";
-        };
-
-        "Samsung Electric Company S27C450 HTPFC00841" = {
-          pos = "1920 0";
-        };
-
-        "Samsung Electric Company S27C450 HTPFC00855" = {
-          pos = "0 0";
-        };
-
-        "Unknown 0x403D 0x00000000" = {
           scale = "1.2";
-          pos = "0 1200";
-        };
-
-        "Unknown 0x2036 0x00000000" = {
-          pos = "0 1200";
         };
       };
     };
