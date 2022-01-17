@@ -5,7 +5,7 @@
     packages = with pkgs; [
       vscode-with-extensions
 
-      haskellPackages.Agda
+      (agda.withPackages (p: with p; [ standard-library ]))
       
       # language servers
       rnix-lsp

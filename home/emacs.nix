@@ -17,6 +17,8 @@
 	    e.pretty-mode
       e.ag
       e.exec-path-from-shell
+      e.sway
+      e.shackle
       # apps
       e.mu4e-conversation
       e.mu4e-maildirs-extension
@@ -44,6 +46,7 @@
 	    e.haskell-mode
       e.merlin
       e.nix-mode
+      e.proof-general
       e.protobuf-mode
       e.rustic
 	    e.scala-mode

@@ -5,7 +5,8 @@ let
   term-fonts-set = {
     names = [ "DejaVu Sans Mono for Powerline" ];
     size = 9.0;
-  };  
+  };
+  lockcmd = "swaylock -f -c ff0000";
 in
 {
   fonts.fontconfig.enable = true;
@@ -41,11 +42,30 @@ chromium \
     --disable-gpu-memory-buffer-video-frames
              '';
     };
+
+    file.".config/swayr/config.toml" = {
+      text = ''
+[menu]
+executable = 'bemenu'
+args = [
+     '--ignorecase',
+     '--list',
+     '10'
+     ]
+
+[format]
+window_format = '{name}'
+html_escape = false
+
+[layout]
+auto_tile = false
+             '';
+    };
   
     packages = with pkgs; [
       bemenu
-      swayidle
       swayr
+      wlr-randr
 
       # fonts
       cm_unicode
@@ -114,17 +134,30 @@ chromium \
     };
   };
 
-  services.gammastep = {
+  services = {
+    gammastep = {
       enable = true;
       latitude = "48.8566";
       longitude = "2.3522";
       provider = "manual";
     };
+
+    swayidle = {
+      enable = true;
+      events = [
+#        { event = "after-resume"; command = "swaymsg \"output * dpms on\""; }
+        { event = "before-sleep"; command = "${lockcmd}"; }
+      ];
+      timeouts = [
+        { timeout = 300; command = "${lockcmd}"; }
+#        { timeout = 600; command = "swaymsg \"output * dpms off\""; }
+      ];
+    };
+  };
   
   wayland.windowManager.sway = let
     cfg = config.wayland.windowManager.sway.config;
     mod = cfg.modifier;
-    lockcmd = "swaylock -f -c ff0000";
   in {
     enable = true;
     extraSessionCommands = ''
@@ -141,14 +174,8 @@ chromium \
 
       startup = [
         { command = "dbus-update-activation-environment --systemd --all"; }
-        { command = ''
-                      swayidle -w \
-                                timeout 300  '${lockcmd}' \
-                                timeout 600  'swaymsg \"output * dpms off\"' \
-                                resume       'swaymsg \"output * dpms on\"' \
-                                before-sleep '${lockcmd}'
-                    ''; }
         { command = "mako"; }
+        { command = "swayrd"; }
         { command = "telegram-desktop"; }
       ];
 
@@ -172,7 +199,7 @@ chromium \
         "XF86AudioMute"        = "exec 'pamixer -t'";
         "XF86AudioLowerVolume" = "exec 'pamixer -d 3 -u'";
         "XF86AudioRaiseVolume" = "exec 'pamixer -i 3 -u'";
-        "XF86AudioMicMute"     = "exec 'pamixer --source alsa_input.pci-0000_00_1f.3.analog-stereo -t'";
+        "XF86AudioMicMute"     = "exec 'pamixer -source alsa_input.pci-0000_00_1f.3.analog-stereo -t'";
         "XF86MonBrightnessDown" = "exec 'light -U 5'";
         "XF86MonBrightnessUp"   = "exec 'light -A 5'";
 
@@ -184,24 +211,31 @@ chromium \
         "${mod}+Shift+x" = "reload";
         "${mod}+Shift+c" = "kill";
 
+        "${mod}+tab" = "exec swayr switch-window";
+
         # windows
         
         "${mod}+${cfg.left}"  = "focus left";
-        "${mod}+${cfg.down}"  = "focus down";
+        "${mod}+${cfg.down} " = "focus down";
         "${mod}+${cfg.up}"    = "focus up";
         "${mod}+${cfg.right}" = "focus right";
-        "${mod}+Control+${cfg.down}" = "focus child";
-        "${mod}+Control+${cfg.up}"   = "focus parent";
         
         "${mod}+Shift+${cfg.left}"  = "move left";
         "${mod}+Shift+${cfg.down}"  = "move down";
         "${mod}+Shift+${cfg.up}"    = "move up";
         "${mod}+Shift+${cfg.right}" = "move right";
 
+        # outputs
+
         "${mod}+Mod1+${cfg.left}"  = "focus output left";
         "${mod}+Mod1+${cfg.down}"  = "focus output down";
         "${mod}+Mod1+${cfg.up}"    = "focus output up";
         "${mod}+Mod1+${cfg.right}" = "focus output right";        
+
+        "${mod}+Shift+Mod1+${cfg.left}"  = "move workspace to output left";
+        "${mod}+Shift+Mod1+${cfg.down}"  = "move workspace to output down";
+        "${mod}+Shift+Mod1+${cfg.up}"    = "move workspace to output up";
+        "${mod}+Shift+Mod1+${cfg.right}" = "move workspace to output right";
 
         # workspaces
         
@@ -215,21 +249,25 @@ chromium \
         "${mod}+Shift+3" = "move container to workspace 3";
         "${mod}+Shift+4" = "move container to workspace mmm";
 
-        "${mod}+Shift+Mod1+${cfg.left}"  = "move workspace to output left";
-        "${mod}+Shift+Mod1+${cfg.down}"  = "move workspace to output down";
-        "${mod}+Shift+Mod1+${cfg.up}"    = "move workspace to output up";
-        "${mod}+Shift+Mod1+${cfg.right}" = "move workspace to output right";
-
         # layouts
+
+        "${mod}+Control+${cfg.left}"  = "focus prev sibling";
+        "${mod}+Control+${cfg.down}"  = "focus child";
+        "${mod}+Control+${cfg.up}"    = "focus parent";
+        "${mod}+Control+${cfg.right}" = "focus next sibling";
         
-        "${mod}+space" = "layout toggle all";
-        "${mod}+Shift+space" = "split toggle";
-        "${mod}+Control+a" = "floating toggle";
-        "${mod}+Control+t" = "fullscreen toggle";       
+        "${mod}+Control+Mod1+${cfg.left}"  = "layout toggle all";
+        "${mod}+Control+Mod1+${cfg.down}"  = "split toggle";
+        "${mod}+Control+Mod1+${cfg.up}"    = "floating toggle";
+        "${mod}+Control+Mod1+${cfg.right}" = "fullscreen toggle";
       };
 
       workspaceLayout = "tabbed";
-      window.hideEdgeBorders = "both";
+
+      window = {
+        hideEdgeBorders = "both";
+        titlebar = false;
+      };
       
       bars = [
         {
