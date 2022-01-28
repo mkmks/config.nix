@@ -211,7 +211,8 @@ auto_tile = false
         "${mod}+Shift+x" = "reload";
         "${mod}+Shift+c" = "kill";
 
-        "${mod}+tab" = "exec swayr switch-window";
+        "${mod}+tab"      = "exec swayr switch-window";
+        "${mod}+Mod1+tab" = "exec swayr swap-focused-with";        
 
         # windows
         

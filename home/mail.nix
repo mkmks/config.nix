@@ -33,6 +33,11 @@
     mbsync.enable = true;
     msmtp.enable = true;
     mu.enable = true;
+
+    emacs.extraPackages = e: with e; [
+      mu4e-conversation
+      #mu4e-maildirs-extension      
+    ];
   };
   
   services.mbsync.enable = true;

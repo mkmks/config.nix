@@ -10,10 +10,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixos";      
     };
+    nur.url = "github:nix-community/NUR";    
     emacs.url = "github:nix-community/emacs-overlay";
   };
 
-  outputs = { self, nixos, netkit, std, home-manager, emacs, ... }@inputs: {
+  outputs = { self, nixos, netkit, std, home-manager, nur, emacs, ... }@inputs: {
     nixosConfigurations = {
       schildpad = nixos.lib.nixosSystem {
         system = "x86_64-linux";
@@ -37,15 +38,22 @@
           imports = [
             ./home/desktop.nix
             ./home/devel.nix
-            ./home/emacs.nix
+            ./home/devel-haskell.nix
+            ./home/devel-ocaml.nix
+            ./home/devel-rust.nix
+            ./home/devel-scala.nix
             ./home/mail.nix
-            ./home/term.nix 
+            ./home/research.nix
+            ./home/term.nix
+            ./home/term-emacs.nix
+            ./home/term-fish.nix
             ./home/wayland.nix
           ];
           nixpkgs = {
             config = import ./config.nix;
             overlays = [
               emacs.overlay
+              nur.overlay
               (final: prev: {
                 unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
               })
