@@ -98,7 +98,10 @@ auto_tile = false
           {
             block = "maildir";
             interval = 60;
-            inboxes = ["${config.home.homeDirectory}/Mail/fastmail/Inbox"];
+            inboxes = [
+              "${config.home.homeDirectory}/Mail/fastmail/Inbox"
+              "${config.home.homeDirectory}/Mail/concordium/Inbox"
+            ];
             threshold_warning = 1;
             threshold_critical = 10;
           }

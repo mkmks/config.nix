@@ -22,7 +22,24 @@
         expunge = "both";
       };
       msmtp.enable = true;
-    };  
+      mu.enable = true;
+    };
+
+    accounts.concordium = {
+      flavor = "gmail.com";
+
+      address = "nf@concordium.com";
+      realName = "Nikita Frolov";
+      userName = "nf@concordium.com";
+      passwordCommand = "${pkgs.gnome3.libsecret}/bin/secret-tool lookup email nf@concordium.com";
+
+      mbsync = {
+        enable = true;
+        create = "both";
+        expunge = "both";
+      };
+      msmtp.enable = true;
+    };
   };
 
   home.packages = with pkgs; [
