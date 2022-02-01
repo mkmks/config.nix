@@ -32,17 +32,7 @@ in
     };
   };
 
-  home = {  
-    file."bin/chrome" = {
-      executable = true;
-      text = ''
-#!/bin/sh
-chromium \
-    --enable-features=UseOzonePlatform --ozone-platform=wayland \
-    --disable-gpu-memory-buffer-video-frames
-             '';
-    };
-
+  home = {
     file.".config/swayr/config.toml" = {
       text = ''
 [menu]
@@ -140,6 +130,25 @@ auto_tile = false
       latitude = "48.8566";
       longitude = "2.3522";
       provider = "manual";
+    };
+
+    kanshi = {
+      enable = true;
+      profiles = {
+        home-office = {
+          outputs = [
+            {
+              criteria = "Dell Inc. DELL U2415 7MT0188M11YU";
+              position = "0,0";
+              scale = 1.2;
+            }            
+            {
+              criteria = "eDP-1";
+              position = "0,1080";
+            }
+          ];
+        };
+      };
     };
 
     swayidle = {
@@ -257,10 +266,10 @@ auto_tile = false
         "${mod}+Control+${cfg.up}"    = "focus parent";
         "${mod}+Control+${cfg.right}" = "focus next sibling";
         
-        "${mod}+Control+Mod1+${cfg.left}"  = "layout toggle all";
-        "${mod}+Control+Mod1+${cfg.down}"  = "split toggle";
-        "${mod}+Control+Mod1+${cfg.up}"    = "floating toggle";
-        "${mod}+Control+Mod1+${cfg.right}" = "fullscreen toggle";
+        "${mod}+space"        = "split toggle";
+        "${mod}+Shift+space"  = "layout toggle all";        
+        "${mod}+return"       = "fullscreen toggle";
+        "${mod}+Shift+return" = "floating toggle";
       };
 
       workspaceLayout = "tabbed";
@@ -320,11 +329,6 @@ auto_tile = false
       output = {
         "*" = {
           background = "#000000 solid_color";
-        };
-
-        "Dell Inc. DELL U2415 7MT0188M11YU" = {
-          pos = "0 0";
-          scale = "1.2";
         };
       };
     };
