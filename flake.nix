@@ -38,10 +38,6 @@
           imports = [
             ./home/desktop.nix
             ./home/devel.nix
-            ./home/devel-haskell.nix
-            ./home/devel-ocaml.nix
-            ./home/devel-rust.nix
-            ./home/devel-scala.nix
             ./home/mail.nix
             ./home/research.nix
             ./home/term.nix

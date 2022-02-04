@@ -2,13 +2,9 @@
 
 {
   home.packages = with pkgs; [
-    # language servers
     rnix-lsp
-    #     python37Packages.python-language-server
+    python-language-server
     nodePackages.bash-language-server
-    nodePackages.typescript
-    nodePackages.typescript-language-server
-
     # ops
     aws
     aws-google-auth
@@ -31,18 +27,35 @@
 	    helm-projectile      
       magit
 	    projectile      
+      # LSP
+      dap-mode
+      lsp-mode
+	    lsp-ui
+	    lsp-treemacs
       # programming languages
+      elm-mode
       nix-mode
       protobuf-mode
       sql-clickhouse
       toml-mode
       typescript-mode
-      # language server protocol
-      dap-mode
+      ## java
       lsp-java
-      lsp-mode
-	    lsp-ui
-	    lsp-treemacs      
+      ## haskell
+      flycheck-haskell
+      haskell-mode
+      lsp-haskell
+      ## ocaml
+      merlin
+      tuareg
+      ## rust
+      cargo-mode
+      flycheck-rust
+      rustic
+      ## scala
+      lsp-metals
+	    sbt-mode
+	    scala-mode
     ];
     
     git = {
@@ -55,7 +68,12 @@
     vscode = {
       enable = true;
       extensions = with pkgs.vscode-extensions; [
+        haskell.haskell
+        justusadam.language-haskell
         ms-vsliveshare.vsliveshare
+        ocamllabs.ocaml-platform
+        scala-lang.scala
+        scalameta.metals
       ];
     };
   };
