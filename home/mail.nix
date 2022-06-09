@@ -11,7 +11,7 @@
       address = "nf@mkmks.org";
       realName = "Nikita Frolov";
       userName = "nf@mkmks.org";
-      passwordCommand = "${pkgs.gnome3.libsecret}/bin/secret-tool lookup email nf@mkmks.org";
+      passwordCommand = "${pkgs.libsecret}/bin/secret-tool lookup email nf@mkmks.org";
       
       imap.host = "imap.fastmail.com";      
       smtp.host = "smtp.fastmail.com";
@@ -31,7 +31,7 @@
       address = "nf@concordium.com";
       realName = "Nikita Frolov";
       userName = "nf@concordium.com";
-      passwordCommand = "${pkgs.gnome3.libsecret}/bin/secret-tool lookup email nf@concordium.com";
+      passwordCommand = "${pkgs.libsecret}/bin/secret-tool lookup email nf@concordium.com";
 
       mbsync = {
         enable = true;
@@ -43,7 +43,7 @@
   };
 
   home.packages = with pkgs; [
-    gnome3.libsecret    
+    libsecret
   ];
 
   programs = {

@@ -7,7 +7,7 @@
     
   programs.emacs = {
     enable = true;
-    package = pkgs.emacsPgtkGcc;
+    package = pkgs.emacsPgtkNativeComp;
     extraPackages = e: with e; [
       vs-dark-theme
       vs-light-theme
@@ -23,7 +23,10 @@
       exec-path-from-shell
       sway
       shackle
+      frames-only-mode
       # apps
+      flycheck-hledger
+      hledger-mode
 	    nov
       slack
       smudge

@@ -2,8 +2,8 @@
   description = "My machines and home directories";
 
   inputs = {
-    nixos.url = "github:nixos/nixpkgs/nixos-21.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixos.url = "github:nixos/nixpkgs/nixos-22.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
     netkit.url = "github:icebox-nix/netkit.nix";
     std.url = "github:icebox-nix/std";    
     home-manager = {
@@ -31,7 +31,7 @@
     homeConfigurations = {
       viv = home-manager.lib.homeManagerConfiguration {
         system = "x86_64-linux";
-        stateVersion = "21.11";
+        stateVersion = "22.05";
         homeDirectory = "/home/viv";
         username = "viv";
         configuration = {

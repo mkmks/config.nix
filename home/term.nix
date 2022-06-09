@@ -16,6 +16,9 @@ column-number-mode
       dtach
       fdupes
       file
+      hledger
+      hledger-ui
+      iotop
       jq
       mc
       mg
@@ -80,7 +83,7 @@ column-number-mode
       settings = {
         global = {
           username = "mkmks";
-          password_cmd = "${pkgs.gnome3.libsecret}/bin/secret-tool lookup service spotifyd username mkmks";
+          password_cmd = "${pkgs.libsecret}/bin/secret-tool lookup service spotifyd username mkmks";
           device_name = "schildpad";
           bitrate = 320;
         };

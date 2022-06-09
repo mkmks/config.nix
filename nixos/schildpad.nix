@@ -2,7 +2,7 @@
 
 {
   networking.hostName = "schildpad";
-  system.stateVersion = "21.11";
+  system.stateVersion = "22.05";
 
   nix = {
     binaryCachePublicKeys = [
@@ -13,7 +13,7 @@
       "https://nix-community.cachix.org"
       "https://hydra.iohk.io"
     ];
-    package = pkgs.nixUnstable;
+    #package = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
@@ -49,7 +49,7 @@
       };
   };
 
-  swapDevices = [ ];
+  swapDevices = [ { device = "/var/swapfile"; } ];
 
   hardware = {
     cpu.intel.updateMicrocode = true;

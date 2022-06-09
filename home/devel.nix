@@ -33,6 +33,7 @@
 	    lsp-ui
 	    lsp-treemacs
       # programming languages
+      dockerfile-mode
       elm-mode
       nix-mode
       protobuf-mode

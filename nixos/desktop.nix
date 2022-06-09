@@ -65,7 +65,7 @@
   
   services = {
 
-    dbus.packages = [ pkgs.gnome3.dconf pkgs.gcr ];
+    dbus.packages = [ pkgs.dconf pkgs.gcr ];
     gpm.enable = true;
 
     greetd = {
