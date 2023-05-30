@@ -2,31 +2,35 @@
 
 {
   networking.hostName = "schildpad";
-  system.stateVersion = "22.05";
+  nixpkgs.hostPlatform = "x86_64-linux";
+  system.stateVersion = "23.05";
 
   nix = {
-    binaryCachePublicKeys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-    ];
-    binaryCaches = [
-      "https://nix-community.cachix.org"
-      "https://hydra.iohk.io"
-    ];
-    #package = pkgs.nixUnstable;
+    settings = {
+      max-jobs = 8;
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "cache.iog.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      ];
+      trusted-substituters = [
+        "https://nix-community.cachix.org"
+        "https://cache.iog.io"
+      ];
+    };
     extraOptions = ''
+      keep-outputs = true
+      keep-derivations = true 
       experimental-features = nix-command flakes
     '';
-    maxJobs = 8;
   };
  
   boot = {
-    cleanTmpDir = true;
-
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
+
+    tmp.cleanOnBoot = true;
 
     kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "kvm-intel" "acpi_call" ];
@@ -58,13 +62,8 @@
     opengl = {
       enable = true;
       driSupport = true;
-      package = (pkgs.mesa.override {
-        galliumDrivers = [ "nouveau" "virgl" "swrast" "iris" ];
-      }).drivers;
       extraPackages = with pkgs; [ vaapiIntel vaapiVdpau libvdpau-va-gl ];  
     };
-    
-    video.hidpi.enable = true;
   };
 
   netkit.xmm7360 = {

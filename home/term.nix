@@ -39,7 +39,9 @@ column-number-mode
 
       # img
       pkgs.exif
+      djvulibre
       exiftool
+      ffmpeg
       pkgs.imagemagick
       pdftk
       poppler_utils

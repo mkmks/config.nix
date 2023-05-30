@@ -2,15 +2,19 @@
 
 {
   home.packages = with pkgs; [
+    cmake-language-server
     rnix-lsp
-    python-language-server
+    python311Packages.python-lsp-server
     nodePackages.bash-language-server
     # ops
-    aws
+    awscli2
     aws-google-auth
     aws-iam-authenticator
     helm
     kubectl
+    # ups
+    stack
+    rustup
   ];
 
   programs = {
@@ -22,17 +26,20 @@
     emacs.extraPackages = e: with e; [
       company
       direnv
+      envrc
       flycheck
       helm-lsp
 	    helm-projectile      
       magit
-	    projectile      
+	    projectile
+      nix-buffer
       # LSP
       dap-mode
       lsp-mode
 	    lsp-ui
 	    lsp-treemacs
       # programming languages
+      cmake-mode
       dockerfile-mode
       elm-mode
       nix-mode
@@ -40,6 +47,7 @@
       sql-clickhouse
       toml-mode
       typescript-mode
+      zig-mode
       ## java
       lsp-java
       ## haskell

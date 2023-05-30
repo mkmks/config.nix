@@ -3,10 +3,10 @@
 let
   term-font = "DejaVu Sans Mono 9";
   term-fonts-set = {
-    names = [ "DejaVu Sans Mono for Powerline" ];
+    names = [ "DejaVu Sans Mono for Powerline" "FontAwesome6Free" ];
     size = 9.0;
   };
-  lockcmd = "swaylock -f -c ff0000";
+  lockcmd = "${pkgs.swaylock}/bin/swaylock -f -c ff0000";
 in
 {
   fonts.fontconfig.enable = true;
@@ -44,7 +44,10 @@ args = [
      ]
 
 [format]
-window_format = '{name}'
+output_format = '{indent}Output {name}'
+workspace_format = '{indent}Workspace {name} [{layout}]'
+container_format = '{indent}Container [{layout}] [{marks}]'
+window_format = '{indent}{name}'
 html_escape = false
 
 [layout]
@@ -54,12 +57,18 @@ auto_tile = false
   
     packages = with pkgs; [
       bemenu
+      gnome.gnome-terminal
       swayr
       wlr-randr
+      sway-contrib.grimshot
 
       # fonts
+      aileron
+      helvetica-neue-lt-std
       cm_unicode
-      font-awesome_4
+      font-awesome_6
+      #      google-fonts
+      lmodern
       powerline-fonts
       source-code-pro
       kochi-substitute
@@ -68,32 +77,35 @@ auto_tile = false
   };
   
   programs = {
-    mako = {
-      enable = true;
-      font = "${term-font}";
-      defaultTimeout = 5000;
-    };
-
     i3status-rust = {
       enable = true;
       bars.default = {
-        icons = "awesome";
+        icons = "awesome6";
         theme = "solarized-dark";
         blocks = [
+          # {
+          #   block = "focused_window";
+          #   format = "$title.str(width:90)";
+          #   theme_overrides = {
+          #     idle_bg = "#285577";
+          #     idle_fg = "#ffffff";
+          #   };
+          # }
           {
             block = "memory";
-            display_type = "memory";
-            clickable = false;
-            format_mem = "{mem_avail;G}";
+            format = " $icon $mem_avail.eng(prefix:M) ";
           }          
           {
             block = "disk_space";
-            path = "/";
-            alias = "/";
-            unit = "GB";
-            interval = 20;
-            warning = 20.0;
-            alert = 10.0;
+          }
+          {
+            block = "net";
+#            interface_name_exclude = ["br\\-[0-9a-f]{12}" "docker\\d+"];
+          }
+          {
+            block = "battery";
+            interval = 10;
+            format = " $icon $percentage $time ";
           }
           {
             block = "maildir";
@@ -106,21 +118,11 @@ auto_tile = false
             threshold_critical = 10;
           }
           {
-            block = "networkmanager";
-            interface_name_exclude = ["br\\-[0-9a-f]{12}" "docker\\d+"];
-          }
-          {
-            block = "battery";
-            interval = 10;
-            format = "{percentage} {time}";            
-          }
-          {
             block = "sound";            
           }
           {
             block = "time";
             interval = 60;
-            format = "%a %b %d %R";            
           }
         ];
       };
@@ -138,20 +140,61 @@ auto_tile = false
     kanshi = {
       enable = true;
       profiles = {
+        on-the-go = {
+          outputs = [
+            {
+              criteria = "eDP-1";
+              status = "enable";
+            }
+          ];  
+        };
         home-office = {
           outputs = [
             {
-              criteria = "Dell Inc. DELL U2415 7MT0188M11YU";
+              criteria = "Lenovo Group Limited T32p-30 V30AKM70";
               position = "0,0";
-              scale = 1.2;
-            }            
+              scale = 1.5;
+            }
+            {
+              criteria = "eDP-1";
+              position = "0,1440";
+              status = "disable";
+            }
+          ];
+        };
+        living-room = {
+          outputs = [
+            {
+              criteria = "Unknown HP E233 CNC91301HT";
+              position = "0,0";
+              scale = 1.1;
+            }
             {
               criteria = "eDP-1";
               position = "0,1080";
             }
           ];
         };
+        zama = {
+          outputs = [
+            {
+              criteria = "Unknown U3277WB 0x00000003";
+              position = "0,0";
+              scale = 1.5;
+            }
+            {
+              criteria = "eDP-1";
+              position = "0,1440";
+            }
+          ];
+        };
       };
+    };
+
+    mako = {
+      enable = true;
+      font = "${term-font}";
+      defaultTimeout = 5000;
     };
 
     swayidle = {
@@ -189,11 +232,15 @@ auto_tile = false
         { command = "mako"; }
         { command = "swayrd"; }
         { command = "telegram-desktop"; }
+        { command = "slack"; }
+        { command = "spotify"; }
       ];
 
       assigns = {
         "mmm" = [
-          { app_id = "^telegramdesktop$"; }
+          { app_id = "^org.telegram.desktop$"; }
+          { app_id = "^Slack$"; }
+          { app_id = "^Spotify$"; }
         ];
       };
 
@@ -211,7 +258,7 @@ auto_tile = false
         "XF86AudioMute"        = "exec 'pamixer -t'";
         "XF86AudioLowerVolume" = "exec 'pamixer -d 3 -u'";
         "XF86AudioRaiseVolume" = "exec 'pamixer -i 3 -u'";
-        "XF86AudioMicMute"     = "exec 'pamixer -source alsa_input.pci-0000_00_1f.3.analog-stereo -t'";
+        "XF86AudioMicMute"     = "exec 'pamixer --default-source -t'";
         "XF86MonBrightnessDown" = "exec 'light -U 5'";
         "XF86MonBrightnessUp"   = "exec 'light -A 5'";
 
@@ -224,7 +271,7 @@ auto_tile = false
         "${mod}+Shift+c" = "kill";
 
         "${mod}+tab"      = "exec swayr switch-window";
-        "${mod}+Mod1+tab" = "exec swayr swap-focused-with";        
+        "${mod}+Shift+tab" = "exec swayr swap-focused-with";        
 
         # windows
         
@@ -232,6 +279,11 @@ auto_tile = false
         "${mod}+${cfg.down} " = "focus down";
         "${mod}+${cfg.up}"    = "focus up";
         "${mod}+${cfg.right}" = "focus right";
+
+        "${mod}+Control+${cfg.left}"  = "focus prev sibling";
+        "${mod}+Control+${cfg.down}"  = "focus child";
+        "${mod}+Control+${cfg.up}"    = "focus parent";
+        "${mod}+Control+${cfg.right}" = "focus next sibling";
         
         "${mod}+Shift+${cfg.left}"  = "move left";
         "${mod}+Shift+${cfg.down}"  = "move down";
@@ -240,15 +292,10 @@ auto_tile = false
 
         # outputs
 
-        "${mod}+Mod1+${cfg.left}"  = "focus output left";
-        "${mod}+Mod1+${cfg.down}"  = "focus output down";
-        "${mod}+Mod1+${cfg.up}"    = "focus output up";
-        "${mod}+Mod1+${cfg.right}" = "focus output right";        
-
-        "${mod}+Shift+Mod1+${cfg.left}"  = "move workspace to output left";
-        "${mod}+Shift+Mod1+${cfg.down}"  = "move workspace to output down";
-        "${mod}+Shift+Mod1+${cfg.up}"    = "move workspace to output up";
-        "${mod}+Shift+Mod1+${cfg.right}" = "move workspace to output right";
+        "${mod}+Mod1+${cfg.left}"  = "move workspace to output left";
+        "${mod}+Mod1+${cfg.down}"  = "move workspace to output down";
+        "${mod}+Mod1+${cfg.up}"    = "move workspace to output up";
+        "${mod}+Mod1+${cfg.right}" = "move workspace to output right";
 
         # workspaces
         
@@ -263,23 +310,18 @@ auto_tile = false
         "${mod}+Shift+4" = "move container to workspace mmm";
 
         # layouts
-
-        "${mod}+Control+${cfg.left}"  = "focus prev sibling";
-        "${mod}+Control+${cfg.down}"  = "focus child";
-        "${mod}+Control+${cfg.up}"    = "focus parent";
-        "${mod}+Control+${cfg.right}" = "focus next sibling";
         
-        "${mod}+space"        = "split toggle";
-        "${mod}+Shift+space"  = "layout toggle all";        
-        "${mod}+return"       = "fullscreen toggle";
-        "${mod}+Shift+return" = "floating toggle";
+        "${mod}+p"       = "split toggle";
+        "${mod}+Shift+p" = "layout toggle all";        
+        "${mod}+f"       = "fullscreen toggle";
+        "${mod}+Shift+f" = "floating toggle";
       };
 
       workspaceLayout = "tabbed";
 
       window = {
         hideEdgeBorders = "both";
-        titlebar = false;
+        titlebar = true;
       };
       
       bars = [
@@ -311,7 +353,7 @@ auto_tile = false
         "*" = {
           xkb_layout = "us,ru";
           xkb_variant = "colemak,";
-          xkb_options = "grp:rctrl_toggle,compose:prsc,caps:ctrl_modifier";
+          xkb_options = "grp:shifts_toggle,grp_led:caps,compose:prsc,caps:ctrl_modifier";
 
           accel_profile = "adaptive";
           click_method = "clickfinger";

@@ -7,7 +7,7 @@
     
   programs.emacs = {
     enable = true;
-    package = pkgs.emacsPgtkNativeComp;
+    package = pkgs.emacs-pgtk;
     extraPackages = e: with e; [
       vs-dark-theme
       vs-light-theme

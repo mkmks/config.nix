@@ -8,6 +8,7 @@
       android-file-transfer
       libreoffice
       slack
+      unstable.spotify
       unstable.tdesktop
       zoom-us
       
@@ -19,8 +20,9 @@
       gnome3.eog
       gnome3.evince
       gthumb
+      krop
       
-      concordium-desktop-wallet
+      #concordium-desktop-wallet
       unstable.ledger-live-desktop
     ];
   };  
@@ -42,16 +44,16 @@
     firefox = {
       enable = true;
       package = pkgs.firefox-wayland;
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        ublock-origin
-        privacy-badger
-        bitwarden
-        floccus
-        vimium
-        darkreader
-        adsum-notabs
-      ];
       profiles.default = {
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          ublock-origin
+          privacy-badger
+          bitwarden
+          floccus
+          vimium
+          darkreader
+          adsum-notabs
+        ];
         settings = {
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };

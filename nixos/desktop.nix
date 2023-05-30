@@ -6,10 +6,44 @@
   nixpkgs.config.allowUnfree = true;
   
   environment = {
+    etc = {
+      "pipewire/pipewire.conf.d/99-custom.conf".text = ''
+        context.properties = {
+          default.clock.allowed-rates = [ 44100 48000 ]
+        }
+      '';
+            
+	    "wireplumber/bluetooth.lua.d/51-bluez-config.lua".text = ''
+    		bluez_monitor.properties = {
+    			["bluez5.enable-sbc-xq"] = true,
+    			["bluez5.enable-msbc"] = true,
+		    	["bluez5.enable-hw-volume"] = true,
+    			["bluez5.headset-roles"] = "[ hsp_hs hsp_ag hfp_hf hfp_ag ]",
+        }
+
+        bluez_monitor.rules = {
+          {
+            matches = {
+              {
+                { "device.name", "matches", "bluez_card.*" },
+              },
+            },
+            apply_properties = {
+              ["bluez5.auto-connect"]  = "[ hfp_hf hsp_hs a2dp_sink ]",
+            },
+         },
+        }
+    	'';
+    };
+
     homeBinInPath = true;
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+    };
     systemPackages = with pkgs; [
       pciutils
-      usbutils      
+      usbutils
+      v4l-utils
       swaylock
     ];
   };
@@ -51,6 +85,7 @@
   programs = {
     adb.enable = true;
     dconf.enable = true;
+    fish.enable = true;
     light.enable = true;
     steam.enable = true;
   };
@@ -79,44 +114,10 @@
 
     pipewire = {
       enable = true;
+      audio.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-
-      config.pipewire = {
-        "context.properties" = {
-          "default.clock.allowed-rates" = [ 44100 48000 ];
-        };
-      };
-        
-      media-session.config.bluez-monitor.rules = [
-        {
-          # Matches all cards
-          matches = [ { "device.name" = "~bluez_card.*"; } ];
-          actions = {
-            "update-props" = {
-              "bluez5.reconnect-profiles" = [ "hfp_hf" "hsp_hs" "a2dp_sink" ];
-              # mSBC is not expected to work on all headset + adapter combinations.
-              "bluez5.msbc-support" = true;
-              # SBC-XQ is not expected to work on all headset + adapter combinations.
-              "bluez5.sbc-xq-support" = true;
-              # automatically switch between A2DP and headset
-              bluez5.autoswitch-profile = true;
-            };
-          };
-        }
-        {
-          matches = [
-            # Matches all sources
-            { "node.name" = "~bluez_input.*"; }
-            # Matches all outputs
-            { "node.name" = "~bluez_output.*"; }
-          ];
-          actions = {
-            "node.pause-on-idle" = false;
-          };
-        }
-      ];      
     };
     
     printing = {
@@ -132,7 +133,7 @@
   
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [ xdg-desktop-portal-gtk xdg-desktop-portal-wlr ];
-    gtkUsePortal = true;
+    wlr.enable = true;
+    extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   };
 }
