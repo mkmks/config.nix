@@ -1,10 +1,12 @@
 {config, pkgs, ...}:
 
 {
+  imports = [
+    ./wayland.nix
+  ];
+  
   home = {  
-    packages = let
-      concordium-desktop-wallet = pkgs.callPackage ../pkgs/concordium-desktop-wallet-testnet {};
-    in with pkgs; [
+    packages = with pkgs; [
       android-file-transfer
       libreoffice
       slack
@@ -12,32 +14,36 @@
       unstable.tdesktop
       zoom-us
       
-      gnome3.baobab
-      gnome3.dconf-editor
-      gnome3.seahorse
+      gnome.baobab
+      gnome.dconf-editor
+      gnome.seahorse
       pavucontrol
       
-      gnome3.eog
-      gnome3.evince
+      gnome.eog
+      gnome.evince
+      gnome.gnome-maps
       gthumb
       krop
       
-      #concordium-desktop-wallet
       unstable.ledger-live-desktop
+      sparrow
+      unstable.tradingview
     ];
   };  
   
   programs = {
     chromium = {
       enable = true;
-      #package = pkgs.ungoogled-chromium;
+      package = pkgs.brave;
       extensions = [
-        { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-        { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } # privacy badger
+#        { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
+#        { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } # privacy badger
         { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
         { id = "fnaicdffflnofjppbagibeoednhnbjhg"; } # floccus
         { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
         { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark reader
+        { id = "kmhcihpebfmpgmihbkipmjlmmioameka"; } # eternl
+        { id = "mcohilncbfahbmgdjkbpemcciiolgcge"; } # okx wallet
       ];
     };    
 
@@ -67,6 +73,8 @@
       enable = true;
       config = {
         gpu-context = "wayland";
+        hwdec = "vaapi";
+        vo = "gpu-next";
       };
     };
     
@@ -93,11 +101,11 @@
         "application/epub+zip" = [ "emacsclient.desktop" ];
         "image/vnd.djvu" = [ "org.pwmt.zathura.desktop" ];
         "text/plain" = [ "emacsclient.desktop" ];
-        "text/html" = [ "firefox.desktop" ];
-        "x-scheme-handler/http" = [ "firefox.desktop" ];
-        "x-scheme-handler/https" = [ "firefox.desktop" ];
-        "x-scheme-handler/chrome" = [ "firefox.desktop" ];
-        "x-scheme-handler/webcal" = [ "firefox.desktop" ];        
+        "text/html" = [ "brave.desktop" ];
+        "x-scheme-handler/http" = [ "brave.desktop" ];
+        "x-scheme-handler/https" = [ "brave.desktop" ];
+        "x-scheme-handler/chrome" = [ "brave.desktop" ];
+        "x-scheme-handler/webcal" = [ "brave.desktop" ];        
       };
     };
     userDirs.enable = true;

@@ -6,9 +6,15 @@ let
     names = [ "DejaVu Sans Mono for Powerline" "FontAwesome6Free" ];
     size = 9.0;
   };
-  lockcmd = "${pkgs.swaylock}/bin/swaylock -f -c ff0000";
+  cmd_lock = "${pkgs.swaylock}/bin/swaylock -f -c ff0000";
 in
 {
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+    };
+  };
+  
   fonts.fontconfig.enable = true;
   
   gtk = {
@@ -57,15 +63,13 @@ auto_tile = false
   
     packages = with pkgs; [
       bemenu
-      gnome.gnome-terminal
       swayr
       wlr-randr
       sway-contrib.grimshot
 
       # fonts
-      aileron
-      helvetica-neue-lt-std
       cm_unicode
+      corefonts
       font-awesome_6
       #      google-fonts
       lmodern
@@ -77,6 +81,19 @@ auto_tile = false
   };
   
   programs = {
+    gnome-terminal = {
+      enable = true;
+      showMenubar = false;
+      themeVariant = "system";
+      profile."87d8197f-a5cf-43df-869e-93a69c44b87c" = {
+        allowBold = true;
+        cursorBlinkMode = "off";
+        default = true;
+        font = "${term-font}";
+        visibleName = "default";
+      };
+    };
+    
     i3status-rust = {
       enable = true;
       bars.default = {
@@ -91,6 +108,7 @@ auto_tile = false
           #     idle_fg = "#ffffff";
           #   };
           # }
+          
           {
             block = "memory";
             format = " $icon $mem_avail.eng(prefix:M) ";
@@ -103,13 +121,19 @@ auto_tile = false
 #            interface_name_exclude = ["br\\-[0-9a-f]{12}" "docker\\d+"];
           }
           {
+            block = "vpn";
+            driver = "mullvad";
+            format_connected = " $icon ";
+            format_disconnected = " $icon ";
+          }
+          {
             block = "battery";
             interval = 10;
             format = " $icon $percentage $time ";
           }
           {
-            block = "maildir";
-            interval = 60;
+            block = "maildir"; 
+           interval = 60;
             inboxes = [
               "${config.home.homeDirectory}/Mail/fastmail/Inbox"
               "${config.home.homeDirectory}/Mail/concordium/Inbox"
@@ -121,11 +145,47 @@ auto_tile = false
             block = "sound";            
           }
           {
+            block = "sound";
+            driver = "pulseaudio";
+            device_kind = "source";
+          }
+          {
             block = "time";
             interval = 60;
           }
         ];
       };
+    };
+
+    waybar = {
+      enable = false;
+      systemd.enable = true;
+      systemd.target = "sway-session.target";
+      settings = {
+        mainBar = {
+          height = 20;
+          spacing = 4;
+          modules-left = [
+            "sway/workspaces"
+            "sway/window"
+          ];
+          modules-right = [
+            "memory"
+            "disk"
+            "network"
+            "battery"
+            "wireplumber"
+            "clock"
+            "tray"
+          ];
+        };
+      };
+      style = ''
+        * {
+          font-family: DejaVu Sans Mono for Powerline, FontAwesome6Free;
+          font-size: 10px;
+        }
+      '';
     };
   };
 
@@ -153,7 +213,7 @@ auto_tile = false
             {
               criteria = "Lenovo Group Limited T32p-30 V30AKM70";
               position = "0,0";
-              scale = 1.5;
+              scale = 2.0;
             }
             {
               criteria = "eDP-1";
@@ -180,7 +240,7 @@ auto_tile = false
             {
               criteria = "Unknown U3277WB 0x00000003";
               position = "0,0";
-              scale = 1.5;
+              scale = 2.0;
             }
             {
               criteria = "eDP-1";
@@ -201,10 +261,10 @@ auto_tile = false
       enable = true;
       events = [
 #        { event = "after-resume"; command = "swaymsg \"output * dpms on\""; }
-        { event = "before-sleep"; command = "${lockcmd}"; }
+        { event = "before-sleep"; command = "${cmd_lock}"; }
       ];
       timeouts = [
-        { timeout = 300; command = "${lockcmd}"; }
+        { timeout = 300; command = "${cmd_lock}"; }
 #        { timeout = 600; command = "swaymsg \"output * dpms off\""; }
       ];
     };
@@ -223,12 +283,15 @@ auto_tile = false
         export _JAVA_AWT_WM_NONREPARENTING=1
         export BEMENU_BACKEND=wayland
       '';
+    systemd = {
+      enable = true;
+      variables = [ "--all" ];
+    };    
     wrapperFeatures.gtk = true;
     config = {
       fonts = term-fonts-set;
 
       startup = [
-        { command = "dbus-update-activation-environment --systemd --all"; }
         { command = "mako"; }
         { command = "swayrd"; }
         { command = "telegram-desktop"; }
@@ -237,7 +300,7 @@ auto_tile = false
       ];
 
       assigns = {
-        "mmm" = [
+        "2" = [
           { app_id = "^org.telegram.desktop$"; }
           { app_id = "^Slack$"; }
           { app_id = "^Spotify$"; }
@@ -254,67 +317,115 @@ auto_tile = false
       up    = "s";
       right = "t";
       
-      keybindings = {
-        "XF86AudioMute"        = "exec 'pamixer -t'";
-        "XF86AudioLowerVolume" = "exec 'pamixer -d 3 -u'";
-        "XF86AudioRaiseVolume" = "exec 'pamixer -i 3 -u'";
-        "XF86AudioMicMute"     = "exec 'pamixer --default-source -t'";
+      keybindings = let
+        cmd_done = "exec \"swaynag -t warning -m 'Done?' -b 'Exit sway' 'swaymsg exit' -z 'Suspend' 'systemctl suspend'\"";
+        cmd_switch_window = "exec swayr switch-window";
+        cmd_swap_focus = "exec swayr swap-focused-with";
+      in {
+        "XF86AudioMute"        = "exec 'wpctl set-mute @DEFAULT_SINK@ toggle'";
+        "XF86AudioLowerVolume" = "exec 'wpctl set-volume @DEFAULT_SINK@ 3%-'";
+        "XF86AudioRaiseVolume" = "exec 'wpctl set-volume @DEFAULT_SINK@ 3%+'";
+        "XF86AudioMicMute"     = "exec 'wpctl set-mute @DEFAULT_SOURCE@ toggle'";
+        "XF86AudioRecord"      = "exec 'wpctl set-mute @DEFAULT_SOURCE@ toggle'";
+        "XF86AudioPlay"        = "exec 'playerctl play-pause'";
+        "XF86AudioNext"        = "exec 'playerctl next'";
+        "XF86AudioPrev"        = "exec 'playerctl previous'";
         "XF86MonBrightnessDown" = "exec 'light -U 5'";
         "XF86MonBrightnessUp"   = "exec 'light -A 5'";
 
-        "${mod}+z" = "exec '${lockcmd}'";
+        "${mod}+z" = "exec '${cmd_lock}'";
         "${mod}+x" = "exec ${cfg.menu}";
         "${mod}+c" = "exec ${cfg.terminal}";
+        "${mod}+v" = "${cmd_switch_window}";
 
-        "${mod}+Shift+z" = "exec \"swaynag -t warning -m 'Exit?' -b 'Yes, exit sway' 'swaymsg exit'\"";
-        "${mod}+Shift+x" = "reload";
-        "${mod}+Shift+c" = "kill";
+        "${mod}+slash"  = "exec '${cmd_lock}'";
+        "${mod}+period" = "exec ${cfg.menu}";
+        "${mod}+comma"  = "exec ${cfg.terminal}";
+        "${mod}+m"      = "${cmd_switch_window}";
+        
+        "${mod}+Control+z" = "${cmd_done}";
+        "${mod}+Control+x" = "reload";
+        "${mod}+Control+c" = "kill";
+        "${mod}+Control+v" = "${cmd_swap_focus}";
+        
+        "${mod}+Control+slash"  = "${cmd_done}";
+        "${mod}+Control+period" = "reload";
+        "${mod}+Control+comma"  = "kill";
+        "${mod}+Control+m"      = "${cmd_swap_focus}";
 
-        "${mod}+tab"      = "exec swayr switch-window";
-        "${mod}+Shift+tab" = "exec swayr swap-focused-with";        
+        "${mod}+Mod1+z" = "fullscreen toggle";
+        "${mod}+Mod1+x" = "floating toggle";
+        "${mod}+Mod1+c" = "split toggle";
+        "${mod}+Mod1+v" = "layout toggle all";
+
+        "${mod}+Mod1+slash"  = "fullscreen toggle";
+        "${mod}+Mod1+period" = "split toggle";
+        "${mod}+Mod1+comma"  = "floating toggle";
+        "${mod}+Mod1+m"      = "layout toggle all";
 
         # windows
         
         "${mod}+${cfg.left}"  = "focus left";
-        "${mod}+${cfg.down} " = "focus down";
+        "${mod}+${cfg.down}"  = "focus down";
         "${mod}+${cfg.up}"    = "focus up";
         "${mod}+${cfg.right}" = "focus right";
 
-        "${mod}+Control+${cfg.left}"  = "focus prev sibling";
-        "${mod}+Control+${cfg.down}"  = "focus child";
-        "${mod}+Control+${cfg.up}"    = "focus parent";
-        "${mod}+Control+${cfg.right}" = "focus next sibling";
+        "${mod}+n" = "focus left";
+        "${mod}+e" = "focus down";
+        "${mod}+i" = "focus up";
+        "${mod}+o" = "focus right";
+                
+        "${mod}+Control+${cfg.left}"  = "move left";
+        "${mod}+Control+${cfg.down}"  = "move down";
+        "${mod}+Control+${cfg.up}"    = "move up";
+        "${mod}+Control+${cfg.right}" = "move right";
+
+        "${mod}+Control+n" = "move left";
+        "${mod}+Control+e" = "move down";
+        "${mod}+Control+i" = "move up";
+        "${mod}+Control+o" = "move right";
+
+        "${mod}+Mod1+${cfg.left}"  = "focus prev sibling";
+        "${mod}+Mod1+${cfg.down}"  = "focus child";
+        "${mod}+Mod1+${cfg.up}"    = "focus parent";
+        "${mod}+Mod1+${cfg.right}" = "focus next sibling";
+
+        "${mod}+Mod1+n" = "focus prev sibling";
+        "${mod}+Mod1+e" = "focus child";
+        "${mod}+Mod1+i" = "focus parent";
+        "${mod}+Mod1+o" = "focus next sibling";
         
-        "${mod}+Shift+${cfg.left}"  = "move left";
-        "${mod}+Shift+${cfg.down}"  = "move down";
-        "${mod}+Shift+${cfg.up}"    = "move up";
-        "${mod}+Shift+${cfg.right}" = "move right";
-
-        # outputs
-
-        "${mod}+Mod1+${cfg.left}"  = "move workspace to output left";
-        "${mod}+Mod1+${cfg.down}"  = "move workspace to output down";
-        "${mod}+Mod1+${cfg.up}"    = "move workspace to output up";
-        "${mod}+Mod1+${cfg.right}" = "move workspace to output right";
-
         # workspaces
         
-        "${mod}+1" = "workspace 1";
-        "${mod}+2" = "workspace 2";
-        "${mod}+3" = "workspace 3";
-        "${mod}+4" = "workspace mmm";
+        "${mod}+q" = "workspace 1";
+        "${mod}+w" = "workspace 2";
+        "${mod}+f" = "workspace 3";
+        "${mod}+p" = "workspace 4";
 
-        "${mod}+Shift+1" = "move container to workspace 1";
-        "${mod}+Shift+2" = "move container to workspace 2";
-        "${mod}+Shift+3" = "move container to workspace 3";
-        "${mod}+Shift+4" = "move container to workspace mmm";
-
-        # layouts
+        "${mod}+l"         = "workspace 1";
+        "${mod}+u"         = "workspace 2";
+        "${mod}+y"         = "workspace 3";
+        "${mod}+semicolon" = "workspace 4";
         
-        "${mod}+p"       = "split toggle";
-        "${mod}+Shift+p" = "layout toggle all";        
-        "${mod}+f"       = "fullscreen toggle";
-        "${mod}+Shift+f" = "floating toggle";
+        "${mod}+Control+q" = "move container to workspace 1";
+        "${mod}+Control+w" = "move container to workspace 2";
+        "${mod}+Control+f" = "move container to workspace 3";
+        "${mod}+Control+p" = "move container to workspace 4";
+
+        "${mod}+Control+l"         = "move container to workspace 1";
+        "${mod}+Control+u"         = "move container to workspace 2";
+        "${mod}+Control+y"         = "move container to workspace 3";
+        "${mod}+Control+semicolon" = "move container to workspace 4";
+
+        "${mod}+Mod1+q" = "move workspace to output left";
+        "${mod}+Mod1+w" = "move workspace to output down";
+        "${mod}+Mod1+f" = "move workspace to output up";
+        "${mod}+Mod1+p" = "move workspace to output right";
+
+        "${mod}+Mod1+l"         = "move workspace to output left";
+        "${mod}+Mod1+u"         = "move workspace to output down";
+        "${mod}+Mod1+y"         = "move workspace to output up";
+        "${mod}+Mod1+semicolon" = "move workspace to output right";
       };
 
       workspaceLayout = "tabbed";
@@ -353,7 +464,7 @@ auto_tile = false
         "*" = {
           xkb_layout = "us,ru";
           xkb_variant = "colemak,";
-          xkb_options = "grp:shifts_toggle,grp_led:caps,compose:prsc,caps:ctrl_modifier";
+          xkb_options = "grp:shifts_toggle,grp_led:caps,lv3:ralt_switch_multikey,compose:prsc,caps:ctrl_modifier";
 
           accel_profile = "adaptive";
           click_method = "clickfinger";
@@ -374,6 +485,12 @@ auto_tile = false
       output = {
         "*" = {
           background = "#000000 solid_color";
+        };
+      };
+
+      seat = {
+        "*" = {
+          xcursor_theme = "Adwaita 24";
         };
       };
     };

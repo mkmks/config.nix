@@ -1,6 +1,11 @@
 {config, pkgs, ...}:
 
 {
+  imports = [
+    ./emacs.nix
+    ./fish.nix
+  ];
+  
   home = {
     file.".mg" = {
       text = ''
@@ -29,6 +34,7 @@ column-number-mode
       unrar
       unzip
       xdg-utils
+      yq-go
 
       # net
       dnsutils
@@ -36,19 +42,21 @@ column-number-mode
       lftp
       nmap
       picocom
+      socat
+      tcpdump
 
       # img
       pkgs.exif
       djvulibre
       exiftool
       ffmpeg
+      ghostscript
       pkgs.imagemagick
       pdftk
       poppler_utils
       
       # snd
-      pamixer
-      spotify-tui
+      playerctl
     ];
 
     sessionPath = [ "${config.home.homeDirectory}/bin" ];    
@@ -59,6 +67,7 @@ column-number-mode
   };
   
   programs = {
+    command-not-found.enable = true;
     gpg.enable = true;
     home-manager.enable = true;
     ncmpcpp.enable = true;
@@ -68,7 +77,7 @@ column-number-mode
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
-      pinentryFlavor = "gnome3";
+      pinentryPackage = pkgs.pinentry-gnome3;
       defaultCacheTtl = 86400;
       defaultCacheTtlSsh = 86400;
       maxCacheTtl = 604800;
@@ -80,6 +89,8 @@ column-number-mode
       musicDirectory = "${config.home.homeDirectory}/Music";
     };
 
+    playerctld.enable = true;
+    
     spotifyd = {
       enable = true;
       settings = {

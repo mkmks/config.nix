@@ -2,16 +2,24 @@
 
 {
   home.packages = with pkgs; [
+    gcc
     cmake-language-server
-    rnix-lsp
+    ltrace
+    nil
+    perf-tools
     python311Packages.python-lsp-server
     nodePackages.bash-language-server
     # ops
+    argocd
     awscli2
     aws-google-auth
     aws-iam-authenticator
-    helm
+    eksctl
+    k9s
     kubectl
+    kubectx
+    kubernetes-helm
+    terraform
     # ups
     stack
     rustup
@@ -26,34 +34,28 @@
     emacs.extraPackages = e: with e; [
       company
       direnv
+      ein
       envrc
       flycheck
-      helm-lsp
-	    helm-projectile      
       magit
 	    projectile
       nix-buffer
-      # LSP
-      dap-mode
-      lsp-mode
-	    lsp-ui
-	    lsp-treemacs
       # programming languages
+      capnp-mode
       cmake-mode
       dockerfile-mode
       elm-mode
       nix-mode
       protobuf-mode
       sql-clickhouse
+      terraform-mode
       toml-mode
       typescript-mode
+      yaml-mode
       zig-mode
-      ## java
-      lsp-java
       ## haskell
       flycheck-haskell
       haskell-mode
-      lsp-haskell
       ## ocaml
       merlin
       tuareg
@@ -62,9 +64,11 @@
       flycheck-rust
       rustic
       ## scala
-      lsp-metals
 	    sbt-mode
 	    scala-mode
+      ## solidity
+      solidity-flycheck
+      solidity-mode
     ];
     
     git = {
@@ -74,6 +78,10 @@
       userEmail = "nf@mkmks.org";
     };
 
+    helix = {
+      enable = true;
+    };
+    
     vscode = {
       enable = true;
       extensions = with pkgs.vscode-extensions; [

@@ -1,6 +1,10 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../.
+  ];
+  
   environment.systemPackages = with pkgs; [
     acpi
     iw
@@ -13,9 +17,8 @@
     
     networkmanager = {
       enable = true;
-      insertNameservers = [ "1.1.1.1" ];
       wifi.backend = "iwd";
-    };    
+    };
   };
   
   powerManagement.powertop.enable = true;

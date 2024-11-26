@@ -1,28 +1,13 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ../.
+  ];
+  
   networking.hostName = "schildpad";
   nixpkgs.hostPlatform = "x86_64-linux";
-  system.stateVersion = "23.05";
-
-  nix = {
-    settings = {
-      max-jobs = 8;
-      trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "cache.iog.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-      ];
-      trusted-substituters = [
-        "https://nix-community.cachix.org"
-        "https://cache.iog.io"
-      ];
-    };
-    extraOptions = ''
-      keep-outputs = true
-      keep-derivations = true 
-      experimental-features = nix-command flakes
-    '';
-  };
+  system.stateVersion = "24.05";
  
   boot = {
     loader = {
@@ -32,7 +17,6 @@
 
     tmp.cleanOnBoot = true;
 
-    kernelPackages = pkgs.linuxPackages_latest;
     kernelModules = [ "kvm-intel" "acpi_call" ];
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
     initrd = {
@@ -65,30 +49,10 @@
       extraPackages = with pkgs; [ vaapiIntel vaapiVdpau libvdpau-va-gl ];  
     };
   };
-
-  netkit.xmm7360 = {
-    enable = false;
-    autoStart = true;
-    config = {
-      apn = "orange";
-      nodefaultroute = false;
-      noresolv = true;
-    };
-    package = pkgs.netkit.xmm7360-pci_latest;
-  };  
   
   environment.variables = {
     MESA_LOADER_DRIVER_OVERRIDE = "iris";
   };    
     
   services.fwupd.enable = true;
-
-  users.users.viv = {
-    description = "Nikita Frolov";
-    extraGroups = [ "wheel" "transmission" "adbusers" "dialout" "docker" "video" ];
-    isNormalUser = true;
-    uid = 1000;
-    shell = pkgs.fish;
-  };
-  
 }

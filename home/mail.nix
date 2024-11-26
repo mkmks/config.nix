@@ -24,22 +24,6 @@
       msmtp.enable = true;
       mu.enable = true;
     };
-
-    accounts.concordium = {
-      flavor = "gmail.com";
-
-      address = "nf@concordium.com";
-      realName = "Nikita Frolov";
-      userName = "nf@concordium.com";
-      passwordCommand = "${pkgs.libsecret}/bin/secret-tool lookup email nf@concordium.com";
-
-      mbsync = {
-        enable = true;
-        create = "both";
-        expunge = "both";
-      };
-      msmtp.enable = true;
-    };
   };
 
   home.packages = with pkgs; [
@@ -52,6 +36,7 @@
     mu.enable = true;
 
     emacs.extraPackages = e: with e; [
+      mu4e
       mu4e-conversation
       #mu4e-maildirs-extension      
     ];

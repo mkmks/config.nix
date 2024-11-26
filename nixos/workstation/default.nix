@@ -1,47 +1,30 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ../.
+  ];
+  
+  users.users.viv = {
+    description = "Nikita Frolov";
+    extraGroups = [ "wheel" "transmission" "adbusers" "dialout" "docker" "video" ];
+    isNormalUser = true;
+    uid = 1000;
+    shell = pkgs.fish;
+  };
+  
   console.keyMap = "colemak";
   time.timeZone = "Europe/Paris";
   nixpkgs.config.allowUnfree = true;
   
   environment = {
-    etc = {
-      "pipewire/pipewire.conf.d/99-custom.conf".text = ''
-        context.properties = {
-          default.clock.allowed-rates = [ 44100 48000 ]
-        }
-      '';
-            
-	    "wireplumber/bluetooth.lua.d/51-bluez-config.lua".text = ''
-    		bluez_monitor.properties = {
-    			["bluez5.enable-sbc-xq"] = true,
-    			["bluez5.enable-msbc"] = true,
-		    	["bluez5.enable-hw-volume"] = true,
-    			["bluez5.headset-roles"] = "[ hsp_hs hsp_ag hfp_hf hfp_ag ]",
-        }
-
-        bluez_monitor.rules = {
-          {
-            matches = {
-              {
-                { "device.name", "matches", "bluez_card.*" },
-              },
-            },
-            apply_properties = {
-              ["bluez5.auto-connect"]  = "[ hfp_hf hsp_hs a2dp_sink ]",
-            },
-         },
-        }
-    	'';
-    };
-
     homeBinInPath = true;
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
     };
     systemPackages = with pkgs; [
       pciutils
+      pcsctools
       usbutils
       v4l-utils
       swaylock
@@ -75,11 +58,6 @@
       127.0.0.1 google-analytics.com
       # 127.0.0.1 www.onclickmax.com
     '';
-
-    nameservers = [ "1.1.1.1" ];
-
-    # proxy.default = "http://127.0.0.1:8118";
-    # proxy.noProxy = "localhost, 127.0.0.0/8, ::1, rutracker.org, libgen.io";
   };
   
   programs = {
@@ -112,12 +90,65 @@
       };
     };
 
+    mullvad-vpn.enable = true;
+
+    pcscd = {
+      enable = true;
+      plugins = [
+        pkgs.pcsc-cyberjack
+      ];
+    };
+    
     pipewire = {
       enable = true;
       audio.enable = true;
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+
+      extraConfig.pipewire = {
+        "10-clock-rate" = {
+          "context.properties" = {
+            "default.clock.rate" = 44100;
+          };
+        };
+      };
+
+      wireplumber = {
+        configPackages = [
+          # (pkgs.writeTextDir
+          #   "share/wireplumber/wireplumber.conf.d/10-bluez.conf" ''
+          #     monitor.bluez.properties = {
+          #       bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hsp_hs hsp_ag hfp_hf hfp_ag ]
+          #       bluez5.codecs = [ sbc sbc_xq aac ]
+          #       bluez5.enable-sbc-xq = true
+          #       bluez5.enable-msbc = true
+          #       bluez5.enable-hw-volume = true
+          #       bluez5.hfphsp-backend = "native"
+          #     }
+          # ''
+          # )
+        ];
+        extraConfig = {
+          "headset-autoconnect" = {
+            "monitor.bluez.rules" = [
+              {
+                matches = [
+                  {
+                    "device.name" = "~bluez_card.*";
+                  }
+                ];
+                actions = {
+                  update-props = {
+                    "bluez5.auto-connect" = "[ hfp_hf hsp_hs a2dp_sink ]";
+                  };
+                };
+              }
+            ];
+          };
+        };
+      };
+
     };
     
     printing = {
@@ -133,6 +164,7 @@
   
   xdg.portal = {
     enable = true;
+    config.common.default = "*";
     wlr.enable = true;
     extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   };
