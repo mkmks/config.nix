@@ -75,10 +75,32 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+#    pkgs.cardano-node.cardano-cli
+  ];
+
+  networking.firewall = {
+    allowedTCPPorts = [ 3001 ];
+  };
+
   programs.git.enable = true;
   
   security.sudo.wheelNeedsPassword = false;
-  services.openssh.enable = true;
+
+  services = {
+    cardano-node = {
+      enable = true;
+      environment = "mainnet";
+      hostAddr = "0.0.0.0";
+    };
+    cardano-submit-api = {
+      enable = true;
+      network = "mainnet";
+      socketPath = "/var/run/cardano-node/node.socket";
+    };
+    fail2ban.enable = true;
+    openssh.enable = true;
+  };
 
   system.stateVersion = "24.05";
 }

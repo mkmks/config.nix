@@ -15,6 +15,7 @@
       inputs.nixpkgs.follows = "nixos";
     };
     daedalus.url = "github:input-output-hk/daedalus";
+    cardano-node.url = "github:IntersectMBO/cardano-node";
   };
 
   outputs = { self, nixos, home-manager, ... }@inputs:
@@ -29,7 +30,14 @@
           system = "x86_64-linux";
           modules = [
             inputs.disko.nixosModules.disko
+            inputs.cardano-node.nixosModules.cardano-node
+            inputs.cardano-node.nixosModules.cardano-submit-api
             ./nixos/server/loderunner
+            {
+              nixpkgs.overlays = [
+#                inputs.cardano-node.overlay
+              ];
+            }
           ];
         };
       };
