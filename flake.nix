@@ -2,10 +2,10 @@
   description = "My machines and home directories";
 
   inputs = {
-    nixos.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixos.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixos";      
     };
     nur.url = "github:nix-community/NUR";    

@@ -25,11 +25,11 @@ in
     };
     iconTheme = {
       name = "Adwaita";
-      package = pkgs.gnome3.adwaita-icon-theme;
+      package = pkgs.gnome.adwaita-icon-theme;
     };
     theme = {
       name = "Adwaita";
-      package = pkgs.gnome3.adwaita-icon-theme;
+      package = pkgs.gnome.adwaita-icon-theme;
     };
     gtk2.extraConfig = "gtk-key-theme-name = \"Emacs\"";
     gtk3.extraConfig = {
@@ -63,7 +63,6 @@ auto_tile = false
   
     packages = with pkgs; [
       bemenu
-      swayr
       wlr-randr
       sway-contrib.grimshot
 
@@ -155,6 +154,11 @@ auto_tile = false
           }
         ];
       };
+    };
+
+    swayr = {
+      enable = true;
+      systemd.enable = true;
     };
 
     waybar = {
@@ -292,8 +296,6 @@ auto_tile = false
       fonts = term-fonts-set;
 
       startup = [
-        { command = "mako"; }
-        { command = "swayrd"; }
         { command = "telegram-desktop"; }
         { command = "slack"; }
         { command = "spotify"; }

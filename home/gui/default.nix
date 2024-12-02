@@ -14,14 +14,14 @@
       unstable.tdesktop
       zoom-us
       
-      gnome.baobab
-      gnome.dconf-editor
-      gnome.seahorse
+      baobab
+      dconf-editor
       pavucontrol
+      seahorse
       
-      gnome.eog
-      gnome.evince
-      gnome.gnome-maps
+      eog
+      evince
+      gnome-maps
       gthumb
       krop
       

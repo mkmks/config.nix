@@ -12,7 +12,6 @@
     # ops
     argocd
     awscli2
-    aws-google-auth
     aws-iam-authenticator
     eksctl
     k9s

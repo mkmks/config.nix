@@ -16,6 +16,7 @@ column-number-mode
     };
     
     packages = with pkgs; [
+      bat
       bc
       bitwarden-cli
       dtach
@@ -28,6 +29,7 @@ column-number-mode
       mc
       mg
       p7zip
+      procs
       psmisc
       sdcv
       silver-searcher
@@ -40,6 +42,7 @@ column-number-mode
       dnsutils
       inetutils
       lftp
+      nethogs
       nmap
       picocom
       socat
@@ -71,6 +74,7 @@ column-number-mode
     gpg.enable = true;
     home-manager.enable = true;
     ncmpcpp.enable = true;
+    starship.enable = true;
   };
 
   services = {

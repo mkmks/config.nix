@@ -43,9 +43,8 @@
     cpu.intel.updateMicrocode = true;
     enableRedistributableFirmware = true;
     
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true;
       extraPackages = with pkgs; [ vaapiIntel vaapiVdpau libvdpau-va-gl ];  
     };
   };

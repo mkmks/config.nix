@@ -85,7 +85,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.greetd}/bin/agreety --cmd sway";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd sway";
         };
       };
     };
