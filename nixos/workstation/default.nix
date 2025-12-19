@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ../.
-  ];
+    ../. 
+ ];
   
   users.users.viv = {
     description = "Nikita Frolov";
@@ -41,6 +41,7 @@
       swaylock
       adwaita-icon-theme
       sbctl
+      nvtopPackages.full
     ];
   };
 
@@ -99,6 +100,7 @@
     blueman.enable = true;
     dbus.packages = [ pkgs.dconf pkgs.gcr ];
     earlyoom.enable = true;
+    fstrim.enable = true;
     fwupd.enable = true;
     gpm.enable = true;
 

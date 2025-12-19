@@ -46,7 +46,7 @@ in
     packages = with pkgs; [
       bemenu
       wlr-randr
-      xwayland-satellite
+      unstable.xwayland-satellite
 
       # fonts
       cm_unicode
@@ -352,6 +352,16 @@ in
             }            
           ];
         }
+        {
+          profile.name = "desktop";
+          profile.outputs = [
+            {
+              criteria = "Lenovo Group Limited T32p-30 V30AKM70";
+              position = "0,0";
+              scale = 2.0;
+            }
+          ];
+        }        
       ];
     };
 

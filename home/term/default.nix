@@ -150,8 +150,6 @@ column-number-mode
       enable = true;
       musicDirectory = "${config.home.homeDirectory}/Music";
     };
-
-    ollama.enable = true;
     
     playerctld.enable = true;
     

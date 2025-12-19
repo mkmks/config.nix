@@ -3,7 +3,7 @@
 
   inputs = {
     nixos.url = "github:nixos/nixpkgs/nixos-25.11";
-#    nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
+    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixos";      
@@ -42,6 +42,18 @@
             }
           ];
         };
+        hivemind = nixos.lib.nixosSystem {
+          modules = [
+            ./nixos/workstation/desktop/hivemind
+            {
+              nixpkgs = {
+                config = {
+                  cudaSupport = true;
+                };
+              };
+            }
+          ];
+        };
       };
       
       homeConfigurations = {
@@ -59,13 +71,15 @@
                 # inputs.daedalus.defaultPackage.${system}
               ];
               nixpkgs = {
-                config.allowUnfree = true;
+                config = {
+                  allowUnfree = true;
+                };
                 overlays = [
 #                  inputs.nur.overlays.default
                   inputs.niri.overlays.niri
-                  # (final: prev: {
-                  #   unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-                  # })
+                  (final: prev: {
+                    unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+                  })
                 ];
               };
             }

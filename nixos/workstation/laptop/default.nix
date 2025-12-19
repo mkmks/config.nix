@@ -24,7 +24,6 @@
   powerManagement.powertop.enable = true;
 
   services = {
-    fstrim.enable = true;
     throttled.enable = true;
     tlp = {
       enable = pkgs.lib.mkDefault true;
