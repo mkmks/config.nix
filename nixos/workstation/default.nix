@@ -7,10 +7,20 @@
   
   users.users.viv = {
     description = "Nikita Frolov";
-    extraGroups = [ "wheel" "transmission" "adbusers" "dialout" "docker" "video" ];
-    isNormalUser = true;
-    uid = 1000;
-    shell = pkgs.fish;
+    extraGroups = [ "transmission" "adbusers" "dialout" "docker" "video" ];
+  };
+
+  boot = {
+    loader = {
+      limine = {
+        enable = true;
+        maxGenerations = 5;
+        panicOnChecksumMismatch = true;
+	      secureBoot.enable = true;
+      };
+      efi.canTouchEfiVariables = true;
+    };
+    tmp.cleanOnBoot = true;
   };
   
   console.keyMap = "colemak";
@@ -23,49 +33,58 @@
       NIXOS_OZONE_WL = "1";
     };
     systemPackages = with pkgs; [
+      bluetuith
       pciutils
-      pcsctools
+      pcsc-tools
       usbutils
       v4l-utils
       swaylock
+      adwaita-icon-theme
+      sbctl
     ];
   };
 
   hardware = {
     bluetooth.enable = true;
+    graphics.enable = true;
     ledger.enable = true;
   };
 
   networking = {
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22000 57621 ];
-      allowedUDPPorts = [ 21027 57621 ];
+      allowedTCPPorts = [ 22000 57621 51413 ];
+      allowedUDPPorts = [ 21027 57621 51413 ];
       extraCommands = ''
         iptables -A INPUT -p udp --sport 1900 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
         iptables -A INPUT -p udp --sport 5353 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
       '';
     };
-    
-    extraHosts = ''
-      127.0.0.1 googlesyndication.com
-      127.0.0.1 tpc.googlesyndication.com
-      127.0.0.1 doubleclick.net
-      127.0.0.1 g.doubleclick.net
-      127.0.0.1 googleads.g.doubleclick.net
-      127.0.0.1 www.google-analytics.com
-      127.0.0.1 ssl.google-analytics.com
-      127.0.0.1 google-analytics.com
-      # 127.0.0.1 www.onclickmax.com
-    '';
+    hosts = {
+      "127.0.0.1" = [
+        "local-mpc-node-1"
+        "local-mpc-node-2"
+        "local-mpc-node-3"
+        "local-mpc-node-4"
+      ];
+      "127.0.0.11" = [
+        "abcd.local-mpc-node-1"
+        "abcd.local-mpc-node-2"
+        "abcd.local-mpc-node-3"
+        "abcd.local-mpc-node-4"
+      ];
+    };
   };
   
   programs = {
     adb.enable = true;
     dconf.enable = true;
-    fish.enable = true;
     light.enable = true;
-    steam.enable = true;
+    steam = {
+      enable = true;
+      gamescopeSession.enable = true;
+      remotePlay.openFirewall = true;
+    };
   };
 
   security = {
@@ -77,19 +96,48 @@
   };
   
   services = {
-
+    blueman.enable = true;
     dbus.packages = [ pkgs.dconf pkgs.gcr ];
+    earlyoom.enable = true;
+    fwupd.enable = true;
     gpm.enable = true;
 
     greetd = {
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --cmd sway";
+          command = "${pkgs.tuigreet}/bin/tuigreet --cmd 'niri --session'";
         };
       };
     };
 
+    k3s = {
+      enable = true;
+      extraFlags = [
+        "--docker"
+        "--write-kubeconfig-mode=640"
+        "--write-kubeconfig-group=docker"
+      ];
+      extraKubeletConfig = {
+        evictionHard = {
+          "memory.available" = "100Mi";
+          "nodefs.available" = "2%";
+          "imagefs.available" = "2%";
+        };
+      };
+    };
+
+    minidlna = {
+      enable = false;
+      openFirewall = true;
+      settings = {
+        inotify = "yes";
+        media_dir = [
+          "/var/lib/transmission/Downloads"
+        ];
+      };
+    };
+    
     mullvad-vpn.enable = true;
 
     pcscd = {
@@ -115,20 +163,6 @@
       };
 
       wireplumber = {
-        configPackages = [
-          # (pkgs.writeTextDir
-          #   "share/wireplumber/wireplumber.conf.d/10-bluez.conf" ''
-          #     monitor.bluez.properties = {
-          #       bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hsp_hs hsp_ag hfp_hf hfp_ag ]
-          #       bluez5.codecs = [ sbc sbc_xq aac ]
-          #       bluez5.enable-sbc-xq = true
-          #       bluez5.enable-msbc = true
-          #       bluez5.enable-hw-volume = true
-          #       bluez5.hfphsp-backend = "native"
-          #     }
-          # ''
-          # )
-        ];
         extraConfig = {
           "headset-autoconnect" = {
             "monitor.bluez.rules" = [
@@ -156,11 +190,17 @@
       drivers = [ pkgs.cups-bjnp pkgs.gutenprint ];
     };
 
-    transmission.enable = true;    
+    tailscale.enable = true;
+    transmission = {
+      enable = true;
+      package = pkgs.transmission_4;
+    };
     udisks2.enable = true;    
   };
 
   virtualisation.docker.enable = true;
+
+#  users.users.minidlna.extraGroups = [ "transmission" ];
   
   xdg.portal = {
     enable = true;

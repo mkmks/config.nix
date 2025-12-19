@@ -3,8 +3,9 @@
 {
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs29-pgtk;
+    package = pkgs.emacs-pgtk;
     extraPackages = e: with e; [
+      catppuccin-theme
       vs-dark-theme
       vs-light-theme
 	    diminish
@@ -12,56 +13,28 @@
       which-key      
 	    pretty-mode
       ag
+      ellama
+      evil
       ivy
       ivy-posframe
       ivy-xref
       counsel
       counsel-at-point
+      counsel-fd
       counsel-projectile
       swiper
       posframe
       exec-path-from-shell
-      sway
-      shackle
       frames-only-mode
-      (treesit-grammars.with-grammars (g: with g; [
-        tree-sitter-bash
-        tree-sitter-bibtex
-        tree-sitter-c
-        tree-sitter-cmake
-        tree-sitter-cpp
-        tree-sitter-dockerfile
-        tree-sitter-elisp
-        tree-sitter-elm
-        tree-sitter-fish
-        tree-sitter-go
-        tree-sitter-haskell
-        tree-sitter-java
-        tree-sitter-javascript
-        tree-sitter-json
-        tree-sitter-latex
-        tree-sitter-llvm
-        tree-sitter-make
-        tree-sitter-markdown
-        tree-sitter-nix
-        tree-sitter-ocaml
-        tree-sitter-python
-        tree-sitter-rust
-        tree-sitter-scala
-        tree-sitter-solidity
-        tree-sitter-sql
-        tree-sitter-toml
-        tree-sitter-typescript
-        tree-sitter-yaml
-        tree-sitter-zig
-      ]))
+      treesit-grammars.with-all-grammars
       treesit-auto
       # apps
       eat
       flycheck-hledger
       hledger-mode
 	    nov
-      slack
+      pdf-tools
+#      slack
       smudge
       melpaStablePackages.telega
       restclient

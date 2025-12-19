@@ -10,64 +10,42 @@
       android-file-transfer
       libreoffice
       slack
-      unstable.spotify
-      unstable.tdesktop
-      zoom-us
+      spotify
+      telegram-desktop
       
       baobab
       dconf-editor
-      pavucontrol
+      pwvucontrol
       seahorse
       
-      eog
-      evince
+      papers
       gnome-maps
       gthumb
       krop
+      loupe
+      nautilus
       
-      unstable.ledger-live-desktop
-      sparrow
-      unstable.tradingview
+      ledger-live-desktop
+#      sparrow
+      tradingview
     ];
   };  
   
   programs = {
-    chromium = {
+    brave = {
       enable = true;
-      package = pkgs.brave;
+#      package = pkgs.brave;
       extensions = [
-#        { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-#        { id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp"; } # privacy badger
         { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
-        { id = "fnaicdffflnofjppbagibeoednhnbjhg"; } # floccus
         { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
         { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark reader
         { id = "kmhcihpebfmpgmihbkipmjlmmioameka"; } # eternl
-        { id = "mcohilncbfahbmgdjkbpemcciiolgcge"; } # okx wallet
       ];
     };    
 
-    firefox = {
-      enable = true;
-      package = pkgs.firefox-wayland;
-      profiles.default = {
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-          ublock-origin
-          privacy-badger
-          bitwarden
-          floccus
-          vimium
-          darkreader
-          adsum-notabs
-        ];
-        settings = {
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        };
-        userChrome = ''
-#TabsToolbar { visibility: collapse !important;  }
-'';
-      };
-    };
+    foliate.enable = true;
+
+    lutris.enable = true;
     
     mpv = {
       enable = true;
@@ -76,20 +54,14 @@
         hwdec = "vaapi";
         vo = "gpu-next";
       };
-    };
-    
-    zathura = {
-      enable = true;
-      options = {
-        font = "DejaVu Sans Mono 9";
-        window-title-basename = true;
-        window-title-page = true;
-        guioptions = "";
-      };
-    };
+    };    
   };
 
-  services.gnome-keyring.enable = true;
+  services = {
+    blueman-applet.enable = true;
+    gnome-keyring.enable = true;
+    network-manager-applet.enable = true;
+  };
 
   xdg = {
     enable = true;
@@ -97,9 +69,9 @@
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
-        "application/epub+zip" = [ "emacsclient.desktop" ];
-        "image/vnd.djvu" = [ "org.pwmt.zathura.desktop" ];
+        "application/pdf" = [ "papers.desktop" ];
+        "application/epub+zip" = [ "foliate.desktop" ];
+        "image/vnd.djvu" = [ "papers.desktop" ];
         "text/plain" = [ "emacsclient.desktop" ];
         "text/html" = [ "brave.desktop" ];
         "x-scheme-handler/http" = [ "brave.desktop" ];

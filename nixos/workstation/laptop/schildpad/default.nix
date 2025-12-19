@@ -10,13 +10,6 @@
   system.stateVersion = "24.05";
  
   boot = {
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-
-    tmp.cleanOnBoot = true;
-
     kernelModules = [ "kvm-intel" "acpi_call" ];
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
     initrd = {
@@ -37,21 +30,18 @@
       };
   };
 
-  swapDevices = [ { device = "/var/swapfile"; } ];
-
   hardware = {
     cpu.intel.updateMicrocode = true;
-    enableRedistributableFirmware = true;
-    
-    graphics = {
-      enable = true;
-      extraPackages = with pkgs; [ vaapiIntel vaapiVdpau libvdpau-va-gl ];  
-    };
+    enableRedistributableFirmware = true;    
+    graphics.extraPackages = with pkgs; [
+      intel-vaapi-driver
+      libva-vdpau-driver
+      libvdpau-va-gl ];
   };
   
   environment.variables = {
     MESA_LOADER_DRIVER_OVERRIDE = "iris";
-  };    
-    
-  services.fwupd.enable = true;
+  };
+
+  services.swapspace.enable = true;  
 }

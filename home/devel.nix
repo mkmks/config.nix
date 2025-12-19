@@ -2,13 +2,14 @@
 
 {
   home.packages = with pkgs; [
-    gcc
+#    gcc
+    bash-language-server
     cmake-language-server
+    copilot-language-server
     ltrace
     nil
     perf-tools
-    python311Packages.python-lsp-server
-    nodePackages.bash-language-server
+#    python311Packages.python-lsp-server
     # ops
     argocd
     awscli2
@@ -32,10 +33,13 @@
 
     emacs.extraPackages = e: with e; [
       company
+      copilot
+      copilot-chat
       direnv
       ein
       envrc
       flycheck
+      flycheck-eglot
       magit
 	    projectile
       nix-buffer
@@ -73,8 +77,10 @@
     git = {
       enable = true;
       lfs.enable = true;
-      userName = "Nikita Frolov";
-      userEmail = "nf@mkmks.org";
+      settings.user = {
+        email = "nf@mkmks.org";
+        name = "Nikita Frolov";
+      };
     };
 
     helix = {
@@ -83,11 +89,12 @@
     
     vscode = {
       enable = true;
-      extensions = with pkgs.vscode-extensions; [
-        haskell.haskell
+      profiles.default.extensions = with pkgs.vscode-extensions; [
         justusadam.language-haskell
+        mkhl.direnv
         ms-vsliveshare.vsliveshare
         ocamllabs.ocaml-platform
+        rust-lang.rust-analyzer
         scala-lang.scala
         scalameta.metals
       ];

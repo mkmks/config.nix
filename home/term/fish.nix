@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{config, pkgs, ...}:
 
 {
   programs.fish = {
@@ -90,56 +90,13 @@ switch $argv[1]
 end
 sdcv -0c -u $dict $argv[2]          
         '';
-
-      my_fish_prompt = ''
-set -l nix_shell_info (
-  if test -n "$IN_NIX_SHELL"
-    echo -n "<nix-shell> "
-  end
-)
-echo -n -s $nix_shell_info '$ '
-        '';
-
-      fish_prompt = ''
-# Remove the trailing newline from the original prompt. This is done
-# using the string builtin from fish, but to make sure any escape codes
-# are correctly interpreted, use %b for printf.
-printf "%b" (string join "\n" (my_fish_prompt))
-vterm_prompt_end
-'';
-
-      fish_title = ''
-hostname
-echo ":"
-pwd
-        '';
-
-      vterm_printf = ''
-if begin; [  -n "$TMUX" ]  ; and  string match -q -r "screen|tmux" "$TERM"; end 
-  # tell tmux to pass the escape sequences through
-  printf "\ePtmux;\e\e]%s\007\e\\" "$argv"
-else if string match -q -- "screen*" "$TERM"
-       # GNU screen (screen, screen-256color, screen-256color-bce)
-       printf "\eP\e]%s\007\e\\" "$argv"
-     else
-       printf "\e]%s\e\\" "$argv"
-     end
-        '';
-
-      vterm_prompt_end = "vterm_printf '51;A'(whoami)'@'(hostname)':'(pwd)";
     };
     
     interactiveShellInit = ''
-set fish_greeting
-
-if [ "$INSIDE_EMACS" = 'vterm' ]
-    function clear
-        vterm_printf "51;Evterm-clear-scrollback";
-        tput clear;
-    end
+if test "$TERM" != "dumb"
+  ${config.home.profileDirectory}/bin/starship init fish | source
+  source ${pkgs.emacsPackages.vterm}/share/emacs/site-lisp/elpa/vterm-*/etc/emacs-vterm.fish
 end
-
-gpg-connect-agent -q updatestartuptty /bye > /dev/null
       '';
     
     shellAliases = {

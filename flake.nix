@@ -2,20 +2,21 @@
   description = "My machines and home directories";
 
   inputs = {
-    nixos.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
+    nixos.url = "github:nixos/nixpkgs/nixos-25.11";
+#    nixpkgs-unstable.url = "github:nixos/nixpkgs/master";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixos";      
     };
-    nur.url = "github:nix-community/NUR";    
-    #    emacs.url = "github:nix-community/emacs-overlay";
+#    nur.url = "github:nix-community/NUR";    
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixos";
     };
     daedalus.url = "github:input-output-hk/daedalus";
     cardano-node.url = "github:IntersectMBO/cardano-node";
+    cardano-wallet.url = "github:cardano-foundation/cardano-wallet";
+    niri.url = "github:sodiboo/niri-flake";
   };
 
   outputs = { self, nixos, home-manager, ... }@inputs:
@@ -32,10 +33,11 @@
             inputs.disko.nixosModules.disko
             inputs.cardano-node.nixosModules.cardano-node
             inputs.cardano-node.nixosModules.cardano-submit-api
+            inputs.cardano-wallet.nixosModule
             ./nixos/server/loderunner
             {
-              nixpkgs.overlays = [
-#                inputs.cardano-node.overlay
+              environment.systemPackages = [
+                inputs.cardano-node.packages."x86_64-linux".cardano-cli
               ];
             }
           ];
@@ -50,6 +52,7 @@
           inherit pkgs;
           
           modules = [
+            inputs.niri.homeModules.niri
             ./home
             {
               home.packages = [
@@ -58,11 +61,11 @@
               nixpkgs = {
                 config.allowUnfree = true;
                 overlays = [
-                  # emacs.overlay
-                  inputs.nur.overlay
-                  (final: prev: {
-                    unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-                  })
+#                  inputs.nur.overlays.default
+                  inputs.niri.overlays.niri
+                  # (final: prev: {
+                  #   unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+                  # })
                 ];
               };
             }

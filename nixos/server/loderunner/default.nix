@@ -9,8 +9,6 @@
   time.timeZone = "Europe/Paris";
 
   users.users.viv = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK0tapR+Dagn7C6mE/w7qcbyoGTQxKgG6kGAxWoFrmf0 nf@mkmks.org"
     ];
@@ -75,19 +73,24 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-#    pkgs.cardano-node.cardano-cli
-  ];
-
   networking.firewall = {
-    allowedTCPPorts = [ 3001 ];
+    allowedTCPPorts = [
+      3001
+      8333
+      30303
+    ];
+    allowedUDPPorts = [
+      30303
+    ];
   };
 
-  programs.git.enable = true;
-  
   security.sudo.wheelNeedsPassword = false;
 
   services = {
+    bitcoind.prime = {
+      enable = true;
+      prune = 100000;
+    };
     cardano-node = {
       enable = true;
       environment = "mainnet";
@@ -96,8 +99,27 @@
     cardano-submit-api = {
       enable = true;
       network = "mainnet";
-      socketPath = "/var/run/cardano-node/node.socket";
+      socketPath = "/run/cardano-node/node.socket";
     };
+#    cardano-wallet = {
+#      enable = true;
+#      port = 8100;
+    #    };
+    geth.mainnet = {
+      enable = false;
+      authrpc = {
+        enable = true;
+        jwtsecret = "/etc/geth_jwtsecret";
+      };
+    };
+    lighthouse = {
+      beacon = {
+        enable = false;
+        execution.jwtPath = "/etc/geth_jwtsecret";
+        extraArgs = "--checkpoint-sync-url https://mainnet-checkpoint-sync.stakely.io";
+      };
+    };
+    
     fail2ban.enable = true;
     openssh.enable = true;
   };
