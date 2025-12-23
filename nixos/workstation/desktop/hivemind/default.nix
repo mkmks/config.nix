@@ -2,7 +2,8 @@
 
 {
   imports = [
-    ../. 
+    ../.
+    ../../../blockchain.nix
   ];
 
   networking.hostName = "hivemind";

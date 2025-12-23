@@ -44,8 +44,13 @@
         };
         hivemind = nixos.lib.nixosSystem {
           modules = [
+            inputs.cardano-node.nixosModules.cardano-node
+            inputs.cardano-node.nixosModules.cardano-submit-api
             ./nixos/workstation/desktop/hivemind
             {
+              environment.systemPackages = [
+                inputs.cardano-node.packages."x86_64-linux".cardano-cli
+              ];
               nixpkgs = {
                 config = {
                   cudaSupport = true;
