@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../.
+    ../laptop.nix
   ];
   
   networking.hostName = "schildpad";

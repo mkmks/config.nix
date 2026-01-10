@@ -1,9 +1,8 @@
-{pkgs, ...}:
+{ pkgs, ...}:
 
 {
   imports = [
-    ../.
-    ../../blockchain.nix
+    ../server.nix
   ];
 
   networking.hostName = "loderunner";

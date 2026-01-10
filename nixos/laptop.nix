@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../.
+    ./workstation.nix
   ];
   
   environment.systemPackages = with pkgs; [
