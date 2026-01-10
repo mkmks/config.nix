@@ -33,7 +33,6 @@
       NIXOS_OZONE_WL = "1";
     };
     systemPackages = with pkgs; [
-      bluetuith
       pciutils
       pcsc-tools
       usbutils
@@ -80,10 +79,10 @@
   programs = {
     adb.enable = true;
     dconf.enable = true;
-    light.enable = true;
     steam = {
       enable = true;
       gamescopeSession.enable = true;
+      protontricks.enable = true;
       remotePlay.openFirewall = true;
     };
   };
@@ -108,7 +107,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --cmd 'niri --session'";
+          command = "${pkgs.tuigreet}/bin/tuigreet --cmd 'niri-session'";
         };
       };
     };

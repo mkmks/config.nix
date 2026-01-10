@@ -73,35 +73,9 @@
     };
   };
 
-  networking.firewall = {
-    allowedTCPPorts = [
-      3001
-      8333
-      30303
-    ];
-    allowedUDPPorts = [
-      30303
-    ];
-  };
-
   security.sudo.wheelNeedsPassword = false;
 
   services = {
-    geth.mainnet = {
-      enable = false;
-      authrpc = {
-        enable = true;
-        jwtsecret = "/etc/geth_jwtsecret";
-      };
-    };
-    lighthouse = {
-      beacon = {
-        enable = false;
-        execution.jwtPath = "/etc/geth_jwtsecret";
-        extraArgs = "--checkpoint-sync-url https://mainnet-checkpoint-sync.stakely.io";
-      };
-    };
-    
     fail2ban.enable = true;
     openssh.enable = true;
   };

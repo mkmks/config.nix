@@ -13,7 +13,7 @@
       which-key      
 	    pretty-mode
       ag
-#      ellama
+      ellama
       evil
       ivy
       ivy-posframe

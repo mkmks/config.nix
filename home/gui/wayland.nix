@@ -215,6 +215,7 @@ in
           "Mod+comma".action  = toggle-column-tabbed-display;
           "Mod+period".action = toggle-window-floating;
           "Mod+slash".action  = maximize-column;
+          "Mod+return".action  = fullscreen-window;
           
           # move columns to workspaces
           "Mod+Ctrl+q".action.move-column-to-workspace = 1;
@@ -325,7 +326,7 @@ in
 
     kanshi = {
       enable = true;
-#      systemdTarget = "graphical-session.target";
+      systemdTarget = "graphical-session.target";
       settings = [
         {
           profile.name = "on-the-go";

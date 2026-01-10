@@ -13,14 +13,24 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixos";
     };
-    daedalus.url = "github:input-output-hk/daedalus";
+    # blockchains
     cardano-node.url = "github:IntersectMBO/cardano-node";
     cardano-wallet.url = "github:cardano-foundation/cardano-wallet";
+    daedalus.url = "github:input-output-hk/daedalus";
+    ethereum-nix = {
+      url = "github:nix-community/ethereum.nix";
+      inputs.nixpkgs.follows = "nixos";
+    };
+    # applications
+    emacs.url = "github:nix-community/emacs-overlay";
     niri.url = "github:sodiboo/niri-flake";
   };
 
-  outputs = { self, nixos, home-manager, ... }@inputs:
-    {
+  outputs = { self, nixos, home-manager, ... }@inputs: let
+    unstable-overlay = (final: prev: {
+      unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+    });
+  in {
       nixosConfigurations = {
         schildpad = nixos.lib.nixosSystem {
           modules = [
@@ -34,19 +44,23 @@
             inputs.cardano-node.nixosModules.cardano-node
             inputs.cardano-node.nixosModules.cardano-submit-api
             inputs.cardano-wallet.nixosModule
+            ./nixos/blockchain.nix
             ./nixos/server/loderunner
-            {
-              environment.systemPackages = [
-                inputs.cardano-node.packages."x86_64-linux".cardano-cli
-              ];
-            }
+           {
+             environment.systemPackages = [
+               inputs.cardano-node.packages."x86_64-linux".cardano-cli
+             ];
+           }
           ];
         };
         hivemind = nixos.lib.nixosSystem {
           modules = [
             inputs.cardano-node.nixosModules.cardano-node
             inputs.cardano-node.nixosModules.cardano-submit-api
-            ./nixos/workstation/desktop/hivemind
+            inputs.cardano-wallet.nixosModule
+            inputs.ethereum-nix.nixosModules.default
+            ./nixos/blockchain.nix
+            ./nixos/hosts/hivemind.nix
             {
               environment.systemPackages = [
                 inputs.cardano-node.packages."x86_64-linux".cardano-cli
@@ -55,6 +69,10 @@
                 config = {
                   cudaSupport = true;
                 };
+                overlays = [
+                  inputs.cardano-node.overlay
+                  inputs.ethereum-nix.overlays.default
+                ];
               };
             }
           ];
@@ -80,11 +98,10 @@
                   allowUnfree = true;
                 };
                 overlays = [
+                  inputs.emacs.overlays.package
 #                  inputs.nur.overlays.default
                   inputs.niri.overlays.niri
-                  (final: prev: {
-                    unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-                  })
+                  unstable-overlay
                 ];
               };
             }

@@ -22,7 +22,8 @@
   };
   
   powerManagement.powertop.enable = true;
-
+  programs.light.enable = true;
+  
   services = {
     throttled.enable = true;
     tlp = {

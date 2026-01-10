@@ -33,12 +33,8 @@
 
 
   hardware = {
-    cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-    graphics.extraPackages = with pkgs; [
-      nvidia-vaapi-driver
-      libva-vdpau-driver
-      libvdpau-va-gl
-    ];
+    cpu.intel.updateMicrocode = true;
+    enableRedistributableFirmware = true;
     nvidia = {
       modesetting.enable = true;
       powerManagement = {
@@ -50,13 +46,17 @@
     };
   };
 
+  networking.interfaces."enp128s31f6".useDHCP = true;
+
   services = {
     ollama = {
       enable = true;
+      openFirewall = true;
       loadModels = [
         "deepseek-r1:14b"
+        "gemma3:12b"
       ];
     };
     xserver.videoDrivers = [ "nvidia" ];
-  }; 
+  };
 }
