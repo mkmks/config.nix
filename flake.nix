@@ -34,7 +34,7 @@
       nixosConfigurations = {
         schildpad = nixos.lib.nixosSystem {
           modules = [
-            ./nixos/workstation/laptop/schildpad
+            ./nixos/hosts/schildpad.nix
           ];
         };
         loderunner = nixos.lib.nixosSystem {
@@ -45,7 +45,7 @@
             inputs.cardano-node.nixosModules.cardano-submit-api
             inputs.cardano-wallet.nixosModule
             ./nixos/blockchain.nix
-            ./nixos/server/loderunner
+            ./nixos/hosts/loderunner.nix
            {
              environment.systemPackages = [
                inputs.cardano-node.packages."x86_64-linux".cardano-cli
