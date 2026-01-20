@@ -5,6 +5,7 @@ let
   term-font-size = 9;
   term-font = "${term-font-family} ${toString term-font-size}";
   cmd_lock = "${pkgs.swaylock}/bin/swaylock -f -c ff0000";
+  cmd_display = status: "${pkgs.niri}/bin/niri msg action power-${status}-monitors";
 in
 {
   dconf.settings = {
@@ -44,8 +45,6 @@ in
 
   home = {
     packages = with pkgs; [
-      bemenu
-      wlr-randr
       unstable.xwayland-satellite
 
       # fonts
@@ -68,7 +67,7 @@ in
         font-size = term-font-size;
         cursor-style = "block";
         cursor-style-blink = false;
-        shell-integration-features = "no-cursor";
+        shell-integration-features = "no-cursor,title";
         theme = "Builtin Dark";
         link-url = true;
         gtk-single-instance = true;
@@ -132,6 +131,8 @@ in
           preset-column-widths = [
             { proportion = 1. / 3.; }
             { proportion = 1. / 2.; }
+            { proportion = 2. / 3.; }
+            { proportion = 1. ; }            
           ];
         };
         binds = with config.lib.niri.actions; let
@@ -139,10 +140,10 @@ in
           down  = "r";
           up    = "s";
           right = "t";
-          home  = "n";
-          pgdn  = "e";
-          pgup  = "i";
-          end   = "o";
+          home  = "q";
+          pgdn  = "w";
+          pgup  = "f";
+          end   = "p";
           input-volume = spawn "swayosd-client" "--input-volume";
           output-volume = spawn "swayosd-client" "--output-volume";
           pctl = spawn "swayosd-client" "--playerctl";
@@ -154,14 +155,10 @@ in
           # media
           "XF86AudioMute".action                   = output-volume "mute-toggle";
           "XF86AudioMute".allow-when-locked        = true;
-          "Mod+d".action                           = output-volume "mute-toggle";
-          "Mod+d".allow-when-locked                = true;
           "XF86AudioMicMute".action                = input-volume "mute-toggle";
           "XF86AudioMicMute".allow-when-locked     = true;
           "XF86AudioRecord".action                 = input-volume "mute-toggle";
           "XF86AudioRecord".allow-when-locked      = true;
-          "Mod+b".action                           = input-volume "mute-toggle";
-          "Mod+b".allow-when-locked                = true;
           "XF86AudioPlay".action                   = pctl "play-pause";
           "XF86AudioPlay".allow-when-locked        = true;
           "Mod+j".action                           = pctl "play-pause";
@@ -184,60 +181,85 @@ in
           "Mod+Ctrl+k".allow-when-locked           = true;
           # launchers
           "Mod+z".action = spawn (lib.strings.splitString " " cmd_lock);
-          "Mod+x".action = spawn "bemenu-run";
+          "Mod+x".action = spawn "rofi" "-show" "run";
           "Mod+c".action = spawn "emacsclient" "-cn";
           "Mod+v".action.screenshot = { show-pointer =  false; };
+          "Mod+b".action = spawn "rofi" "-show" "window";
           "Mod+Ctrl+z".action = spawn "systemctl" "suspend";
           "Mod+Ctrl+z".allow-when-locked = true;
           "Mod+Ctrl+c".action = close-window;
-          
-          # focus workspaces
-          "Mod+q".action.focus-workspace = 1;
-          "Mod+w".action.focus-workspace = 2;
-          "Mod+f".action.focus-workspace = 3;
-          "Mod+p".action.focus-workspace = 4;
-          "Mod+g".action.focus-workspace = 5;
-          # focus windows/columns
-          "Mod+${left}".action  = focus-column-or-monitor-left;
-          "Mod+${down}".action  = focus-workspace-down;
-          "Mod+${up}".action    = focus-workspace-up;
-          "Mod+${right}".action = focus-column-or-monitor-right;
-          "Mod+${home}".action  = focus-column-first;
-          "Mod+${pgdn}".action  = focus-window-down-or-top;
-          "Mod+${pgup}".action  = focus-window-up-or-bottom;
-          "Mod+${end}".action   = focus-column-last;
-          # resize windows/columns
-          "Mod+l".action.set-column-width         = "-2%";
-          "Mod+u".action.set-window-height        = "-2%";
-          "Mod+y".action.set-window-height        = "+2%";
-          "Mod+semicolon".action.set-column-width = "+2%";
-          "Mod+m".action      = switch-preset-column-width;
-          "Mod+comma".action  = toggle-column-tabbed-display;
-          "Mod+period".action = toggle-window-floating;
-          "Mod+slash".action  = maximize-column;
-          "Mod+return".action  = fullscreen-window;
-          
-          # move columns to workspaces
-          "Mod+Ctrl+q".action.move-column-to-workspace = 1;
-          "Mod+Ctrl+w".action.move-column-to-workspace = 2;
-          "Mod+Ctrl+f".action.move-column-to-workspace = 3;
-          "Mod+Ctrl+p".action.move-column-to-workspace = 4;
-          "Mod+Ctrl+g".action.move-column-to-workspace = 5;
-          # move workspaces
-          "Mod+Ctrl+l".action         = move-workspace-to-monitor-left;
-          "Mod+Ctrl+u".action         = move-workspace-down;
-          "Mod+Ctrl+y".action         = move-workspace-up;
-          "Mod+Ctrl+semicolon".action = move-workspace-to-monitor-right;
-          # move columns
-          "Mod+Ctrl+${left}".action  = move-column-left-or-to-monitor-left;
-          "Mod+Ctrl+${down}".action  = move-column-to-workspace-down;
-          "Mod+Ctrl+${up}".action    = move-column-to-workspace-up;
-          "Mod+Ctrl+${right}".action = move-column-right-or-to-monitor-right;
-          # move windows
+          # layouts
+          "Mod+escape".action = open-overview;
+          "Mod+space".action     = switch-preset-column-width;
+          "Mod+tab".action       = toggle-column-tabbed-display;
+          "Mod+backspace".action = toggle-window-floating;
+          "Mod+return".action    = fullscreen-window;          
+
+          # windows/columns
+          ## focus
+          "Mod+${left}".action  = focus-column-left-or-last;
+          "Mod+${down}".action  = focus-window-down-or-top;
+          "Mod+${up}".action    = focus-window-up-or-bottom;
+          "Mod+${right}".action = focus-column-right-or-first;
+          "Mod+${home}".action = focus-column-first;
+          "Mod+${end}".action  = focus-column-last;
+          ## move
+          "Mod+Ctrl+${left}".action  = move-column-left;
+          "Mod+Ctrl+${down}".action  = move-window-down;
+          "Mod+Ctrl+${up}".action    = move-window-up;
+          "Mod+Ctrl+${right}".action = move-column-right;
           "Mod+Ctrl+${home}".action = consume-or-expel-window-left;
-          "Mod+Ctrl+${pgdn}".action = move-window-down;
-          "Mod+Ctrl+${pgup}".action = move-window-up;
           "Mod+Ctrl+${end}".action  = consume-or-expel-window-right;
+          ## resize
+          "Mod+home".action.set-column-width       = "-2%";
+          "Mod+page_down".action.set-window-height = "-2%";
+          "Mod+page_up".action.set-window-height   = "+2%";
+          "Mod+end".action.set-column-width        = "+2%";
+
+          # workspaces
+          ## focus
+          "Mod+1".action.focus-workspace = 1;
+          "Mod+2".action.focus-workspace = 2;
+          "Mod+3".action.focus-workspace = 3;
+          "Mod+4".action.focus-workspace = 4;
+          "Mod+5".action.focus-workspace = 5;
+          "Mod+6".action.focus-workspace = 6;
+          "Mod+7".action.focus-workspace = 7;
+          "Mod+8".action.focus-workspace = 8;
+          "Mod+9".action.focus-workspace = 9;
+          "Mod+0".action.focus-workspace = 10;
+          "Mod+${pgdn}".action = focus-workspace-down;
+          "Mod+${pgup}".action = focus-workspace-up;
+          ## move columns
+          "Mod+Ctrl+1".action.move-column-to-workspace = 1;
+          "Mod+Ctrl+2".action.move-column-to-workspace = 2;
+          "Mod+Ctrl+3".action.move-column-to-workspace = 3;
+          "Mod+Ctrl+4".action.move-column-to-workspace = 4;
+          "Mod+Ctrl+5".action.move-column-to-workspace = 5;
+          "Mod+Ctrl+6".action.move-column-to-workspace = 6;
+          "Mod+Ctrl+7".action.move-column-to-workspace = 7;
+          "Mod+Ctrl+8".action.move-column-to-workspace = 8;
+          "Mod+Ctrl+9".action.move-column-to-workspace = 9;
+          "Mod+Ctrl+0".action.move-column-to-workspace = 10;
+          "Mod+Ctrl+${pgdn}".action = move-column-to-workspace-down;
+          "Mod+Ctrl+${pgup}".action = move-column-to-workspace-up;          
+
+          # monitors
+          ## focus
+          "Mod+left".action  = focus-monitor-left;
+          "Mod+down".action  = focus-monitor-down;
+          "Mod+up".action    = focus-monitor-up;
+          "Mod+right".action = focus-monitor-right;          
+          ## move columns
+          "Mod+Ctrl+left".action  = move-column-to-monitor-left;
+          "Mod+Ctrl+down".action  = move-column-to-monitor-down;
+          "Mod+Ctrl+up".action    = move-column-to-monitor-up;
+          "Mod+Ctrl+right".action = move-column-to-monitor-right;
+          ## move workspaces
+          "Mod+Ctrl+home".action      = move-workspace-to-monitor-left;
+          "Mod+Ctrl+page_down".action = move-workspace-to-monitor-down;
+          "Mod+Ctrl+page_up".action   = move-workspace-to-monitor-up;
+          "Mod+Ctrl+end".action       = move-workspace-to-monitor-right;
         };
         layer-rules = [
           {
@@ -258,6 +280,14 @@ in
       };
     };
 
+    rofi = {
+      enable = true;
+      font = term-font;
+      location = "top";
+      terminal = "${pkgs.ghostty}/bin/ghostty";
+      theme = "android_notification";
+    };
+    
     waybar = {
       enable = true;
       systemd.enable = true;
@@ -377,10 +407,18 @@ in
     swayidle = {
       enable = true;
       events = [
-        { event = "before-sleep"; command = "${cmd_lock}"; }
+        { event = "before-sleep"; command = cmd_lock; }
       ];
       timeouts = [
-        { timeout = 300; command = "${cmd_lock}"; }
+        {
+          timeout = 300;
+          command = cmd_lock;
+        }
+        {
+          timeout = 600;
+          command = cmd_display "off";
+          resumeCommand = cmd_display "on";
+        }
       ];
     };
 
