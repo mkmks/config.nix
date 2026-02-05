@@ -8,19 +8,19 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixos";      
     };
-#    nur.url = "github:nix-community/NUR";    
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixos";
     };
     # blockchains
+    cardano-db-sync.url = "github:IntersectMBO/cardano-db-sync";
     cardano-node.url = "github:IntersectMBO/cardano-node";
     cardano-wallet.url = "github:cardano-foundation/cardano-wallet";
-    daedalus.url = "github:input-output-hk/daedalus";
     ethereum-nix = {
-      url = "github:nix-community/ethereum.nix";
+      url = "github:nix-community/ethereum.nix?rev=8f01580481e88e169b7ada56f1500dccd6cefe61";
       inputs.nixpkgs.follows = "nixos";
     };
+    nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-25.11";
     # applications
     emacs.url = "github:nix-community/emacs-overlay";
     niri.url = "github:sodiboo/niri-flake";
@@ -55,10 +55,14 @@
         };
         hivemind = nixos.lib.nixosSystem {
           modules = [
+            inputs.cardano-db-sync.nixosModules.cardano-db-sync
             inputs.cardano-node.nixosModules.cardano-node
             inputs.cardano-node.nixosModules.cardano-submit-api
-            inputs.cardano-wallet.nixosModule
-            inputs.ethereum-nix.nixosModules.default
+            inputs.cardano-node.nixosModules.cardano-tracer
+            inputs.cardano-wallet.nixosModules.cardano-wallet
+            inputs.ethereum-nix.nixosModules.geth
+            inputs.ethereum-nix.nixosModules.lighthouse-beacon
+            inputs.nix-bitcoin.nixosModules.default
             ./nixos/blockchain.nix
             ./nixos/hosts/hivemind.nix
             {
@@ -71,6 +75,7 @@
                 };
                 overlays = [
                   inputs.cardano-node.overlay
+                  inputs.cardano-wallet.overlay
                   inputs.ethereum-nix.overlays.default
                 ];
               };
@@ -90,16 +95,13 @@
             inputs.niri.homeModules.niri
             ./home
             {
-              home.packages = [
-                # inputs.daedalus.defaultPackage.${system}
-              ];
               nixpkgs = {
                 config = {
                   allowUnfree = true;
+                  cudaSupport = true;
                 };
                 overlays = [
                   inputs.emacs.overlays.package
-#                  inputs.nur.overlays.default
                   inputs.niri.overlays.niri
                   unstable-overlay
                 ];

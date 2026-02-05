@@ -14,7 +14,10 @@
   boot = {
     initrd = {
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      luks.devices."nixos".device = "/dev/disk/by-uuid/27eace65-e9e4-4e26-bd67-1666079bfbe3";
+      luks.devices = {
+        "nixos-rootfs".device = "/dev/disk/by-uuid/27eace65-e9e4-4e26-bd67-1666079bfbe3";
+        "nixos-varlib".device = "/dev/disk/by-uuid/35b77669-dd1c-425d-a6cc-2f7b477c1b03";
+      };
     };
   };
   
@@ -29,6 +32,10 @@
         fsType = "vfat";
         options = [ "fmask=0077" "dmask=0077" ];
       };
+    "/var/lib" = {
+      device = "/dev/disk/by-uuid/49d57d03-13ce-4d7e-bb54-132bae6c499d";
+      fsType = "ext4";
+    };
   };
 
 

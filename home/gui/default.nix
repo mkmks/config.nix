@@ -25,26 +25,28 @@
       loupe
       nautilus
       
-      ledger-live-desktop
-#      sparrow
       tradingview
+      ledger-live-desktop
+      sparrow # btc
+      framesh # eth
+      feather # xmr
     ];
   };  
   
   programs = {
     brave = {
       enable = true;
-#      package = pkgs.brave;
       extensions = [
         { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
         { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
         { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark reader
+        { id = "ldcoohedfbjoobcadoglnnmmfbdlmmhf"; } # frame.sh
+        { id = "gafhhkghbfjjkeiendhlofajokpaflmk"; } # lace
         { id = "kmhcihpebfmpgmihbkipmjlmmioameka"; } # eternl
       ];
     };    
 
     foliate.enable = true;
-
     lutris.enable = true;
     
     mpv = {

@@ -276,6 +276,12 @@ in
             ];
             block-out-from = "screencast";
           }
+          {
+            matches = [
+              { app-id = "^frame$"; }
+            ];
+            open-floating = false;
+          }
         ];
       };
     };

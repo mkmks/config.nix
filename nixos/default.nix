@@ -19,6 +19,7 @@
       keep-outputs = true
       keep-derivations = true 
       experimental-features = nix-command flakes
+      allow-import-from-derivation = true
     '';
   };
 
