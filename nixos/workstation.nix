@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -7,7 +7,15 @@
   
   users.users.viv = {
     description = "Nikita Frolov";
-    extraGroups = [ "transmission" "adbusers" "dialout" "docker" "video" ];
+    extraGroups = [
+      "adbusers"
+      "dialout"
+      "docker"
+      "pipewire"
+      "syncthing"
+      "transmission"
+      "video"
+    ];
   };
 
   boot = {
@@ -53,8 +61,12 @@
   networking = {
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22000 57621 51413 ];
-      allowedUDPPorts = [ 21027 57621 51413 ];
+      allowedTCPPorts = [
+        57621 # spotify connect
+      ];
+      allowedUDPPorts = [
+        57621 # spotify connect
+      ];
       extraCommands = ''
         iptables -A INPUT -p udp --sport 1900 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
         iptables -A INPUT -p udp --sport 5353 --dport 1025:65535 -j ACCEPT -m comment --comment spotify
@@ -105,9 +117,10 @@
 
     greetd = {
       enable = true;
+      useTextGreeter = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --cmd 'niri-session'";
+          command = "${pkgs.tuigreet}/bin/tuigreet --cmd niri-session";
         };
       };
     };
@@ -127,17 +140,6 @@
         };
       };
     };
-
-    minidlna = {
-      enable = false;
-      openFirewall = true;
-      settings = {
-        inotify = "yes";
-        media_dir = [
-          "/var/lib/transmission/Downloads"
-        ];
-      };
-    };
     
     mullvad-vpn.enable = true;
 
@@ -147,6 +149,17 @@
         pkgs.pcsc-cyberjack
       ];
     };
+
+    mpd = {
+      enable = true;
+      musicDirectory = "${config.services.syncthing.dataDir}/Music";
+      extraConfig = ''
+        audio_output {
+          type "pipewire"
+          name "System-wide PipeWire"
+        }
+      '';
+    };
     
     pipewire = {
       enable = true;
@@ -154,6 +167,7 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      systemWide = true;
 
       extraConfig.pipewire = {
         "10-clock-rate" = {
@@ -191,17 +205,29 @@
       drivers = [ pkgs.cups-bjnp pkgs.gutenprint ];
     };
 
+    syncthing = {
+      enable = true;
+      openDefaultPorts = true;
+    };
+    
     tailscale.enable = true;
     transmission = {
       enable = true;
       package = pkgs.transmission_4;
+      openPeerPorts = true;
     };
     udisks2.enable = true;    
   };
 
   virtualisation.docker.enable = true;
 
-#  users.users.minidlna.extraGroups = [ "transmission" ];
+  users.users = {
+    mpd.extraGroups = [
+      "pipewire"
+      "syncthing"
+    ];
+    syncthing.homeMode = "750";
+  };
   
   xdg.portal = {
     enable = true;

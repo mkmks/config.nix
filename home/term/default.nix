@@ -49,6 +49,7 @@ column-number-mode
       picocom
       socat
       tcpdump
+      unixtools.netstat
 
       # img
       pkgs.exif
@@ -145,11 +146,6 @@ column-number-mode
       maxCacheTtl = 604800;
       maxCacheTtlSsh = 604800;
     };
-
-    mpd = {
-      enable = true;
-      musicDirectory = "${config.home.homeDirectory}/Music";
-    };
     
     playerctld.enable = true;
     
@@ -165,7 +161,6 @@ column-number-mode
       };
     };
     
-    syncthing.enable = true;
     udiskie = {
       enable = true;
       tray = "never";
