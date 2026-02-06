@@ -63,7 +63,7 @@
             inputs.ethereum-nix.nixosModules.geth
             inputs.ethereum-nix.nixosModules.lighthouse-beacon
             inputs.nix-bitcoin.nixosModules.default
-            ./nixos/blockchain.nix
+            ./nixos/blockchains
             ./nixos/hosts/hivemind.nix
             {
               environment.systemPackages = [
