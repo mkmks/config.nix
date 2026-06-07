@@ -90,12 +90,27 @@ switch $argv[1]
 end
 sdcv -0c -u $dict $argv[2]          
         '';
+
+      fish_title = ''
+if [ $_ = 'fish' ]
+    # At prompt: show current directory
+    echo (hostname):(prompt_pwd):\>
+else
+    # During command execution: show command name
+    echo (hostname):(prompt_pwd):$argv
+end
+'';
     };
     
     interactiveShellInit = ''
 if test "$TERM" != "dumb"
   ${config.home.profileDirectory}/bin/starship init fish | source
+end
+if test "$INSIDE_EMACS" = "vterm"
   source ${pkgs.emacsPackages.vterm}/share/emacs/site-lisp/elpa/vterm-*/etc/emacs-vterm.fish
+function fish_title
+${config.programs.fish.functions.fish_title}
+end
 end
       '';
     

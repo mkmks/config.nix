@@ -3,7 +3,7 @@
 {
   imports = [
     ./workstation.nix
-];
+  ];
   
   services = {
     minidlna = {

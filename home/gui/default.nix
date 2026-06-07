@@ -10,8 +10,7 @@
       android-file-transfer
       libreoffice
       slack
-      spotify
-      telegram-desktop
+      unstable.telegram-desktop
       
       baobab
       dconf-editor
@@ -21,25 +20,33 @@
       papers
       gnome-maps
       gthumb
-      krop
+#      krop
       loupe
       nautilus
       
-      tradingview
       ledger-live-desktop
-      sparrow # btc
+      unstable.sparrow # btc
       framesh # eth
       feather # xmr
+      unstable.eigenwallet
     ];
   };  
   
   programs = {
     brave = {
       enable = true;
+      package = (pkgs.brave.override {
+        commandLineArgs = [
+          "--enable-features=AcceleratedVideoEncoder"
+          "--ignore-gpu-blocklist"
+          "--enable-zero-copy"
+        ];
+      });
       extensions = [
         { id = "nngceckbapebfimnlniiiahkandclblb"; } # bitwarden
         { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
         { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark reader
+        { id = "nibjojkomfdiaoajekhjakgkdhaomnch"; } # ipfs companion
         { id = "ldcoohedfbjoobcadoglnnmmfbdlmmhf"; } # frame.sh
         { id = "gafhhkghbfjjkeiendhlofajokpaflmk"; } # lace
         { id = "kmhcihpebfmpgmihbkipmjlmmioameka"; } # eternl
@@ -71,9 +78,12 @@
     mimeApps = {
       enable = true;
       defaultApplications = {
-        "application/pdf" = [ "papers.desktop" ];
-        "application/epub+zip" = [ "foliate.desktop" ];
-        "image/vnd.djvu" = [ "papers.desktop" ];
+        "application/pdf" = [ "org.gnome.Papers.desktop" ];
+        "application/epub+zip" = [ "com.github.johnfactotum.Foliate.desktop" ];
+        "image/gif" = [ "org.gnome.Loupe.desktop" ];
+        "image/jpeg" = [ "org.gnome.Loupe.desktop" ];
+        "image/png" = [ "org.gnome.Loupe.desktop" ];
+        "image/vnd.djvu" = [ "org.gnome.Papers.desktop" ];
         "text/plain" = [ "emacsclient.desktop" ];
         "text/html" = [ "brave.desktop" ];
         "x-scheme-handler/http" = [ "brave.desktop" ];

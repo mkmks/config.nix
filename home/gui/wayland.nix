@@ -59,9 +59,20 @@ in
   };
   
   programs = {
+    foot = {
+      enable = true;
+      server.enable = true;
+      settings = {
+        main = {
+          font = "${term-font-family}:size=${toString term-font-size}";
+        };
+      };
+    };
+
     ghostty = {
       enable = true;
       enableFishIntegration = true;
+      package = pkgs.unstable.ghostty;
       settings = {
         font-family = "${term-font-family}";
         font-size = term-font-size;
@@ -77,6 +88,7 @@ in
     
     niri = {
       enable = true;
+      package = pkgs.niri-unstable;
       settings = {
         animations.enable = false;
         gestures.hot-corners.enable = false;
@@ -91,9 +103,9 @@ in
           _JAVA_AWT_WM_NONREPARENTING = "1";
         };
         spawn-at-startup = [
+          { command = [ "nvidia-settings" "--load-config-only" ]; }
           { command = [ "slack" ]; }
           { command = [ "Telegram" ]; }
-          { command = [ "spotify" ]; }
         ];
         input = {
           keyboard.xkb = {
@@ -125,14 +137,23 @@ in
           };
         };
         layout = {
+          always-center-single-column = true;
           gaps = 4;
           tab-indicator.place-within-column = true;
           default-column-width.fixed = 640;
           preset-column-widths = [
+            { proportion = 1. / 4.; }
             { proportion = 1. / 3.; }
             { proportion = 1. / 2.; }
             { proportion = 2. / 3.; }
-            { proportion = 1. ; }            
+            { proportion = 1. ; }
+          ];
+          preset-window-heights = [
+            { proportion = 1. / 4.; }
+            { proportion = 1. / 3.; }
+            { proportion = 1. / 2.; }
+            { proportion = 2. / 3.; }
+            { proportion = 1. ; }
           ];
         };
         binds = with config.lib.niri.actions; let
@@ -190,31 +211,31 @@ in
           "Mod+Ctrl+c".action = close-window;
           # layouts
           "Mod+escape".action = open-overview;
-          "Mod+space".action     = switch-preset-column-width;
           "Mod+tab".action       = toggle-column-tabbed-display;
           "Mod+backspace".action = toggle-window-floating;
           "Mod+return".action    = fullscreen-window;          
 
           # windows/columns
           ## focus
-          "Mod+${left}".action  = focus-column-left-or-last;
-          "Mod+${down}".action  = focus-window-down-or-top;
-          "Mod+${up}".action    = focus-window-up-or-bottom;
-          "Mod+${right}".action = focus-column-right-or-first;
-          "Mod+${home}".action = focus-column-first;
-          "Mod+${end}".action  = focus-column-last;
+          "Mod+${left}".action  = focus-column-or-monitor-left;
+          "Mod+${down}".action  = focus-window-or-monitor-down;
+          "Mod+${up}".action    = focus-window-or-monitor-up;
+          "Mod+${right}".action = focus-column-or-monitor-right;
+          
           ## move
-          "Mod+Ctrl+${left}".action  = move-column-left;
+          "Mod+Ctrl+${left}".action  = move-column-left-or-to-monitor-left;
           "Mod+Ctrl+${down}".action  = move-window-down;
           "Mod+Ctrl+${up}".action    = move-window-up;
-          "Mod+Ctrl+${right}".action = move-column-right;
-          "Mod+Ctrl+${home}".action = consume-or-expel-window-left;
-          "Mod+Ctrl+${end}".action  = consume-or-expel-window-right;
+          "Mod+Ctrl+${right}".action = move-column-right-or-to-monitor-right;
+          "Mod+Ctrl+left".action  = consume-or-expel-window-left;
+          "Mod+Ctrl+down".action  = move-workspace-down;
+          "Mod+Ctrl+up".action    = move-workspace-up;
+          "Mod+Ctrl+right".action = consume-or-expel-window-right;
           ## resize
-          "Mod+home".action.set-column-width       = "-2%";
-          "Mod+page_down".action.set-window-height = "-2%";
-          "Mod+page_up".action.set-window-height   = "+2%";
-          "Mod+end".action.set-column-width        = "+2%";
+          "Mod+left".action  = switch-preset-column-width-back;
+          "Mod+down".action  = switch-preset-window-height-back;
+          "Mod+up".action    = switch-preset-window-height;
+          "Mod+right".action = switch-preset-column-width;
 
           # workspaces
           ## focus
@@ -228,8 +249,6 @@ in
           "Mod+8".action.focus-workspace = 8;
           "Mod+9".action.focus-workspace = 9;
           "Mod+0".action.focus-workspace = 10;
-          "Mod+${pgdn}".action = focus-workspace-down;
-          "Mod+${pgup}".action = focus-workspace-up;
           ## move columns
           "Mod+Ctrl+1".action.move-column-to-workspace = 1;
           "Mod+Ctrl+2".action.move-column-to-workspace = 2;
@@ -241,25 +260,18 @@ in
           "Mod+Ctrl+8".action.move-column-to-workspace = 8;
           "Mod+Ctrl+9".action.move-column-to-workspace = 9;
           "Mod+Ctrl+0".action.move-column-to-workspace = 10;
-          "Mod+Ctrl+${pgdn}".action = move-column-to-workspace-down;
-          "Mod+Ctrl+${pgup}".action = move-column-to-workspace-up;          
 
           # monitors
           ## focus
-          "Mod+left".action  = focus-monitor-left;
-          "Mod+down".action  = focus-monitor-down;
-          "Mod+up".action    = focus-monitor-up;
-          "Mod+right".action = focus-monitor-right;          
+          "Mod+${home}".action = focus-monitor-left;
+          "Mod+${pgdn}".action = focus-monitor-down;
+          "Mod+${pgup}".action = focus-monitor-up;
+          "Mod+${end}".action  = focus-monitor-right;          
           ## move columns
-          "Mod+Ctrl+left".action  = move-column-to-monitor-left;
-          "Mod+Ctrl+down".action  = move-column-to-monitor-down;
-          "Mod+Ctrl+up".action    = move-column-to-monitor-up;
-          "Mod+Ctrl+right".action = move-column-to-monitor-right;
-          ## move workspaces
-          "Mod+Ctrl+home".action      = move-workspace-to-monitor-left;
-          "Mod+Ctrl+page_down".action = move-workspace-to-monitor-down;
-          "Mod+Ctrl+page_up".action   = move-workspace-to-monitor-up;
-          "Mod+Ctrl+end".action       = move-workspace-to-monitor-right;
+          "Mod+Ctrl+${home}".action = move-column-to-monitor-left;
+          "Mod+Ctrl+${pgdn}".action = move-column-to-monitor-down;
+          "Mod+Ctrl+${pgup}".action = move-column-to-monitor-up;
+          "Mod+Ctrl+${end}".action  = move-column-to-monitor-right;
         };
         layer-rules = [
           {
@@ -281,6 +293,12 @@ in
               { app-id = "^frame$"; }
             ];
             open-floating = false;
+          }
+          {
+            matches = [
+              { app-id = "^footclient$"; }
+            ];
+            default-column-display = "tabbed";
           }
         ];
       };
@@ -370,7 +388,7 @@ in
             {
               criteria = "eDP-1";
               status = "enable";
-              scale = 2.0;              
+              scale = 2.0;
             }
           ];
         }
@@ -393,10 +411,19 @@ in
           profile.name = "desktop";
           profile.outputs = [
             {
-              criteria = "Lenovo Group Limited T32p-30 V30AKM70";
+              criteria = "Lenovo Group Limited P32UD-40 VNACGZ12";
+              mode = "3840x2160@119.880";
               position = "0,0";
-              scale = 2.0;
+              scale = 1.5;
+              adaptiveSync = true;
             }
+            {
+              criteria = "Lenovo Group Limited T32p-30 V30AKM70";
+              position = "2560,0";
+              scale = 1.5;
+#              transform = "270";
+            }
+
           ];
         }        
       ];

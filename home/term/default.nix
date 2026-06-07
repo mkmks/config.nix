@@ -22,22 +22,25 @@ column-number-mode
       fd
       fdupes
       file
-      hledger
-      hledger-ui
-      iotop
       jq
       mc
       mg
+      ncdu
       p7zip
-      procs
-      psmisc
       sdcv
       silver-searcher
-      smem
+      ticker
       unrar
       unzip
       xdg-utils
       yq-go
+
+      # sys
+      iotop
+      lsof
+      procs
+      psmisc
+      smem
 
       # net
       dnsutils
@@ -63,11 +66,13 @@ column-number-mode
       
       # snd
       playerctl
+      wiremix
 
       # text
       oterm
       pandoc
       mermaid-filter
+      prettier
     ];
 
     sessionPath = [ "${config.home.homeDirectory}/bin" ];    
@@ -91,7 +96,12 @@ column-number-mode
     gpg.enable = true;
     home-manager.enable = true;
     nix-index.enable = true;
-    ncmpcpp.enable = true;
+    ncmpcpp = {
+      enable = true;
+      mpdMusicDir = "/var/lib/syncthing/Music";
+    };
+    ripgrep.enable = true;
+    spotify-player.enable = true;
     starship = {
       enable = true;
       enableFishIntegration = false;
@@ -134,6 +144,15 @@ column-number-mode
         status.disabled = false;
       };
     };
+    tmux = {
+      enable = true;
+      baseIndex = 1;
+      extraConfig = ''
+      set -g clock-mode-style 24-with-seconds
+      set -g status-position top
+      set -g status-right ""
+      '';
+    };
   };
 
   services = {
@@ -149,21 +168,9 @@ column-number-mode
     
     playerctld.enable = true;
     
-    spotifyd = {
-      enable = true;
-      settings = {
-        global = {
-          username = "mkmks";
-          password_cmd = "${pkgs.libsecret}/bin/secret-tool lookup service spotifyd username mkmks";
-          device_name = "schildpad";
-          bitrate = 320;
-        };
-      };
-    };
-    
     udiskie = {
       enable = true;
-      tray = "never";
+#      tray = "never";
     };    
   };
 

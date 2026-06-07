@@ -10,12 +10,13 @@
     extraGroups = [
       "adbusers"
       "dialout"
-      "docker"
+      "ipfs"
       "pipewire"
       "syncthing"
       "transmission"
       "video"
     ];
+    linger = true;
   };
 
   boot = {
@@ -41,6 +42,7 @@
       NIXOS_OZONE_WL = "1";
     };
     systemPackages = with pkgs; [
+      android-tools
       pciutils
       pcsc-tools
       usbutils
@@ -62,6 +64,8 @@
     firewall = {
       enable = true;
       allowedTCPPorts = [
+        3000
+        8082 # mitmproxy
         57621 # spotify connect
       ];
       allowedUDPPorts = [
@@ -89,7 +93,6 @@
   };
   
   programs = {
-    adb.enable = true;
     dconf.enable = true;
     steam = {
       enable = true;
@@ -126,7 +129,7 @@
     };
 
     k3s = {
-      enable = true;
+      enable = false;
       extraFlags = [
         "--docker"
         "--write-kubeconfig-mode=640"
@@ -140,7 +143,16 @@
         };
       };
     };
-    
+
+    kubo = {
+      enable = true;
+      settings = {
+        Addresses.API = [
+          "/ip4/127.0.0.1/tcp/5001"
+        ];
+        Swarm.DisableNatPortMap = false;
+      };
+    };
     mullvad-vpn.enable = true;
 
     pcscd = {
@@ -152,13 +164,15 @@
 
     mpd = {
       enable = true;
-      musicDirectory = "${config.services.syncthing.dataDir}/Music";
-      extraConfig = ''
-        audio_output {
-          type "pipewire"
-          name "System-wide PipeWire"
-        }
-      '';
+      settings = {
+        audio_output = [
+          {
+            type = "pipewire";
+            name = "System-wide PipeWire";
+          }
+        ];
+        music_directory = "${config.services.syncthing.dataDir}/Music";        
+      };
     };
     
     pipewire = {
@@ -204,13 +218,18 @@
       enable = true;
       drivers = [ pkgs.cups-bjnp pkgs.gutenprint ];
     };
-
+        
     syncthing = {
       enable = true;
       openDefaultPorts = true;
     };
     
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      extraDaemonFlags = [
+        "--encrypt-state=false"
+      ];
+    };
     transmission = {
       enable = true;
       package = pkgs.transmission_4;
@@ -219,7 +238,25 @@
     udisks2.enable = true;    
   };
 
-  virtualisation.docker.enable = true;
+  # systemd.user.services.nvidia-apply-settings = {
+  #   after = [ "graphical-session.target" ];
+  #   partOf = [ "graphical-session.target" ];
+  #   wantedBy = [ "graphical-session.target" ];
+  #   description = "Apply nvidia-settings";
+  #   serviceConfig = {
+  #     Type = "simple";
+  #     Restart = "on-failure";
+  #     ExecStart = ''${config.hardware.nvidia.package.settings}/bin/nvidia-settings --load-config-only'';
+  #   };
+  # };
+
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+  };
 
   users.users = {
     mpd.extraGroups = [
