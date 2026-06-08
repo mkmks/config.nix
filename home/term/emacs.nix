@@ -30,9 +30,8 @@
       treesit-auto
       # apps
       eat
-      flycheck-hledger
-      hledger-mode
-	    nov
+      ghostel
+      nov
       pdf-tools
 #      slack
       smudge
