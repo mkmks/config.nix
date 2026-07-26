@@ -20,6 +20,10 @@
       };
     };
   };
+
+  environment.systemPackages = with pkgs; [
+    llama-cpp
+  ];
   
   fileSystems = {
     "/" =
@@ -54,16 +58,15 @@
   };
 
   networking.interfaces."enp128s31f6".useDHCP = true;
-
+  networking.firewall.allowedTCPPorts = [
+    11435
+  ];
   services = {
-    ollama = {
-      enable = true;
-      openFirewall = true;
-      loadModels = [
-        "deepseek-r1:14b"
-        "gemma3:12b"
-      ];
-    };
+    # llama-cpp = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   port = 11435;
+    # };
     xserver.videoDrivers = [ "nvidia" ];
   };
 }

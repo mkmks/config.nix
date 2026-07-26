@@ -13,22 +13,44 @@
       inputs.nixpkgs.follows = "nixos";
     };
     # blockchains
-    cardano-db-sync.url = "github:IntersectMBO/cardano-db-sync";
-    cardano-node.url = "github:IntersectMBO/cardano-node";
-    cardano-wallet.url = "github:cardano-foundation/cardano-wallet";
+    nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-25.11";
     ethereum-nix = {
-      url = "github:nix-community/ethereum.nix?rev=8f01580481e88e169b7ada56f1500dccd6cefe61";
+      url = "github:nix-community/ethereum.nix";
       inputs.nixpkgs.follows = "nixos";
     };
-    nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-25.11";
+    cardano-node.url = "github:IntersectMBO/cardano-node";
+    cardano-db-sync = {
+      url = "github:IntersectMBO/cardano-db-sync/release/13.6.0.5";
+      inputs = {
+        CHaP.follows = "cardano-node/CHaP";
+        haskellNix.follows = "cardano-node/haskellNix";
+        iohkNix.follows = "cardano-node/iohkNix";
+      };
+    };
+    cardano-wallet = {
+      url = "github:cardano-foundation/cardano-wallet";
+      inputs = {
+        cardano-node-runtime.follows = "cardano-node";
+#        CHaP.follows = "cardano-node/CHaP";
+#        haskellNix.follows = "cardano-node/haskellNix";
+#        hackage.follows = "cardano-node/hackageNix";
+#        iohkNix.follows = "cardano-node/iohkNix";        
+      };
+    };
+    blockfrost-backend.url = "github:blockfrost/blockfrost-backend-ryo";
     # applications
     emacs.url = "github:nix-community/emacs-overlay";
     niri.url = "github:sodiboo/niri-flake";
+#    llama-cpp.url = "github:ggml-org/llama.cpp";
   };
 
   outputs = { self, nixos, home-manager, ... }@inputs: let
     unstable-overlay = (final: prev: {
-      unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+      unstable = import inputs.nixpkgs-unstable {
+        system = prev.system;
+        config.allowUnfree = true;
+        config.cudaSupport = true;
+      };
     });
   in {
       nixosConfigurations = {
@@ -55,14 +77,14 @@
         };
         hivemind = nixos.lib.nixosSystem {
           modules = [
-            inputs.cardano-db-sync.nixosModules.cardano-db-sync
+            inputs.nix-bitcoin.nixosModules.default
+            inputs.ethereum-nix.nixosModules.erigon
             inputs.cardano-node.nixosModules.cardano-node
             inputs.cardano-node.nixosModules.cardano-submit-api
             inputs.cardano-node.nixosModules.cardano-tracer
+            inputs.cardano-db-sync.nixosModules.cardano-db-sync
             inputs.cardano-wallet.nixosModules.cardano-wallet
-            inputs.ethereum-nix.nixosModules.geth
-            inputs.ethereum-nix.nixosModules.lighthouse-beacon
-            inputs.nix-bitcoin.nixosModules.default
+            inputs.blockfrost-backend.nixosModules.default
             ./nixos/blockchains
             ./nixos/hosts/hivemind.nix
             {
@@ -74,9 +96,11 @@
                   cudaSupport = true;
                 };
                 overlays = [
+                  inputs.ethereum-nix.overlays.default
                   inputs.cardano-node.overlay
                   inputs.cardano-wallet.overlay
-                  inputs.ethereum-nix.overlays.default
+#                  inputs.llama-cpp.overlays.default
+                  unstable-overlay
                 ];
               };
             }

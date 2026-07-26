@@ -50,7 +50,8 @@
       flycheck
       flycheck-eglot
       magit
-	    projectile
+      projectile
+      projectile-ripgrep
       nix-buffer
       # programming languages
       capnp-mode

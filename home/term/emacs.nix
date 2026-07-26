@@ -12,7 +12,7 @@
 	    bind-key
       which-key      
 	    pretty-mode
-      ag
+      ripgrep
       ellama
       evil
       ivy

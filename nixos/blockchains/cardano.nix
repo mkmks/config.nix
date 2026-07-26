@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  cardanoNetwork = "mainnet";
+in
 {
   environment.systemPackages = with pkgs; [
     # cardano-cli
@@ -14,31 +17,46 @@
   services = {
     cardano-node = {
       enable = true;
-      environment = "mainnet";
+      environment = cardanoNetwork;
       hostAddr = "0.0.0.0";
-      useNewTopology = true;
-      peerSnapshotFile = null;
-      tracerSocketPathConnect = "/run/cardano-tracer/tracer.socket";
+#      useNewTopology = true;
+#      peerSnapshotFile = null;
+      withUtxoHdLsmt = true;
+      tracerSocketPathConnect = config.services.cardano-tracer.acceptAt;
     };
     cardano-submit-api = {
       enable = true;
-      config = config.services.cardano-submit-api.cardanoNodePackages.cardanoLib.defaultExplorerLogConfig // {
+      network = cardanoNetwork;
+      socketPath = config.services.cardano-node.socketPath 0;
+      config = config.services.cardano-submit-api.cardanoNodePackages.cardanoLib.defaultExplorerLogConfig
+      // {
         TraceOptions = {};
       };
-      network = "mainnet";
-      socketPath = "/run/cardano-node/node.socket";
     };
     cardano-tracer = {
       enable = true;
-      environment = "mainnet";
-    };
-    cardano-wallet = {
-      enable = true;
-      package = pkgs.cardano-wallet;
-      port = 8100;
+      environment = cardanoNetwork;
     };
     cardano-db-sync = {
       enable = false;
+      cluster = cardanoNetwork;
+      socketPath = config.services.cardano-node.socketPath 0;
+      postgres.database = config.services.cardano-db-sync.postgres.user;
+      explorerConfig = {
+        insert_options = {
+          tx_out.value = "consumed";
+          pool_stat = "enable";
+        };
+      } // config.services.cardano-db-sync.environment.dbSyncConfig;
+    };
+    cardano-wallet = {
+      enable = false;
+      package = pkgs.cardano-wallet;
+      port = 8100;
+    };
+    blockfrost = {
+      enable = false;
+      settings.dbSync.database = config.services.cardano-db-sync.postgres.user;
     };
   };
 
@@ -69,13 +87,42 @@
     };
     # needed for cardano-db-sync
     postgresql = {
-      enable = true;
+      enable = false;
       ensureDatabases = [
-        "cdbsync"
+        config.services.cardano-db-sync.postgres.user
       ];
+      ensureUsers = [
+        {
+          name = config.services.cardano-db-sync.postgres.user;
+          ensureDBOwnership = true;
+        }
+      ];
+      authentication = ''
+        local ${config.services.cardano-db-sync.postgres.user} ${config.services.cardano-db-sync.postgres.user} peer map=cdbsync
+        host ${config.services.cardano-db-sync.postgres.user} ${config.services.cardano-db-sync.postgres.user} samehost trust
+      '';
+      identMap = ''
+        cdbsync cardano-db-sync ${config.services.cardano-db-sync.postgres.user}
+      '';
     };
   };
 
+  # needed for cexplorer-mini
+  # virtualisation.oci-containers.containers = {
+  #   graphql-engine = {
+  #     image = "hasura/graphql-engine:v2.25.1";
+  #     extraOptions = [
+  #       "--network=host"
+  #     ];
+  #     environment = {
+  #       HASURA_GRAPHQL_DATABASE_URL = "postgres://${config.services.cardano-db-sync.postgres.user}:password@localhost:5432/${config.services.cardano-db-sync.postgres.user}";
+  #       HASURA_GRAPHQL_SERVER_PORT = "3100";
+  #       HASURA_GRAPHQL_ENABLE_CONSOLE = "true";
+  #       HASURA_GRAPHQL_DEV_MODE = "false";
+  #     };
+  #   };
+  # };
+  
   systemd.services = {
     cardano-node.serviceConfig = {
       UMask = "0002";
@@ -86,6 +133,14 @@
     cardano-wallet.serviceConfig = {
       Group = "cardano-node";
     };
+    # podman-graphql-engine = {
+    #   after = [
+    #     "postgresql.target"
+    #   ];
+    #   requires = [
+    #     "postgresql.target"
+    #   ];
+    # };
   };
   users.users.viv = {
     extraGroups = [
