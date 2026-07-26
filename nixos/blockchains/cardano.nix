@@ -1,13 +1,9 @@
-{ config, pkgs, ... }:
+{ config, ... }:
 
 let
   cardanoNetwork = "mainnet";
 in
 {
-  environment.systemPackages = with pkgs; [
-    # cardano-cli
-  ];
-  
   networking.firewall = {
     allowedTCPPorts = [
       3001 # node p2p
@@ -51,7 +47,6 @@ in
     };
     cardano-wallet = {
       enable = false;
-      package = pkgs.cardano-wallet;
       port = 8100;
     };
     blockfrost = {
