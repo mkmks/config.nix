@@ -37,16 +37,20 @@ in
       gtk-application-prefer-dark-theme = true;
       gtk-key-theme-name = "Emacs";
     };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = true;
-      gtk-key-theme-name = "Emacs";
+    gtk4 = {
+      extraConfig = {
+        gtk-application-prefer-dark-theme = true;
+        gtk-key-theme-name = "Emacs";
+      };
+      theme = null;
     };
   };
 
   home = {
     packages = with pkgs; [
+      waypipe
       unstable.xwayland-satellite
-
+      
       # fonts
       cm_unicode
       corefonts

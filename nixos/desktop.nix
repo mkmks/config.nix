@@ -4,6 +4,8 @@
   imports = [
     ./workstation.nix
   ];
+
+  nix.gc.automatic = true;
   
   services = {
     minidlna = {

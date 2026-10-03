@@ -72,6 +72,7 @@ column-number-mode
       oterm
       pandoc
       mermaid-filter
+      mpls
       prettier
     ];
 

@@ -5,20 +5,9 @@
     packages = with pkgs; [
       apktool
       cmake-language-server
-      codex-acp
       gh
-      jadx
       unstable.devenv
     ];
-    sessionVariables = {
-      ANTHROPIC_AUTH_TOKEN = "dummy";
-      ANTHROPIC_API_KEY = "";
-      ANTHROPIC_BASE_URL = "http://localhost:11435";
-      ANTHROPIC_MODEL = "gpt-oss:20b";
-      ANTHROPIC_DEFAULT_HAIKU_MODEL = config.home.sessionVariables.ANTHROPIC_MODEL;
-      ANTHROPIC_DEFAULT_SONNET_MODEL = config.home.sessionVariables.ANTHROPIC_MODEL;
-      ANTHROPIC_DEFAULT_OPUS_MODEL = config.home.sessionVariables.ANTHROPIC_MODEL;
-    };
   };
 
   programs = {
@@ -116,7 +105,10 @@
             base_url = "http://127.0.0.1:11435/v1";
           };
         };
-        projects."/home/viv/repos/chess-hs-codex".trust_level = "trusted";
+        projects = {
+          "/home/viv/repos/chess-hs-codex".trust_level = "trusted";
+          "/home/viv/repos/zama/kms".trust_level = "trusted"; 
+        };
         approval_policy = "on-request";
         sandbox_mode = "workspace-write";
         web_search = "disabled";
@@ -125,7 +117,6 @@
 
     opencode = {
       enable = true;
-      package = pkgs.unstable.opencode;
       settings = {
         provider = {
           llama-cpp = {
@@ -141,14 +132,17 @@
               "gpt-oss:120b" = {
                 name = "gpt-oss:120b";
               };
-              "qwen3.6-27b" = {
-                name = "qwen3.6-27b";
+              "glm-4.7-flash" = {
+                name = "glm-4.7-flash";
+              };
+              "qwen3-coder-next" = {
+                name = "qwen3-coder-next";
               };
               "qwen3.6-35b-a3b" = {
                 name = "qwen3.6-35b-a3b";
               };
-              "glm-4.7-flash" = {
-                name = "glm-4.7-flash";
+              "qwen3.8-27b" = {
+                name = "qwen3.8-27b";
               };
             };
           };

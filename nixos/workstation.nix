@@ -23,7 +23,7 @@
     loader = {
       limine = {
         enable = true;
-        maxGenerations = 5;
+        maxGenerations = 4;
         panicOnChecksumMismatch = true;
 	      secureBoot.enable = true;
       };
@@ -105,6 +105,7 @@
   security = {
     pam.services = {
       login.enableGnomeKeyring = true;
+      greetd.enableGnomeKeyring = true;
       swaylock = {};
     };
     rtkit.enable = true;

@@ -3,7 +3,7 @@
 {
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk;
+    package = pkgs.emacs-unstable-pgtk;
     extraPackages = e: with e; [
       catppuccin-theme
       vs-dark-theme
@@ -22,6 +22,8 @@
       counsel-at-point
       counsel-fd
       counsel-projectile
+      gptel
+      gptel-agent
       swiper
       posframe
       exec-path-from-shell

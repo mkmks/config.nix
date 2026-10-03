@@ -92,7 +92,10 @@
         "x-scheme-handler/webcal" = [ "brave.desktop" ];        
       };
     };
-    userDirs.enable = true;
+    userDirs = {
+      enable = true;
+      setSessionVariables = false;
+    };
   };
   
 }

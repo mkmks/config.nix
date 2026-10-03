@@ -1,23 +1,6 @@
 rec {
   description = "My machines and home directories";
 
-  nixConfig = {
-    extra-substituters = [
-      "https://cuda-maintainers.cachix.org"
-      "https://devenv.cachix.org"
-      "https://niri.cachix.org"
-      "https://nix-community.cachix.org"
-      "https://cache.iog.io"
-    ];
-    extra-trusted-public-keys = [
-      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-      "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw="
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-      "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-    ];
-  };
-
   inputs = {
     nixos.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
@@ -30,12 +13,12 @@ rec {
       inputs.nixpkgs.follows = "nixos";
     };
     # blockchains
-    nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-25.11";
+    nix-bitcoin.url = "github:fort-nix/nix-bitcoin/nixos-26.05";
     ethereum-nix = {
       url = "github:nix-community/ethereum.nix";
       inputs.nixpkgs.follows = "nixos";
     };
-    cardano-node.url = "github:IntersectMBO/cardano-node/11.0.1";
+    cardano-node.url = "github:IntersectMBO/cardano-node/11.1.3";
     cardano-db-sync = {
       url = "github:IntersectMBO/cardano-db-sync/13.7.2.1";
       inputs = {
@@ -82,8 +65,6 @@ rec {
   };
 
   outputs = { self, nixos, home-manager, ... }@inputs: let
-    extraSubstituters = nixConfig.extra-substituters;
-    extraTrustedPublicKeys = nixConfig.extra-trusted-public-keys;
     unstable-overlay = (final: prev: {
       unstable = import inputs.nixpkgs-unstable {
         system = prev.system;
@@ -118,24 +99,16 @@ rec {
           ];
         })
     ];
-    nixCacheModule = {
-      nix.settings = {
-        extra-substituters = extraSubstituters;
-        extra-trusted-public-keys = extraTrustedPublicKeys;
-      };
-    };
   in {
       nixosConfigurations = {
         schildpad = nixos.lib.nixosSystem {
           modules = [
-            nixCacheModule
             ./nixos/hosts/schildpad.nix
           ];
         };
         loderunner = nixos.lib.nixosSystem {
           system = "x86_64-linux";
           modules = cardanoModules ++ [
-            nixCacheModule
             inputs.disko.nixosModules.disko
             ./nixos/blockchains/cardano.nix
             ./nixos/hosts/loderunner.nix
@@ -143,7 +116,6 @@ rec {
         };
         hivemind = nixos.lib.nixosSystem {
           modules = cardanoModules ++ [
-            nixCacheModule
             inputs.nix-bitcoin.nixosModules.default
             inputs.ethereum-nix.nixosModules.erigon
             ./nixos/blockchains
@@ -181,6 +153,7 @@ rec {
                   cudaSupport = true;
                 };
                 overlays = [
+                  inputs.emacs.overlays.emacs
                   inputs.emacs.overlays.package
                   inputs.niri.overlays.niri
                   unstable-overlay
