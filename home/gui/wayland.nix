@@ -6,6 +6,54 @@ let
   term-font = "${term-font-family} ${toString term-font-size}";
   cmd_lock = "${pkgs.swaylock}/bin/swaylock -f -c ff0000";
   cmd_display = status: "${pkgs.niri}/bin/niri msg action power-${status}-monitors";
+  terminal-apps = [ "btop" "nvtop" "ticker" "spotify_player" "wiremix" ];
+  start-terminal-apps = pkgs.writeShellApplication {
+    name = "start-terminal-apps";
+    runtimeInputs = [
+      config.programs.niri.package
+      config.programs.foot.package
+      config.programs.btop.package
+      config.programs.spotify-player.package
+      pkgs.nvtopPackages.full
+      pkgs.ticker
+      pkgs.wiremix
+      pkgs.jq
+      pkgs.coreutils
+    ];
+    text = ''
+      focused=$(niri msg --json focused-window | jq -r '.id // empty')
+      for app in ${lib.escapeShellArgs terminal-apps}; do
+        footclient --no-wait --client-environment --app-id "startup-terminal-$app" --title "$app" "$app"
+      done
+
+      # Wait for the windows to map, but still group survivors if an app exits.
+      for ((attempt = 0; attempt < 100; attempt++)); do
+        windows=$(niri msg --json windows | jq '[.[] | select(.app_id // "" | startswith("startup-terminal-"))]')
+        if [ "$(jq 'length' <<< "$windows")" -eq ${toString (builtins.length terminal-apps)} ]; then
+          break
+        fi
+        sleep 0.1
+      done
+
+      mapfile -t ids < <(jq -r 'sort_by(.id) | .[].id' <<< "$windows")
+      first=true
+      for id in "''${ids[@]}"; do
+        niri msg action focus-window --id "$id"
+        niri msg action move-column-to-first
+        if [ "$first" = true ]; then
+          niri msg action set-column-display tabbed
+          first=false
+        else
+          # The new column is now immediately left of the existing tab stack.
+          niri msg action consume-or-expel-window-right
+        fi
+      done
+
+      if [ -n "$focused" ]; then
+        niri msg action focus-window --id "$focused" || true
+      fi
+    '';
+  };
 in
 {
   dconf.settings = {
@@ -16,6 +64,38 @@ in
   };
   
   fonts.fontconfig.enable = true;
+
+  systemd.user = {
+    sockets.foot = {
+      Unit = {
+        Description = "Foot terminal server socket";
+        PartOf = [ "graphical-session.target" ];
+        Before = [ "graphical-session-pre.target" ];
+      };
+      Socket = {
+        ListenStream = "%t/foot.sock";
+        SocketMode = "0600";
+        RemoveOnStop = true;
+      };
+      # Listen before niri runs its spawn-at-startup commands.
+      Install.WantedBy = [ "graphical-session-pre.target" ];
+    };
+
+    services.foot = {
+      Unit = {
+        Description = "Foot terminal server";
+        Requires = [ "foot.socket" ];
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+        ConditionEnvironment = "WAYLAND_DISPLAY";
+      };
+      Service = {
+        ExecStart = "${config.programs.foot.package}/bin/foot --server=3";
+        Restart = "on-failure";
+        OOMPolicy = "continue";
+      };
+    };
+  };
   
   gtk = {
     enable = true;
@@ -65,7 +145,7 @@ in
   programs = {
     foot = {
       enable = true;
-      server.enable = true;
+      server.enable = false;
       settings = {
         main = {
           font = "${term-font-family}:size=${toString term-font-size}";
@@ -110,6 +190,7 @@ in
           { command = [ "nvidia-settings" "--load-config-only" ]; }
           { command = [ "slack" ]; }
           { command = [ "Telegram" ]; }
+          { command = [ "${start-terminal-apps}/bin/start-terminal-apps" ]; }
         ];
         input = {
           keyboard.xkb = {
@@ -284,6 +365,13 @@ in
           }
         ];
         window-rules = [
+          {
+            matches = [ { app-id = "^startup-terminal-"; } ];
+            open-on-workspace = "1";
+            open-floating = false;
+            open-focused = false;
+            default-column-display = "tabbed";
+          }
           {
             matches = [
               { app-id = "^Slack$"; }
