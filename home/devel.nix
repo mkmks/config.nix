@@ -117,6 +117,7 @@
 
     opencode = {
       enable = true;
+      package = pkgs.unstable.opencode;
       settings = {
         provider = {
           llama-cpp = {
@@ -143,6 +144,9 @@
               };
               "qwen3.8-27b" = {
                 name = "qwen3.8-27b";
+              };
+              "qwen3.8-flash-next" = {
+                name = "qwen3.8-flash-next";
               };
             };
           };

@@ -20,7 +20,7 @@
         openFirewall = true;
         package = pkgs.ethereum-nix.erigon;
         settings = {
-          "prune.mode" = "archive";
+          "prune.mode" = "full";
 
           http = true;
           "http.addr" = "0.0.0.0";
