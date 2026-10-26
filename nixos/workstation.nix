@@ -130,7 +130,7 @@
     };
 
     k3s = {
-      enable = false;
+      enable = true;
       extraFlags = [
         "--docker"
         "--write-kubeconfig-mode=640"

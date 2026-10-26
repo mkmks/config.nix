@@ -25,8 +25,8 @@
       nautilus
       
       ledger-live-desktop
+      trezor-suite
       unstable.sparrow # btc
-      framesh # eth
       feather # xmr
       unstable.eigenwallet
     ];
@@ -47,7 +47,7 @@
         { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; } # vimium
         { id = "eimadpbcbfnmbkopoojfekhnkhdbieeh"; } # dark reader
         { id = "nibjojkomfdiaoajekhjakgkdhaomnch"; } # ipfs companion
-        { id = "ldcoohedfbjoobcadoglnnmmfbdlmmhf"; } # frame.sh
+        { id = "acmacodkjbdgmoleebolmdjonilkdbch"; } # rabby
         { id = "gafhhkghbfjjkeiendhlofajokpaflmk"; } # lace
         { id = "kmhcihpebfmpgmihbkipmjlmmioameka"; } # eternl
       ];
