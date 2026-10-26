@@ -1,38 +1,48 @@
 { pkgs, ... }:
 
 {
+  # Erigon asked for this
+  boot.kernel.sysctl."vm.max_map_count" = 16777216;
+  networking.firewall = {
+    allowedTCPPorts = [
+      40010 # Caplin TCP
+    ];
+    allowedUDPPorts = [
+      40000 # Caplin discovery
+      40010 # Caplin QUIC
+    ];
+  };
+  
   services = {
     ethereum = {
       erigon.mainnet = {
-        enable = false;
+        enable = true;
         openFirewall = true;
         package = pkgs.ethereum-nix.erigon;
-        # args = {
-        #   http = {
-        #     enable = true;
-        #     addr = "0.0.0.0";
-        #     api = [
-        #       "eth"
-        #       "net"
-        #       "web3"
-        #       "erigon"
-        #       "trace"
-        #       "ots"
-        #       "debug"
-        #       "txpool"
-        #     ];
-        #     corsdomain = [
-        #       "*"
-        #     ];
-        #   };
-        #   prune.mode = "archive";
-        #   ws.enable = true;
-        # };
-        extraArgs = [
-          "--caplin.discovery.port=40000"
-          "--caplin.discovery.tcpport=40010"
-          "--rpc.returndata.limit=1000000"
-        ];
+        settings = {
+          "prune.mode" = "archive";
+
+          http = true;
+          "http.addr" = "0.0.0.0";
+          "http.api" = [
+            "eth"
+            "net"
+            "web3"
+            "erigon"
+            "trace"
+            "ots"
+            "debug"
+            "txpool"
+          ];
+          "http.corsdomain" = "*";
+          
+          "caplin.discovery.port" = "40000";
+          "caplin.discovery.tcpport" = "40010";
+          "caplin.discovery.quicport" = "40010";
+          "caplin.nat" = "upnp";
+          "nat" = "any";
+          "rpc.returndata.limit" = "1000000";
+        };
       };
     };
   };
