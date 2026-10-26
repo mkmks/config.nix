@@ -119,34 +119,103 @@
       enable = true;
       package = pkgs.unstable.opencode;
       settings = {
-        provider = {
+        "$schema" = "https://opencode.ai/config.json";
+        compaction = {
+          auto = true;
+          keep.tokens = 3000;
+          buffer = 6000;
+        };
+        tool_output = {
+          max_lines = 300;
+          max_bytes = 12000;
+        };
+        instructions = [
+          (toString (pkgs.writeText "opencode-context-budget.md" ''
+            When using local llama-cpp models, conserve their small context windows:
+            - Delegate substantial discovery to Explore with a narrow, self-contained task.
+              Include essential constraints and request paths, symbols, and a summary under
+              300 words rather than whole files. Do not delegate trivial work.
+            - Run local subagents sequentially in the foreground: the local server has one slot.
+              Avoid loading different local models concurrently.
+            - Search before reading files. Read relevant sections and keep tool output bounded.
+              Summarize test failures instead of dumping full logs.
+            - Keep durable decisions in concise project documentation when requested.
+              Do not create documentation or handoff files without authorization.
+            - At task boundaries, offer a short handoff for a fresh session: goal, constraints,
+              changed files, verification results, and remaining work.
+          ''))
+        ];
+        commands.handoff = {
+          description = "Summarize this task for a fresh, small-context session";
+          template = "Provide a concise handoff in the conversation, without writing files: objective and constraints, decisions, changed files, tests and outcomes, blockers, and next steps. Include essential paths and commands. Stay under 500 words.";
+        };
+        providers = {
           llama-cpp = {
             name = "llama-server (local)";
-            npm = "@ai-sdk/openai-compatible";
-            options = {
+            package = "@opencode/ai/providers/openai-compatible";
+            settings = {
               baseURL = "http://localhost:11435/v1";
             };
             models = {
               "gpt-oss:20b" = {
                 name = "gpt-oss:20b";
+                modelID = "gpt-oss-20b";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 131072; output = 8192; };
               };
               "gpt-oss:120b" = {
                 name = "gpt-oss:120b";
+                modelID = "gpt-oss-120b";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 131072; output = 8192; };
               };
               "glm-4.7-flash" = {
                 name = "glm-4.7-flash";
-              };
-              "qwen3-coder-next" = {
-                name = "qwen3-coder-next";
+                modelID = "glm-4.7-flash";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 202752; output = 8192; };
               };
               "qwen3.6-35b-a3b" = {
                 name = "qwen3.6-35b-a3b";
+                modelID = "qwen3.6-35b-a3b";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" "image" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 262144; output = 8192; };
               };
               "qwen3.8-27b" = {
                 name = "qwen3.8-27b";
+                modelID = "qwen3.8-27b";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" "image" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 262144; output = 8192; };
               };
               "qwen3.8-flash-next" = {
                 name = "qwen3.8-flash-next";
+                modelID = "qwen3.8-flash-next";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 65536; output = 8192; };
               };
             };
           };

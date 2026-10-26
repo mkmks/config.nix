@@ -89,21 +89,10 @@
           min-p = "0.01";
           repeat-penalty = "1.0";
         };
-        "qwen3-coder-next" = {
-          alias = "qwen3-coder-next";
-          hf-repo = "unsloth/Qwen3-Coder-Next-GGUF:Q4_K_XL";
-          ctx-size = "262144";
-          temp = "1.0";
-          top-p = "0.95";
-          min-p = "0.01";
-          top-k = "40";
-          repeat-penalty = "1.0";
-          presence-penalty = "0.0";
-        };
         "qwen3.6-35b-a3b" = {
           alias = "qwen3.6-35b-a3b";
           hf-repo = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q8_K_XL";
-          no-mmap = "true";
+          load-mode = "none";
           ctx-size = "262144";
           temp = "0.6";
           top-p = "0.95";
@@ -139,14 +128,29 @@
         "qwen3.8-flash-next" = {
           alias = "qwen3.8-flash-next";
           hf-repo = "unsloth/Qwen3.8-Flash-Next-GGUF:UD-Q2_K_XL";
-          no-mmap = "true";
-          ctx-size = "262144";
+          # Keep expert backing weights on CPU and cache selected experts on GPU.
+          load-mode = "none";
+          lazy-mode = "on";
+          gpu-layers = "all";
+          cpu-moe = "true";
+          moe-cache-mib = "6144";
+          # Keep the n-gram lookup table mmap-backed for on-demand reads.
+          override-tensor = "per_layer_token_embd.weight=CPU";
+          ctx-size = "65536";
+          parallel = "1";
+          flash-attn = "auto";
+          batch-size = "512";
+          ubatch-size = "256";
+          threads = "8";
+          threads-batch = "24";
           temp = "1.0";
           top-p = "0.95";
           min-p = "0.0";
           top-k = "20";
           repeat-penalty = "1.0";
           presence-penalty = "0.0";
+          reasoning-effort = "medium";
+          mmproj-auto = "false";
         };
       };
     };

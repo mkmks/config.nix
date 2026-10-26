@@ -61,7 +61,7 @@ rec {
     # applications
     emacs.url = "github:nix-community/emacs-overlay";
     niri.url = "github:sodiboo/niri-flake";
-#    llama-cpp.url = "github:ggml-org/llama.cpp";
+    llama-cpp.url = "github:ggml-org/llama.cpp";
   };
 
   outputs = { self, nixos, home-manager, ... }@inputs: let
@@ -120,14 +120,14 @@ rec {
             inputs.ethereum-nix.nixosModules.erigon
             ./nixos/blockchains
             ./nixos/hosts/hivemind.nix
-            {
+             {
+              services.llama-cpp.package = inputs.llama-cpp.packages.x86_64-linux.cuda;
               nixpkgs = {
                 config = {
                   cudaSupport = true;
                 };
                 overlays = [
                   inputs.ethereum-nix.overlays.default
-#                  inputs.llama-cpp.overlays.default
                   unstable-overlay
                 ];
               };
