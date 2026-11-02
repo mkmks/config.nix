@@ -51,6 +51,7 @@
       adwaita-icon-theme
       sbctl
       nvtopPackages.full
+      trezorctl
     ];
   };
 
@@ -236,6 +237,16 @@
       package = pkgs.transmission_4;
       openPeerPorts = true;
     };
+    udev.packages = with pkgs; [
+      trezor-udev-rules
+       (writeTextFile {
+         name = "50-keycardshell.rules";
+         text = ''
+           ACTION!="remove", KERNEL=="hidraw*", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="21f7", MODE="0660", TAG+="uaccess"
+         '';
+         destination = "/lib/udev/rules.d/50-keycardshell.rules";
+  })
+    ];
     udisks2.enable = true;    
   };
 
