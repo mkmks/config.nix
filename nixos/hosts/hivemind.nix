@@ -133,15 +133,20 @@
           lazy-mode = "on";
           gpu-layers = "all";
           cpu-moe = "true";
-          moe-cache-mib = "6144";
+          moe-cache-mib = "8192";
           # Keep the n-gram lookup table mmap-backed for on-demand reads.
           override-tensor = "per_layer_token_embd.weight=CPU";
           ctx-size = "65536";
           parallel = "1";
-          flash-attn = "auto";
-          batch-size = "512";
-          ubatch-size = "256";
-          threads = "8";
+          flash-attn = "on";
+          # Larger batches: CPU experts re-read weights once per batch, so bigger
+          # prompt chunks amortize RAM bandwidth. KV in q8_0 halves attention-side
+          # memory traffic; the freed VRAM goes into the MoE cache.
+          batch-size = "1024";
+          cache-type-k = "q8_0";
+          cache-type-v = "q8_0";
+          ubatch-size = "512";
+          threads = "24";
           threads-batch = "24";
           temp = "1.0";
           top-p = "0.95";
