@@ -102,7 +102,20 @@ column-number-mode
       mpdMusicDir = "/var/lib/syncthing/Music";
     };
     ripgrep.enable = true;
-    spotify-player.enable = true;
+    # nixos-26.05's 0.23.0 authenticates against Spotify's retired shared app
+    # registration, so login fails with "redirect_uri: Not matching". 0.25.2
+    # sends the redirect URI the app is now registered with.
+    spotify-player = {
+      enable = true;
+      package = pkgs.unstable.spotify-player;
+      # 0.25.2's default client ID is ncspot's, but its default redirect URI
+      # is still the retired /login path, so a stock login fails with
+      # "redirect_uri: Not matching configuration".  Pair the ncspot client
+      # with the /ncspot_login redirect it is actually registered with.
+      settings = {
+        login_redirect_uri = "http://127.0.0.1:8989/ncspot_login";
+      };
+    };
     starship = {
       enable = true;
       enableFishIntegration = false;
