@@ -79,6 +79,7 @@
     
     vscode = {
       enable = true;
+      package = pkgs.unstable.vscode;
       profiles.default.extensions = with pkgs.vscode-extensions; [
         justusadam.language-haskell
         mkhl.direnv
@@ -117,7 +118,7 @@
 
     opencode = {
       enable = true;
-      package = pkgs.unstable.opencode;
+      package = pkgs.opencode;
       settings = {
         "$schema" = "https://opencode.ai/config.json";
         compaction = {

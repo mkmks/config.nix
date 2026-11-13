@@ -62,6 +62,7 @@ rec {
     emacs.url = "github:nix-community/emacs-overlay";
     niri.url = "github:sodiboo/niri-flake";
     llama-cpp.url = "github:ggml-org/llama.cpp";
+    opencode.url = "github:anomalyco/opencode/v2.3.0";
   };
 
   outputs = { self, nixos, home-manager, ... }@inputs: let
@@ -121,7 +122,17 @@ rec {
             ./nixos/blockchains
             ./nixos/hosts/hivemind.nix
              {
-              services.llama-cpp.package = inputs.llama-cpp.packages.x86_64-linux.cuda;
+              services.llama-cpp.package = inputs.llama-cpp.packages.x86_64-linux.cuda.overrideAttrs (old: {
+                webui = old.webui.overrideAttrs (ui: {
+                  preBuild = (ui.preBuild or "") + ''
+                    # importNpmLock links this dependency as a tarball, not a directory.
+                    brand=$(readlink -f node_modules/llama-brand)
+                    rm node_modules/llama-brand
+                    mkdir node_modules/llama-brand
+                    tar -xzf "$brand" --strip-components=1 -C node_modules/llama-brand
+                  '';
+                });
+              });
               nixpkgs = {
                 config = {
                   cudaSupport = true;
@@ -156,6 +167,25 @@ rec {
                   inputs.emacs.overlays.emacs
                   inputs.emacs.overlays.package
                   inputs.niri.overlays.niri
+                  # Keep upstream's toolchain: dependency hashes depend on Bun's version.
+                  (_final: _prev: let
+                    upstream = inputs.opencode.packages.${system}.opencode;
+                  in {
+                    opencode = (upstream.override {
+                      # v2.3.0 ships a stale x86_64-linux dependency hash.
+                      node_modules = upstream.node_modules.override {
+                        hash = "sha256-zOejpMyUjcewmtGRbJnNFIYfWoT44Fru59mGl4KnrHE=";
+                      };
+                    }).overrideAttrs (old: {
+                      postPatch = (old.postPatch or "") + ''
+                        # Bun 1.4.2's built-in ws lacks these two named exports.
+                        substituteInPlace packages/cli/script/build.ts \
+                          --replace-fail \
+                          'createWebSocketStream, extension, Receiver, Sender, subprotocol, WebSocket, WebSocketServer' \
+                          'createWebSocketStream, Receiver, Sender, WebSocket, WebSocketServer'
+                      '';
+                    });
+                  })
                   unstable-overlay
                 ];
               };
