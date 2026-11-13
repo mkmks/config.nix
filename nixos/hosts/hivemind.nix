@@ -127,13 +127,13 @@
         };
         "qwen3.8-flash-next" = {
           alias = "qwen3.8-flash-next";
-          hf-repo = "unsloth/Qwen3.8-Flash-Next-GGUF:UD-Q2_K_XL";
+          hf-repo = "unsloth/Qwen3.8-Flash-Next-GGUF:UD-Q4_K_XL";
           # Keep expert backing weights on CPU and cache selected experts on GPU.
-          load-mode = "none";
+          load-mode = "mmap";
           lazy-mode = "on";
           gpu-layers = "all";
           cpu-moe = "true";
-          moe-cache-mib = "8192";
+          moe-cache-mib = "6144";
           # Keep the n-gram lookup table mmap-backed for on-demand reads.
           override-tensor = "per_layer_token_embd.weight=CPU";
           ctx-size = "65536";
