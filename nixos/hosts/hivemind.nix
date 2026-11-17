@@ -3,6 +3,7 @@
 {
   imports = [
     ../desktop.nix
+    ../qwen-image.nix
   ];
 
   networking.hostName = "hivemind";
