@@ -120,6 +120,7 @@ rec {
             inputs.nix-bitcoin.nixosModules.default
             inputs.ethereum-nix.nixosModules.erigon
             ./nixos/blockchains
+            ./nixos/ai
             ./nixos/hosts/hivemind.nix
              {
               services.llama-cpp.package = inputs.llama-cpp.packages.x86_64-linux.cuda.overrideAttrs (old: {
