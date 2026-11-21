@@ -218,6 +218,16 @@
                 };
                 limit = { context = 65536; output = 8192; };
               };
+              "qwen3.8-flash-next-abliterated" = {
+                name = "qwen3.8-flash-next-abliterated";
+                modelID = "qwen3.8-flash-next-abliterated";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 65536; output = 8192; };
+              };
             };
           };
         };
