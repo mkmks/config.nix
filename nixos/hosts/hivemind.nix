@@ -13,6 +13,8 @@
 
 
   boot = {
+    # Allow PCI bridge windows to grow so the secondary NVIDIA GPU gets BAR space.
+    kernelParams = [ "pci=realloc=on" ];
     initrd = {
       availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       luks.devices = {
@@ -51,6 +53,14 @@
       };
       open = true;
       nvidiaSettings = true;
+      prime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:2:0:0";
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+        };
+      };
     };
   };
 
