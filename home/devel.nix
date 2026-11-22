@@ -158,6 +158,16 @@
               baseURL = "http://localhost:11435/v1";
             };
             models = {
+              "inkling-2-mini" = {
+                name = "inkling-2-mini";
+                modelID = "inkling-2-mini";
+                capabilities = {
+                  tools = true;
+                  input = [ "text" "image" ];
+                  output = [ "text" ];
+                };
+                limit = { context = 65536; output = 8192; };
+              };
               "gpt-oss:20b" = {
                 name = "gpt-oss:20b";
                 modelID = "gpt-oss-20b";
@@ -168,39 +178,9 @@
                 };
                 limit = { context = 131072; output = 8192; };
               };
-              "gpt-oss:120b" = {
-                name = "gpt-oss:120b";
-                modelID = "gpt-oss-120b";
-                capabilities = {
-                  tools = true;
-                  input = [ "text" ];
-                  output = [ "text" ];
-                };
-                limit = { context = 131072; output = 8192; };
-              };
-              "glm-4.7-flash" = {
-                name = "glm-4.7-flash";
-                modelID = "glm-4.7-flash";
-                capabilities = {
-                  tools = true;
-                  input = [ "text" ];
-                  output = [ "text" ];
-                };
-                limit = { context = 202752; output = 8192; };
-              };
               "qwen3.6-35b-a3b" = {
                 name = "qwen3.6-35b-a3b";
                 modelID = "qwen3.6-35b-a3b";
-                capabilities = {
-                  tools = true;
-                  input = [ "text" "image" ];
-                  output = [ "text" ];
-                };
-                limit = { context = 262144; output = 8192; };
-              };
-              "qwen3.8-27b" = {
-                name = "qwen3.8-27b";
-                modelID = "qwen3.8-27b";
                 capabilities = {
                   tools = true;
                   input = [ "text" "image" ];
@@ -213,7 +193,7 @@
                 modelID = "qwen3.8-flash-next";
                 capabilities = {
                   tools = true;
-                  input = [ "text" ];
+                  input = [ "text" "image" ];
                   output = [ "text" ];
                 };
                 limit = { context = 65536; output = 8192; };
@@ -223,7 +203,7 @@
                 modelID = "qwen3.8-flash-next-abliterated";
                 capabilities = {
                   tools = true;
-                  input = [ "text" ];
+                  input = [ "text" "image" ];
                   output = [ "text" ];
                 };
                 limit = { context = 65536; output = 8192; };

@@ -175,7 +175,12 @@ in
       package = pkgs.niri-unstable;
       settings = {
         animations.enable = false;
-        gestures.hot-corners.enable = false;
+        gestures.hot-corners = {
+          top-left = false;
+          top-right = false;
+          bottom-left = false;
+          bottom-right = false;
+        };
         hotkey-overlay.skip-at-startup = true;
         prefer-no-csd = true;
         cursor.theme = "Adwaita";

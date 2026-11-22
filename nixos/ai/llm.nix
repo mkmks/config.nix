@@ -10,7 +10,7 @@ let
     lazy-mode = "on";
     gpu-layers = "all";
     cpu-moe = "true";
-    moe-cache-mib = "7168";
+    moe-cache-mib = "6144";
     # Keep the n-gram lookup table mmap-backed for on-demand reads.
     override-tensor = "per_layer_token_embd.weight=CPU";
     ctx-size = "65536";
@@ -32,7 +32,7 @@ let
     repeat-penalty = "1.0";
     presence-penalty = "0.0";
     reasoning-effort = "medium";
-    mmproj-auto = "false";
+    mmproj-auto = "true";
   };
 in
 {
@@ -43,6 +43,29 @@ in
     openFirewall = true;
     port = 11435;
     modelsPreset = {
+      "inkling-2-mini" = {
+        alias = "inkling-2-mini";
+        hf-repo = "ggml-org/Inkling-2-Mini-GGUF:IQ4_NL";
+        # Keep expert weights CPU-backed with a bounded GPU cache.
+        load-mode = "mmap";
+        lazy-mode = "on";
+        gpu-layers = "all";
+        cpu-moe = "true";
+        moe-cache-mib = "4096";
+        ctx-size = "65536";
+        parallel = "1";
+        flash-attn = "on";
+        # Limit prompt-processing compute buffers on the 16 GiB GPU.
+        batch-size = "256";
+        ubatch-size = "64";
+        cache-type-k = "q8_0";
+        cache-type-v = "q8_0";
+        # temp = "1.0";
+        # top-p = "1.0";
+        # min-p = "0.0";
+        # top-k = "0";
+        mmproj-auto = "true";
+      };
       "gpt-oss-20b" = {
         alias = "gpt-oss-20b";
         hf-repo = "unsloth/gpt-oss-20b-GGUF:UD-Q4_K_XL";

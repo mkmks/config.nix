@@ -60,7 +60,7 @@ rec {
     blockfrost-backend.url = "github:blockfrost/blockfrost-backend-ryo/v6.7.1";
     # applications
     emacs.url = "github:nix-community/emacs-overlay";
-    niri.url = "github:sodiboo/niri-flake";
+    niri.url = "github:epireyn/niri-flake";
     llama-cpp.url = "github:ggml-org/llama.cpp";
     opencode.url = "github:anomalyco/opencode/v2.3.0";
   };
@@ -124,13 +124,20 @@ rec {
             ./nixos/hosts/hivemind.nix
              {
               services.llama-cpp.package = inputs.llama-cpp.packages.x86_64-linux.cuda.overrideAttrs (old: {
+                # New CUDA device discovery code includes nvml.h.
+                buildInputs = old.buildInputs ++ [
+                  (import inputs.llama-cpp.inputs.nixpkgs {
+                    system = "x86_64-linux";
+                    config.allowUnfree = true;
+                  }).cudaPackages.cuda_nvml_dev
+                ];
                 webui = old.webui.overrideAttrs (ui: {
-                  preBuild = (ui.preBuild or "") + ''
-                    # importNpmLock links this dependency as a tarball, not a directory.
-                    brand=$(readlink -f node_modules/llama-brand)
-                    rm node_modules/llama-brand
-                    mkdir node_modules/llama-brand
-                    tar -xzf "$brand" --strip-components=1 -C node_modules/llama-brand
+                  postPatch = (ui.postPatch or "") + ''
+                    # Both PWA passes copy these files; don't retain read-only store permissions.
+                    substituteInPlace scripts/brand-favicons.ts \
+                      --replace-fail 'import { copyFileSync, mkdirSync }' 'import { chmodSync, copyFileSync, mkdirSync }' \
+                      --replace-fail 'copyFileSync(require.resolve(specifier), resolve(outDir, fileName));' \
+                        'copyFileSync(require.resolve(specifier), resolve(outDir, fileName)); chmodSync(resolve(outDir, fileName), 0o644);'
                   '';
                 });
               });

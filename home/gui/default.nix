@@ -30,7 +30,13 @@
       trezor-suite
       unstable.sparrow # btc
       feather # xmr
-      unstable.eigenwallet
+      (unstable.eigenwallet.overrideAttrs (old: {
+        buildInputs = (old.buildInputs or []) ++ [ unstable.sqlite ];
+        # This release's libgit2-sys needs libgit2 1.8, not the current system version.
+        preBuild = ''
+          export LIBGIT2_NO_VENDOR=0
+        '' + (old.preBuild or "");
+      }))
     ];
   };  
   
