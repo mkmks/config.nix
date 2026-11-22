@@ -190,6 +190,8 @@ in
           { command = [ "nvidia-settings" "--load-config-only" ]; }
           { command = [ "slack" ]; }
           { command = [ "Telegram" ]; }
+          { command = [ "spotify" ]; }
+          { command = [ "tradingview" ]; }
           { command = [ "${start-terminal-apps}/bin/start-terminal-apps" ]; }
         ];
         input = {

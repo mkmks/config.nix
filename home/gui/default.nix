@@ -10,6 +10,7 @@
       android-file-transfer
       libreoffice
       slack
+      spotify
       unstable.telegram-desktop
       
       baobab
@@ -23,7 +24,8 @@
 #      krop
       loupe
       nautilus
-      
+
+      tradingview
       ledger-live-desktop
       trezor-suite
       unstable.sparrow # btc
