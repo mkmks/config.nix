@@ -100,6 +100,13 @@
       gamescopeSession.enable = true;
       protontricks.enable = true;
       remotePlay.openFirewall = true;
+      package = pkgs.steam.override {
+        extraLibraries = ps: with ps; [
+          libsm libice libxi      # Qt xcb platform plugin (crash fix)
+          openal fontconfig freetype  # engine.so / vguimatsurface.so
+    ];
+  };
+
     };
   };
 
